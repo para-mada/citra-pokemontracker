@@ -38,9 +38,15 @@ export default {
       if (data.team === this.team) {
         if (JSON.stringify(this.party.team[data.slot]) === JSON.stringify(data.pokemon)) return;
         this.party.team[data.slot] = data.pokemon;
+        console.log(data.pokemon)
       }
     })
     window.electron.startComms()
+  },
+  updated() {
+    if (!this.party.team[0]) {
+      this.$emit('pokemonSelected', null)
+    }
   }
 }
 </script>

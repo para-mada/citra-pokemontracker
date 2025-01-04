@@ -1,7 +1,12 @@
 <template>
     <div class="card mb-4 shadow-lg border border-secondary" v-if="pokemon" @click="$emit('click', pokemon)">
-      <img :src="pokemon.sprite_url" alt="" class="card-img-top" v-if="!back">
-      <img :src="pokemon.sprite_back_url" alt="" class="card-img-top" v-if="back">
+      <div class="row">
+        <img :src="pokemon.sprite_url" alt="" class="card-img-top" v-if="!back">
+        <img :src="pokemon.sprite_back_url" alt="" class="card-img-top" v-if="back">
+      </div>
+      <div class="row">
+        <span>{{pokemon.mote || pokemon.name}}</span>
+      </div>
       <div class="row">
         <div class="col-6" v-for="(type, i) in pokemon.types" :key="i">
           <TypeComponent :pokemonType="type"/>

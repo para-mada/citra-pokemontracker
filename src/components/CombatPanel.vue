@@ -38,7 +38,7 @@
 import PokemonCard from './PokemonCard.vue'
 import MovementCard from './MovementCard'
 import PokemonTeamList from './PokemonTeamList.vue';
-import { state } from '@/store.js';
+import {state} from '@/store.js';
 
 export default {
   name: "CombatPanel",
@@ -58,17 +58,22 @@ export default {
       selectedPokemon: null
     }
   },
+  created() {
+    window.electron.onDataReceived('selected_enemy', (event, data) => {
+      if (this.team === 'enemy') {
+        this.selectedPokemon = data.pokemon;
+        state.selectedEnemyPokemon = data.pokemon;
+      }
+    })
+  },
   methods: {
     selectPokemon: function (pokemon) {
-      this.selectedPokemon = pokemon;
       if (this.team === 'you') {
+        this.selectedPokemon = pokemon;
         state.selectedPokemon = pokemon;
-      } else {
-        state.selectedEnemyPokemon = pokemon;
       }
     },
   }
-
 }
 </script>
 

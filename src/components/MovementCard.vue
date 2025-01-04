@@ -7,8 +7,8 @@
       <div class="row h-25 justify-content-end">
         <img class="col-2" height="20px" width="20px" :src="type" :alt="movement.type">
         <img class="col-2" height="20px" width="20px" :src="category" :alt="movement.category">
-        <span class="col-1 badge bg-danger" v-if="multiplier">{{ multiplier }}</span>
-        <span class="col-3 badge bg-info" v-if="stab">{{ stab }}</span>
+        <img class="col-2" height="20px" width="20px" :src="multiplier" alt="" v-if="multiplier"/>
+        <img class="col-2" height="20px" width="20px" :src="stab" v-if="stab"/>
       </div>
     </div>
   </main>
@@ -17,6 +17,10 @@
 <script>
 import {state} from '@/store.js';
 import {toRaw} from "vue";
+
+function appearances(coverageTypes, enemyTypes) {
+  return enemyTypes.filter(item => coverageTypes.includes(item.name)).length;
+}
 
 export default {
   name: "MovementCard",
@@ -43,12 +47,30 @@ export default {
       if (!this.enemyPokemon) {
         return ''
       }
-      return 'x2';
+
+      let doubles = appearances(this.movement.coverage.double_damage_to, this.enemyPokemon.types)
+      let halves = appearances(this.movement.coverage.half_damage_to, this.enemyPokemon.types)
+      let zeroes = appearances(this.movement.coverage.no_damage_to, this.enemyPokemon.types)
+      let multiplier = 1;
+      if (zeroes > 0) {
+        multiplier = 0;
+      } else {
+        if (doubles > 0) {
+          multiplier = doubles * 2;
+        }
+        if (halves > 0) {
+          multiplier /= halves * 2;
+        }
+      }
+      if (multiplier === 1) {
+        return '';
+      }
+      return `./assets/damage-multiplier-${multiplier}.png`;
     },
     stab() {
       if (!this.pokemon || !this.pokemon.types) return '';
-      if (this.pokemon.types.includes(this.movement.type)) {
-        return 'STAB';
+      if (this.pokemon.types.map((item) => item.name).includes(this.movement.type.toLowerCase())) {
+        return './assets/stab.png';
       }
       return '';
     }
