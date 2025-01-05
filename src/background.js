@@ -78,14 +78,11 @@ app.on('ready', async () => {
     let game = XY;
     let win = await createWindow();
     ipcMain.on('open_channel', async (event) => {
-        let team = []
-        let enemyTeam = []
-
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
 
-        enemyParty.loadTeam(enemyTeam, event);
-        yourParty.loadTeam(team, event);
+        enemyParty.loadTeam(event);
+        yourParty.loadTeam(event);
     })
     win.reload()
 })

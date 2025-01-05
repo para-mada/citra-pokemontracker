@@ -4,17 +4,28 @@ import path from "path";
 function Movement(slot, id, pp) {
     if (id === 0) return;
     // eslint-disable-next-line no-undef
-    let move_data = path.join(__static, 'data', 'move_data.json');
+    let move_file = path.join(__static, 'data', 'move_data.json');
     // eslint-disable-next-line no-undef
     let type_file = path.join(__static, 'data', 'type_data.json');
     // eslint-disable-next-line no-unused-vars
-    let data = readFileSync(move_data);
+    let move_data = readFileSync(move_file);
     let type_data = readFileSync(type_file);
-    let res = JSON.parse(data)
+    let res = JSON.parse(move_data)
     let type_res = JSON.parse(type_data)
     let json_res = res[id];
     if (json_res === undefined) {
-        return;
+        return {
+            slot: slot,
+            move_name: '',
+            description: '',
+            current_pp: 0,
+            max_pp: 0,
+            type: [],
+            power: 0,
+            accuracy: 0,
+            category: '',
+            coverage: {}
+        };
     }
     let coverage_data = type_res[json_res.typename.toLowerCase()];
     return {

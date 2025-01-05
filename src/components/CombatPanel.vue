@@ -65,6 +65,13 @@ export default {
         state.selectedEnemyPokemon = data.pokemon;
       }
     })
+
+    window.electron.onDataReceived('end_combat', () => {
+      if (this.team === 'enemy') {
+        this.selectedPokemon = null;
+        state.selectedEnemyPokemon = null;
+      }
+    })
   },
   methods: {
     selectPokemon: function (pokemon) {

@@ -38,9 +38,13 @@ export default {
       if (data.team === this.team) {
         if (JSON.stringify(this.party.team[data.slot]) === JSON.stringify(data.pokemon)) return;
         this.party.team[data.slot] = data.pokemon;
-        console.log(data.pokemon)
       }
     })
+    if (this.team === 'enemy') {
+      window.electron.onDataReceived('end_combat', () => {
+        this.party.team = [null, null, null, null, null, null];
+      })
+    }
     window.electron.startComms()
   },
   updated() {
