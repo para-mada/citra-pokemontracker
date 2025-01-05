@@ -20,7 +20,7 @@ function Movement(slot, id, pp) {
             description: '',
             current_pp: 0,
             max_pp: 0,
-            type: [],
+            type: '',
             power: 0,
             accuracy: 0,
             category: '',

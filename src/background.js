@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, BrowserWindow, protocol, ipcMain} from 'electron'
+import {app, BrowserWindow, protocol, ipcMain, dialog, nativeImage} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import { autoUpdater } from "electron-updater"
@@ -42,7 +42,16 @@ async function createWindow() {
         await win.loadURL('app://./index.html')
         autoUpdater.checkForUpdatesAndNotify().then((res) => {
             res.downloadPromise.then(() => {
-                app.quit()
+                dialog.showMessageBox(win, {
+                    type: 'info',
+                    icon: nativeImage.createFromPath('./public/icon.png'),
+                    message: 'New Update Found',
+                    detail: 'A new update has been found, program will close to install it',
+                    buttons: ['Close'],
+                    defaultId: 0
+                }).then(() => {
+                    app.quit();
+                })
             })
         })
     }

@@ -68,6 +68,7 @@ class Pokemon {
             console.error('failed for pokemon dex: ', this.dex_number)
             return;
         }
+        this.species = pokemon.name;
         this.types = pokemon.types.map((value) => {
             return {name: value.name.toLowerCase()}
         })

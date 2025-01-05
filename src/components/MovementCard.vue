@@ -1,11 +1,9 @@
 <template>
   <main>
     <div class="card mb-4 shadow-lg border border-secondary" v-if="movement">
-      <div class="row h-75">
-        <span class="center">{{ movement.move_name }}</span>
-      </div>
-      <div class="row h-25 justify-content-end">
+      <div class="row justify-content-start">
         <img class="col-2" height="20px" width="20px" :src="type" :alt="movement.type">
+        <span class="col center">{{ movement.move_name }}</span>
         <img class="col-2" height="20px" width="20px" :src="category" :alt="movement.category">
         <img class="col-2" height="20px" width="20px" :src="multiplier" alt="" v-if="multiplier"/>
         <img class="col-2" height="20px" width="20px" :src="stab" v-if="stab"/>
@@ -69,10 +67,15 @@ export default {
     },
     stab() {
       if (!this.pokemon || !this.pokemon.types) return '';
-      if (this.pokemon.types.map((item) => item.name).includes(this.movement.type.toLowerCase())) {
-        return './assets/stab.png';
+      try {
+        let this_type = toRaw(this.movement.type).toLowerCase();
+        if (this.pokemon.types.map((item) => item.name).includes(this_type)) {
+          return './assets/stab.png';
+        }
+        return '';
+      } catch (e) {
+        return '';
       }
-      return '';
     }
   }
 }

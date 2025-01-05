@@ -1,7 +1,15 @@
 <template>
-  <div class="row">
-    <div class="col-6" v-for="(pokemon, i) in party.team" :key="i">
-      <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
+  <div class="card shadow-lg border border-secondary">
+    <div class="row" v-if="team === 'you'">
+      <span class="center">Tu Equipo</span>
+    </div>
+    <div class="row" v-if="team === 'enemy'">
+      <span class="center">Equipo Enemigo</span>
+    </div>
+    <div class="row">
+      <div class="col-4" v-for="(pokemon, i) in party.team" :key="i">
+        <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
+      </div>
     </div>
   </div>
 </template>
