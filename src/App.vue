@@ -14,6 +14,8 @@ export default {
   name: 'App',
   components: {
     CombatPanel
+  }, created() {
+    window.electron.startComms()
   }
 }
 </script>

@@ -5,6 +5,7 @@ import {Pokemon} from "./pokemon.js";
 import {CitraClient} from "@/api/CitraClient";
 import {decryptData} from "@/api/CitraReader";
 import struct from "python-struct";
+import {clientSend} from "@/web-api/WebApi";
 
 let BLOCK_SIZE = 56
 let SLOT_OFFSET = 484
@@ -22,7 +23,7 @@ class Party {
 
     }
 
-    pokemonHandler(ipc, slot) {
+    pokemonHandler(client, ipc, slot) {
         // eslint-disable-next-line no-constant-condition
         setTimeout(async () => {
             let citra = new CitraClient();
@@ -71,6 +72,13 @@ class Party {
                                     team: 'you',
                                     pokemon: pokemon
                                 })
+                                try {
+                                    clientSend(client, {
+                                        slot: slot,
+                                        pokemon: pokemon
+                                    })
+                                } catch (e) {
+                                }
                                 this.discoveredPokemons[slot] = pokemon;
                             }
                             this.pokemonTeam[slot] = pokemon;
@@ -79,19 +87,20 @@ class Party {
                     // eslint-disable-next-line no-empty
                 }
             } catch (e) {
+                console.log('some error', e)
             } finally {
                 citra.socket.close()
             }
         }, 1)
     }
 
-    loadTeam(ipc) {
-        this.pokemonHandler(ipc, 0)
-        this.pokemonHandler(ipc, 1)
-        this.pokemonHandler(ipc, 2)
-        this.pokemonHandler(ipc, 3)
-        this.pokemonHandler(ipc, 4)
-        this.pokemonHandler(ipc, 5)
+    loadTeam(client, ipc) {
+        this.pokemonHandler(client, ipc, 0)
+        this.pokemonHandler(client, ipc, 1)
+        this.pokemonHandler(client, ipc, 2)
+        this.pokemonHandler(client, ipc, 3)
+        this.pokemonHandler(client, ipc, 4)
+        this.pokemonHandler(client, ipc, 5)
         if (this.team === 'enemy') {
             this.equipedPokemonHandler(ipc)
         }
@@ -147,6 +156,7 @@ class Party {
                     }
                 }
             } catch (e) {
+                console.log(e)
             } finally {
                 citra.socket.close()
             }

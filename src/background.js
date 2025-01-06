@@ -1,13 +1,15 @@
 'use strict'
 
-import {app, BrowserWindow, protocol, ipcMain, ipcRenderer, dialog, nativeImage} from 'electron'
+import {app, BrowserWindow, protocol, ipcMain, dialog, nativeImage} from 'electron'
+const dotenv = require('dotenv')
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import {autoUpdater} from "electron-updater"
 import {Party} from "@/api/party";
 import {XY} from "@/api/game";
 import path from "path";
-
+const WebSocket = require('ws');
+dotenv.config()
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -40,7 +42,7 @@ async function createWindow() {
         createProtocol('app')
         // Load the index.html when not in development
         await win.loadURL('app://./index.html')
-        autoUpdater.checkForUpdatesAndNotify().then((res) => {
+        autoUpdater.checkForUpdates().then((res) => {
             res.downloadPromise.then(() => {
                 dialog.showMessageBox(win, {
                     type: 'info',
@@ -85,14 +87,15 @@ app.on('ready', async () => {
         }
     }
     let game = XY;
-    let win = await createWindow();
     ipcMain.on('open_channel', async (event) => {
+        console.log('channel open')
+        const client = new WebSocket(process.env.WEB_SOCKET_URL);
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
-        enemyParty.loadTeam(event);
-        yourParty.loadTeam(event);
+        enemyParty.loadTeam(null, event);
+        yourParty.loadTeam(client, event);
     })
-    win.reload()
+    await createWindow();
 })
 
 // Exit cleanly on request from parent process in development mode.

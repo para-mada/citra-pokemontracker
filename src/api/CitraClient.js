@@ -1,7 +1,6 @@
 import dgram from 'dgram';
 import crypto from 'crypto';
 import struct from 'python-struct';
-import {app, dialog, nativeImage} from "electron";
 
 
 const CITRA_PORT = 45987;  // El puerto en el que se escucha y se envía

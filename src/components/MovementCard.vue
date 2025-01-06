@@ -2,9 +2,9 @@
   <div class="alert alert-success" role="alert">
     <img :src="type" alt="">
     {{ movement.move_name }}
+    <div class="badge bg-secondary float-right">{{category}}</div>
     <div class="badge bg-success float-right" v-if="stab">STAB</div>
     <div class="badge float-right" :class="multiplier > 1 ? 'bg-success' : 'bg-danger'" v-if="multiplier">x{{multiplier}}</div>
-    <div class="badge bg-secondary float-right">{{category}}</div>
   </div>
 </template>
 
