@@ -1,22 +1,31 @@
 <template>
   <div class="row">
-    <div class="col-3">
+    <div class="col-sm">
       <PokemonPanel :pokemon="this.selectedPokemon" :team="team"/>
     </div>
-    <div class="col"></div>
-    <div class="col-3">
+    <div class="col-sm"></div>
+    <div class="col-sm">
       <PokemonTeamList @pokemonSelected="selectPokemon" :team="team"/>
     </div>
   </div>
-  <div class="row" v-if="this.team === 'you'">
-    <div class="col-6">
-      <div class="row" v-if="this.selectedPokemon">
-        <MovementCard class="col-6" :movement="this.selectedPokemon.move1" v-if="this.selectedPokemon.move1"/>
-        <MovementCard class="col-6" :movement="this.selectedPokemon.move2" v-if="this.selectedPokemon.move2"/>
-        <MovementCard class="col-6" :movement="this.selectedPokemon.move3" v-if="this.selectedPokemon.move3"/>
-        <MovementCard class="col-6" :movement="this.selectedPokemon.move4" v-if="this.selectedPokemon.move4"/>
+  <div class="row" v-if="this.team === 'you'" style="margin-top:20px">
+    <div class="col-sm">
+      <div class="row row-cols-2 shadow" v-if="this.selectedPokemon">
+        <div class="col">
+          <MovementCard :movement="this.selectedPokemon.move1" v-if="this.selectedPokemon.move1"/>
+        </div>
+        <div class="col">
+          <MovementCard :movement="this.selectedPokemon.move2" v-if="this.selectedPokemon.move2"/>
+        </div>
+        <div class="col">
+          <MovementCard :movement="this.selectedPokemon.move3" v-if="this.selectedPokemon.move3"/>
+        </div>
+        <div class="col">
+          <MovementCard :movement="this.selectedPokemon.move4" v-if="this.selectedPokemon.move4"/>
+        </div>
       </div>
     </div>
+    <div class="col-sm"></div>
   </div>
 </template>
 

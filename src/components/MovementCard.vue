@@ -1,15 +1,11 @@
 <template>
-  <main>
-    <div class="card mb-4 shadow-lg border border-secondary" v-if="movement">
-      <div class="row justify-content-start">
-        <img class="col-2" height="20px" width="20px" :src="type" :alt="movement.type">
-        <span class="col center">{{ movement.move_name }}</span>
-        <img class="col-2" height="20px" width="20px" :src="category" :alt="movement.category">
-        <img class="col-2" height="20px" width="20px" :src="multiplier" alt="" v-if="multiplier"/>
-        <img class="col-2" height="20px" width="20px" :src="stab" v-if="stab"/>
-      </div>
-    </div>
-  </main>
+  <div class="alert alert-success" role="alert">
+    <img :src="type" alt="">
+    {{ movement.move_name }}
+    <div class="badge bg-success float-right" v-if="stab">STAB</div>
+    <div class="badge float-right" :class="multiplier > 1 ? 'bg-success' : 'bg-danger'" v-if="multiplier">x{{multiplier}}</div>
+    <div class="badge bg-secondary float-right">{{category}}</div>
+  </div>
 </template>
 
 <script>
@@ -39,7 +35,16 @@ export default {
       return `./assets/types/${this.movement.type}.png`;
     },
     category() {
-      return `./assets/categories/${this.movement.category}.png`;
+      switch (this.movement.category) {
+        case 'Non-Damaging':
+          return 'Status';
+        case 'Physical':
+          return 'Fisico';
+        case 'Special':
+          return 'Especial';
+        default:
+          return 'None';
+      }
     },
     multiplier() {
       if (!this.enemyPokemon) {
@@ -63,7 +68,7 @@ export default {
       if (multiplier === 1) {
         return '';
       }
-      return `./assets/damage-multiplier-${multiplier}.png`;
+      return multiplier;
     },
     stab() {
       if (!this.pokemon || !this.pokemon.types) return '';

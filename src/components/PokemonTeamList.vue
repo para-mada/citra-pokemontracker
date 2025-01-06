@@ -1,13 +1,18 @@
-<template>
-  <div class="card shadow-lg border border-secondary">
-    <div class="row" v-if="team === 'you'">
-      <span class="center">Tu Equipo</span>
+<template style="margin-top:33px">
+  <div class="card border-success shadow" style="width: 18rem;margin-top:10px">
+    <div class="card-header bg-success text-white" v-if="team === 'you'">
+      Tu Equipo
     </div>
-    <div class="row" v-if="team === 'enemy'">
-      <span class="center">Equipo Enemigo</span>
+    <div class="card-header bg-primary text-white" v-if="team === 'enemy'">
+      Equipo Enemigo
     </div>
-    <div class="row">
-      <div class="col-4" v-for="(pokemon, i) in party.team" :key="i">
+    <div class="row" style="padding: 10px;">
+      <div class="col" v-for="(pokemon, i) in party.team.slice(0,3)" :key="i">
+        <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
+      </div>
+    </div>
+    <div class="row" style="padding: 10px; padding-top: 0px;">
+      <div class="col" v-for="(pokemon, i) in party.team.slice(3,6)" :key="i">
         <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
       </div>
     </div>

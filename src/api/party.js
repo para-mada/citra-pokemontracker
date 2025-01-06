@@ -14,7 +14,7 @@ let STAT_DATA_SIZE = 22
 class Party {
 
     constructor(game, team) {
-        this.team = team;
+        this.team = team;   
         //0x8CE1CE8 ally
         //142625392 enemy
         this.game = game;
