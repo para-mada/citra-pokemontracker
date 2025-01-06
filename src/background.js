@@ -1,12 +1,11 @@
 'use strict'
 
-import {app, BrowserWindow, protocol, ipcMain, dialog, nativeImage} from 'electron'
+import {app, BrowserWindow, protocol, ipcMain, ipcRenderer, dialog, nativeImage} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
-import { autoUpdater } from "electron-updater"
+import {autoUpdater} from "electron-updater"
 import {Party} from "@/api/party";
-// eslint-disable-next-line no-unused-vars
-import {getGame, XY} from "@/api/game";
+import {XY} from "@/api/game";
 import path from "path";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -90,7 +89,6 @@ app.on('ready', async () => {
     ipcMain.on('open_channel', async (event) => {
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
-
         enemyParty.loadTeam(event);
         yourParty.loadTeam(event);
     })

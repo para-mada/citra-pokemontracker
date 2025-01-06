@@ -1,6 +1,7 @@
 import dgram from 'dgram';
 import crypto from 'crypto';
 import struct from 'python-struct';
+import {app, dialog, nativeImage} from "electron";
 
 
 const CITRA_PORT = 45987;  // El puerto en el que se escucha y se envía
@@ -14,7 +15,6 @@ let MAX_REQUEST_DATA_SIZE = 32
 class CitraClient {
     constructor() {
         this.socket = dgram.createSocket('udp4');  // Crear un socket UDP v4
-        this.socket.setMaxListeners(6)
     }
 
     _generateHeader(requestType, dataSize) {
@@ -55,7 +55,9 @@ class CitraClient {
             const finalRequest = Buffer.concat([header, requestData]);
             // Enviar la solicitud
             this.socket.send(finalRequest, CITRA_PORT);
-            let replyData = await this._waitForReply(requestId);
+            let replyData = await this._waitForReply(requestId).catch(() => {
+                this.socket.close()
+            });
             if (replyData) {
                 result = Buffer.concat([result, replyData]);  // Agregar los datos recibidos al resultado
                 readSize -= replyData.length;
