@@ -1,15 +1,48 @@
 'use strict'
 
 import {app, BrowserWindow, protocol, ipcMain, dialog, nativeImage} from 'electron'
-const dotenv = require('dotenv')
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import {autoUpdater} from "electron-updater"
 import {Party} from "@/api/party";
 import {XY} from "@/api/game";
 import path from "path";
+import fs from "fs";
+
+
+const saveReader = require('@/api/saveReader')
 const WebSocket = require('ws');
-dotenv.config()
+const config = require('config');
+const toml = require('toml');
+const TOML = require('@iarna/toml');
+
+function loadTomlConfig(win) {
+    const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
+    if (!fs.existsSync(tomlFilePath)) {
+        let save_file = dialog.showOpenDialogSync(win, {
+            title: 'Selecciona tu archivo de guardado',
+            icon: nativeImage.createFromPath('./public/icon.png'),
+            properties: ['openFile'],
+            message: 'Archivos de guardado',
+            defaultPath: path.join(process.env.APPDATA, '\\Citra\\sdmc\\Nintendo 3DS\\00000000000000000000000000000000\\00000000000000000000000000000000\\title\\00040000\\00055e00\\data\\00000001')
+        });
+        let data = {
+            app: {
+                websocket: 'ws://localhost:8000/',
+                save_file: save_file[0]
+            }
+        }
+        const stringed = TOML.stringify(data);
+        fs.mkdirSync('config')
+        fs.writeFile(tomlFilePath, stringed, console.log)
+        return toml.parse(stringed); // Parseamos el contenido TOML
+    } else {
+        const tomlContent = fs.readFileSync(tomlFilePath, 'utf-8');
+        return toml.parse(tomlContent); // Parseamos el contenido TOML
+    }
+}
+
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -78,6 +111,11 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+    let win = await createWindow();
+    const tomlConfig = loadTomlConfig(win);
+    config.util.extendDeep(config, tomlConfig);
+    let SOCKET_URL = config.get('app.websocket');
+
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
         try {
@@ -86,16 +124,26 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString())
         }
     }
+
     let game = XY;
+    let client = null;
     ipcMain.on('open_channel', async (event) => {
-        console.log('channel open')
-        const client = new WebSocket(process.env.WEB_SOCKET_URL);
+        if (client) {
+            client.close();
+            saveReader.stopWatching();
+        }
+        client = new WebSocket(SOCKET_URL).on('error', () => {
+            console.log(`error connecting to web socket ${SOCKET_URL}`)
+        });
+
+        saveReader.watchSave(config.get("app.save_file"));
+
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
         enemyParty.loadTeam(null, event);
         yourParty.loadTeam(client, event);
-    })
-    await createWindow();
+    });
+    win.reload();
 })
 
 // Exit cleanly on request from parent process in development mode.

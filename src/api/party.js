@@ -6,6 +6,18 @@ import {CitraClient} from "@/api/CitraClient";
 import {decryptData} from "@/api/CitraReader";
 import struct from "python-struct";
 import {clientSend} from "@/web-api/WebApi";
+const winston = require("winston");
+const logger = winston.createLogger({
+    level: "info",
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.File({ filename: "error.log", level: "warn" }),
+        new winston.transports.File({ filename: "app.log" }),
+    ],
+});
 
 let BLOCK_SIZE = 56
 let SLOT_OFFSET = 484
@@ -33,10 +45,13 @@ class Party {
                     let read_address
                     let wildData = await citra.readMemory(this.game.battleWildPartyAddress, SLOT_DATA_SIZE);
                     let rawWildData = decryptData(wildData);
+
                     let trainerData = await citra.readMemory(this.game.battleTrainerPartyAddress, SLOT_DATA_SIZE);
                     let rawTrainerData = decryptData(trainerData);
+
                     let wildPP = (await citra.readMemory(this.game.wildppadd, 1)).readUInt8(0);
                     let trainerPP = (await citra.readMemory(this.game.trainerppadd, 1)).readUInt8(0);
+
                     let wildDex = struct.unpack("<H", rawWildData.subarray(8, 10))[0]
                     let trainerDex = struct.unpack("<H", rawTrainerData.subarray(8, 10))[0]
 
@@ -49,12 +64,12 @@ class Party {
                             read_address = this.game.partyAddress
                         }
                     } else {
-                        if (wildDex >= 1 && wildDex < 808 && trainerPP < 65) {
+                        if (wildDex >= 1 && wildDex < 808 && wildPP < 65) {
                             read_address = this.game.wildOpponentPartyAddress
                         } else if (trainerDex >= 1 && trainerDex < 808 && trainerPP < 65) {
                             read_address = this.game.trainerOpponentPartyAddress
                         } else {
-                            return;
+                            continue;
                         }
                     }
 
@@ -65,8 +80,15 @@ class Party {
                         let data = Buffer.concat([pokemonData, statsData]);
                         let pokemon = new Pokemon(data);
                         if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
-                            if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) return;
+                            if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
                             if (this.team === 'you') {
+                                logger.info(`data ${slot}`)
+                                logger.info(data.length)
+                                logger.info(data)
+                                logger.info(`decrypted data ${slot}`)
+                                let decrypted = decryptData(data);
+                                logger.info(decrypted.length)
+                                logger.info(decrypted)
                                 ipc.reply('party_update', {
                                     slot: slot,
                                     team: 'you',
@@ -115,12 +137,14 @@ class Party {
                 while (true) {
                     let wildData = await citra.readMemory(this.game.battleWildPartyAddress, SLOT_DATA_SIZE);
                     let rawWildData = decryptData(wildData);
-                    let trainerData = await citra.readMemory(this.game.battleTrainerPartyAddress, SLOT_DATA_SIZE);
                     let wildPP = (await citra.readMemory(this.game.wildppadd, 1)).readUint8(0);
-                    let trainerPP = (await citra.readMemory(this.game.trainerppadd, 1)).readUint8(0);
-                    let rawTrainerData = decryptData(trainerData);
                     let wildDex = struct.unpack("<H", rawWildData.subarray(8, 10))[0]
+
+                    let trainerData = await citra.readMemory(this.game.battleTrainerPartyAddress, SLOT_DATA_SIZE);
+                    let rawTrainerData = decryptData(trainerData);
+                    let trainerPP = (await citra.readMemory(this.game.trainerppadd, 1)).readUint8(0);
                     let trainerDex = struct.unpack("<H", rawTrainerData.subarray(8, 10))[0]
+
                     let dex_number_address = 0;
 
                     if (wildDex >= 1 && wildDex < 808 && wildPP < 65) {
@@ -131,7 +155,7 @@ class Party {
                         this.discoveredPokemons = {}
                         this.pokemonTeam = {}
                         ipc.reply('end_combat')
-                        return;
+                        continue;
                     }
 
                     let dex_number = (await citra.readMemory(dex_number_address, 2)).readUInt16LE()
