@@ -6,7 +6,8 @@ import {CitraClient} from "@/api/CitraClient";
 import {decryptData} from "@/api/CitraReader";
 import struct from "python-struct";
 import {clientSend} from "@/web-api/WebApi";
-const winston = require("winston");
+import winston from "winston";
+
 const logger = winston.createLogger({
     level: "info",
     format: winston.format.combine(

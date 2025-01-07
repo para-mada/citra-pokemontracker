@@ -1,9 +1,9 @@
 import fs from 'fs'
 import axios from 'axios'
 
-const os = require('os')
+import os from 'os'
 
-const FormData = require('form-data');
+import FormData from 'form-data';
 
 export const watchSave = function (FILE_NAME) {
     if (!fs.existsSync(FILE_NAME)) {

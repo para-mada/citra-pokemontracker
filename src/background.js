@@ -9,12 +9,11 @@ import {XY} from "@/api/game";
 import path from "path";
 import fs from "fs";
 
-
-const saveReader = require('@/api/saveReader')
-const WebSocket = require('ws');
-const config = require('config');
-const toml = require('toml');
-const TOML = require('@iarna/toml');
+import saveReader from '@/api/saveReader'
+import WebSocket from 'ws'
+import config from 'config'
+import toml from 'toml'
+import TOML from '@iarna/toml'
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
