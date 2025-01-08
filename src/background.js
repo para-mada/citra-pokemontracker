@@ -69,21 +69,21 @@ async function createWindow() {
     if (process.env.WEBPACK_DEV_SERVER_URL) {
         // Load the url of the dev server if in development mode
         await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-        if (!process.env.IS_TEST) win.webContents.openDevTools()
+        //if (!process.env.IS_TEST) win.webContents.openDevTools()
     } else {
         createProtocol('app')
         // Load the index.html when not in development
         await win.loadURL('app://./index.html')
         autoUpdater.checkForUpdates().then((res) => {
-            res.downloadPromise.then(() => {
-                dialog.showMessageBox(win, {
-                    type: 'info',
-                    icon: nativeImage.createFromPath('./public/icon.png'),
-                    message: 'New Update Found',
-                    detail: 'A new update has been found, program will close to install it',
-                    buttons: ['Close'],
-                    defaultId: 0
-                }).then(() => {
+            dialog.showMessageBox(win, {
+                type: 'info',
+                icon: nativeImage.createFromPath('./public/icon.png'),
+                message: 'New Update Found',
+                detail: 'A new update has been found, program will close to install it',
+                buttons: ['Close'],
+                defaultId: 0
+            }).then(() => {
+                res.downloadPromise.then(() => {
                     app.quit();
                 })
             })
@@ -139,7 +139,7 @@ app.on('ready', async () => {
 
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
-        enemyParty.loadTeam(null, event);
+        enemyParty.loadTeam(null, event, yourParty);
         yourParty.loadTeam(client, event);
     });
     win.reload();

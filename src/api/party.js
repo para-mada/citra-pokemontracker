@@ -24,7 +24,7 @@ class Party {
 
     }
 
-    pokemonHandler(client, ipc, slot) {
+    pokemonHandler(client, ipc, slot, othersParty) {
         // eslint-disable-next-line no-constant-condition
         setTimeout(async () => {
             let citra = new CitraClient();
@@ -75,7 +75,14 @@ class Party {
                     let statsData = await citra.readMemory(slot_address + SLOT_DATA_SIZE + STAT_DATA_OFFSET, STAT_DATA_SIZE);
                     if (pokemonData && statsData) {
                         let data = Buffer.concat([pokemonData, statsData]);
-                        let move_data = await citra.readMemory(pp_address + (this.game.mongap * (slot + 6)), 56)
+                        let move_data;
+                        if (this.team === 'enemy') {
+                            let allyParty = othersParty.pokemonTeam;
+                            console.log(Object.keys(allyParty).length)
+                            move_data = await citra.readMemory(pp_address + (this.game.mongap * (slot + Object.keys(allyParty).length)), 56)
+                        } else {
+                            move_data = await citra.readMemory(pp_address + (this.game.mongap * (slot + 6)), 56)
+                        }
                         let pokemon = new Pokemon(move_data, data);
                         if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
                             if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
@@ -107,13 +114,13 @@ class Party {
         }, 1)
     }
 
-    loadTeam(client, ipc) {
-        this.pokemonHandler(client, ipc, 0)
-        this.pokemonHandler(client, ipc, 1)
-        this.pokemonHandler(client, ipc, 2)
-        this.pokemonHandler(client, ipc, 3)
-        this.pokemonHandler(client, ipc, 4)
-        this.pokemonHandler(client, ipc, 5)
+    loadTeam(client, ipc, other_party) {
+        this.pokemonHandler(client, ipc, 0, other_party)
+        this.pokemonHandler(client, ipc, 1, other_party)
+        this.pokemonHandler(client, ipc, 2, other_party)
+        this.pokemonHandler(client, ipc, 3, other_party)
+        this.pokemonHandler(client, ipc, 4, other_party)
+        this.pokemonHandler(client, ipc, 5, other_party)
         if (this.team === 'enemy') {
             this.equipedPokemonHandler(ipc)
         }
