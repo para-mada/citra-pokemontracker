@@ -53,7 +53,11 @@ class CitraClient {
             const [header, requestId] = this._generateHeader(1, requestData.length);  // 1 es el tipo de solicitud para ReadMemory
             const finalRequest = Buffer.concat([header, requestData]);
             // Enviar la solicitud
-            this.socket.send(finalRequest, CITRA_PORT);
+            this.socket.send(finalRequest, CITRA_PORT, (err) => {
+                if (err) {
+                    console.error('Game not running')
+                }
+            });
             let replyData = await this._waitForReply(requestId).catch(() => {
                 this.socket.close()
             });

@@ -53,7 +53,7 @@ async function createWindow() {
     // Create the browser window.
     const win = new BrowserWindow({
         width: 1200,
-        height: 710,
+        height: 873,
         icon: './public/icons/icon.png',
         autoHideMenuBar: true,
         resizable: false,

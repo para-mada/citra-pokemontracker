@@ -6,19 +6,7 @@ import {CitraClient} from "@/api/CitraClient";
 import {decryptData} from "@/api/CitraReader";
 import struct from "python-struct";
 import {clientSend} from "@/web-api/WebApi";
-import winston from "winston";
-
-const logger = winston.createLogger({
-    level: "info",
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-    ),
-    transports: [
-        new winston.transports.File({ filename: "error.log", level: "warn" }),
-        new winston.transports.File({ filename: "app.log" }),
-    ],
-});
+import logging from "@/api/logging";
 
 let BLOCK_SIZE = 56
 let SLOT_OFFSET = 484
@@ -55,20 +43,28 @@ class Party {
 
                     let wildDex = struct.unpack("<H", rawWildData.subarray(8, 10))[0]
                     let trainerDex = struct.unpack("<H", rawTrainerData.subarray(8, 10))[0]
-
+                    let pp_address;
                     if (this.team === 'you') {
                         if (wildDex >= 1 && wildDex < 808 && wildPP < 65) {
                             read_address = this.game.battleWildPartyAddress
+                            pp_address = this.game.wildppadd
+                            logging.logger.info("wild battle")
                         } else if (trainerDex >= 1 && trainerDex < 808 && trainerPP < 65) {
                             read_address = this.game.battleTrainerPartyAddress
+                            pp_address = this.game.trainerppadd
+                            logging.logger.info("trainer battle")
                         } else {
                             read_address = this.game.partyAddress
+                            pp_address = this.game.wildppadd
+                            logging.logger.info("off battle")
                         }
                     } else {
                         if (wildDex >= 1 && wildDex < 808 && wildPP < 65) {
                             read_address = this.game.wildOpponentPartyAddress
+                            pp_address = this.game.wildppadd
                         } else if (trainerDex >= 1 && trainerDex < 808 && trainerPP < 65) {
                             read_address = this.game.trainerOpponentPartyAddress
+                            pp_address = this.game.trainerppadd
                         } else {
                             continue;
                         }
@@ -79,7 +75,8 @@ class Party {
                     let statsData = await citra.readMemory(slot_address + SLOT_DATA_SIZE + STAT_DATA_OFFSET, STAT_DATA_SIZE);
                     if (pokemonData && statsData) {
                         let data = Buffer.concat([pokemonData, statsData]);
-                        let pokemon = new Pokemon(data);
+                        let move_data = await citra.readMemory(pp_address + (this.game.mongap * (slot + 6)), 56)
+                        let pokemon = new Pokemon(move_data, data);
                         if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
                             if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
                             if (this.team === 'you') {
@@ -158,7 +155,9 @@ class Party {
                             let pokemon = this.pokemonTeam[slot]
                             if (dex_number === pokemon.dex_number) {
                                 if (slot && slot in this.discoveredPokemons) {
-                                    break;
+                                    if (JSON.stringify(this.discoveredPokemons[slot]) === JSON.stringify(pokemon)) {
+                                        break;
+                                    }
                                 }
                                 ipc.reply('selected_enemy', {
                                     pokemon: pokemon
