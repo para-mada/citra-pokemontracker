@@ -12,8 +12,7 @@
     <div class="col-sm">
       <div class="row row-cols-2" v-if="this.selectedPokemon">
         <div class="col" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
-          <MovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move"
-                        v-if="move && move.discovered"/>
+          <MovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move" v-if="move"/>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="alert alert-success" role="alert">
-    <img :src="type" alt="">
+    <img :src="type_image_path" v-if="movement" alt="">
     {{ movement.move_name }}
     <div class="badge bg-secondary float-right">{{category}}</div>
     <div class="badge bg-success float-right" v-if="stab">STAB</div>
@@ -31,7 +31,7 @@ export default {
     },
   },
   computed: {
-    type() {
+    type_image_path() {
       return `./assets/types/${this.movement.type}.png`;
     },
     category() {
