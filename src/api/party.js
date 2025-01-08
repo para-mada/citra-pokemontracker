@@ -84,23 +84,29 @@ class Party {
                             move_data = await citra.readMemory(pp_address + (this.game.mongap * (slot + 6)), 56)
                         }
                         let pokemon = new Pokemon(move_data, data);
-                        if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
-                            if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
-                            if (this.team === 'you') {
+                        if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
+                        if (this.team === 'you') {
+                            if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
                                 ipc.reply('party_update', {
                                     slot: slot,
                                     team: 'you',
                                     pokemon: pokemon
                                 })
-                                try {
-                                    clientSend(client, {
-                                        slot: slot,
-                                        pokemon: pokemon
-                                    })
-                                } catch (e) {
-                                }
-                                this.discoveredPokemons[slot] = pokemon;
+                            } else {
+                                ipc.reply('party_update', {
+                                    slot: slot,
+                                    team: 'you',
+                                    pokemon: null
+                                })
                             }
+                            try {
+                                clientSend(client, {
+                                    slot: slot,
+                                    pokemon: pokemon
+                                })
+                            } catch (e) {
+                            }
+                            this.discoveredPokemons[slot] = pokemon;
                             this.pokemonTeam[slot] = pokemon;
                         }
                     }
