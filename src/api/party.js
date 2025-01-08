@@ -83,13 +83,6 @@ class Party {
                         if (pokemon.dex_number >= 1 && pokemon.dex_number < 808) {
                             if (JSON.stringify(this.pokemonTeam[slot]) === JSON.stringify(pokemon)) continue;
                             if (this.team === 'you') {
-                                logger.info(`data ${slot}`)
-                                logger.info(data.length)
-                                logger.info(data)
-                                logger.info(`decrypted data ${slot}`)
-                                let decrypted = decryptData(data);
-                                logger.info(decrypted.length)
-                                logger.info(decrypted)
                                 ipc.reply('party_update', {
                                     slot: slot,
                                     team: 'you',

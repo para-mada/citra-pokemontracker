@@ -10,7 +10,7 @@
   </div>
   <div class="row" v-if="this.team === 'you'" style="margin-top:20px">
     <div class="col-sm">
-      <div class="row row-cols-2 shadow" v-if="this.selectedPokemon">
+      <div class="row row-cols-2" v-if="this.selectedPokemon">
         <div class="col">
           <MovementCard :movement="this.selectedPokemon.move1" v-if="this.selectedPokemon.move1"/>
         </div>

@@ -27,6 +27,11 @@ export const watchSave = function (FILE_NAME) {
         }).then(() => console.log('succeeded')).catch(() => console.error('failed'))
     })
 }
-export const stopWatching = function () {
-    return fs.unwatchFile(process.env.SAVE_FILE)
+export const stopWatching = function (FILE_NAME) {
+    try {
+        fs.unwatchFile(FILE_NAME)
+    } catch (e) {
+
+        console.log('file not read')
+    }
 }

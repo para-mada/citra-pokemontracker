@@ -62,12 +62,31 @@ class Pokemon {
         this.mote = this.cleanNickData(mote);
         // eslint-disable-next-line no-undef
         let fileData = readFileSync(path.join(__static, 'data', 'mon_data.json')).toString();
+        // eslint-disable-next-line no-undef
+        let fileformData = readFileSync(path.join(__static, 'data', 'pokemon_forms.json')).toString();
         let pokedata = JSON.parse(fileData);
-        let pokemon = pokedata[this.dex_number];
-        if (pokemon === undefined) {
+        let formdata = JSON.parse(fileformData);
+        let pokemon;
+        try {
+            if (this.dex_number in formdata) {
+                let form = formdata[this.dex_number][this.form];
+                if (form in pokedata[this.dex_number]) {
+                    pokemon = pokedata[this.dex_number][form];
+                } else {
+                    pokemon = pokedata[this.dex_number]["0"]
+                }
+            } else {
+                pokemon = pokedata[this.dex_number]["0"]
+            }
+        } catch (e) {
             console.error('failed for pokemon dex: ', this.dex_number)
             return;
         }
+
+        if (this.dex_number === 6) {
+            console.log(this.form >> 3)
+        }
+
         this.species = pokemon.name;
         this.types = pokemon.types.map((value) => {
             return {name: value.name.toLowerCase()}

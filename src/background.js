@@ -9,7 +9,7 @@ import {XY} from "@/api/game";
 import path from "path";
 import fs from "fs";
 
-import saveReader from '@/api/saveReader'
+import {stopWatching, watchSave} from '@/api/saveReader'
 import WebSocket from 'ws'
 import config from 'config'
 import toml from 'toml'
@@ -129,13 +129,13 @@ app.on('ready', async () => {
     ipcMain.on('open_channel', async (event) => {
         if (client) {
             client.close();
-            saveReader.stopWatching();
+            stopWatching(config.get("app.save_file"));
         }
         client = new WebSocket(SOCKET_URL).on('error', () => {
             console.log(`error connecting to web socket ${SOCKET_URL}`)
         });
 
-        saveReader.watchSave(config.get("app.save_file"));
+        watchSave(config.get("app.save_file"));
 
         let yourParty = new Party(game, 'you');
         let enemyParty = new Party(game, 'enemy');
