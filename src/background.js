@@ -5,7 +5,7 @@ import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
 import {autoUpdater} from "electron-updater"
 import {Party} from "@/api/party";
-import {XY} from "@/api/game";
+import {XY} from "@/api/romData";
 import path from "path";
 import fs from "fs";
 

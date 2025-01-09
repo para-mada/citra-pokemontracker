@@ -1,14 +1,16 @@
 <template>
   <div class="container-fluid">
-    <EnemyCombatPanel/>
-    <div class="row" style="height: 1rem"></div>
-    <AllyCombatPanel/>
+    <div id="1v1-combat">
+      <EnemyCombatPanel/>
+      <div class="row" style="height: 1rem"></div>
+      <AllyCombatPanel/>
+    </div>
   </div>
 </template>
 
 <script>
-import AllyCombatPanel from './components/AllyCombatPanel.vue'
-import EnemyCombatPanel from './components/EnemyCombatPanel.vue'
+import AllyCombatPanel from './components/normal-combat/AllyCombatPanel'
+import EnemyCombatPanel from './components/normal-combat/EnemyCombatPanel'
 
 
 export default {

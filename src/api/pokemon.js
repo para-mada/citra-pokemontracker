@@ -21,7 +21,6 @@ class Pokemon {
 
     constructor(move_data, data) {
         let raw_data = decryptData(data);
-
         this.dex_number = struct.unpack("<H", raw_data.subarray(8, 10))[0]
         if (this.dex_number === 0 || this.dex_number >= 808) return;
         this.held_item_num = struct.unpack("<H", raw_data.subarray(10, 12))[0]
@@ -47,15 +46,16 @@ class Pokemon {
         let ivloc = struct.unpack("<I", raw_data.subarray(116, 120))[0]
         this.friendship = struct.unpack("B", raw_data.subarray(202, 203))[0]   // Friendship
         this.level_met = struct.unpack("<H", raw_data.subarray(221, 223))[0]   // Level met
-        this.statusbyte = struct.unpack("<B", raw_data.subarray(232, 233))[0]  // Status byte
-        this.level = struct.unpack("B", raw_data.subarray(236, 237))[0]        // Current level
-        this.cur_hp = struct.unpack("<H", raw_data.subarray(240, 242))[0]      // Current HP
-        this.maxhp = struct.unpack("<H", raw_data.subarray(242, 244))[0]       // Max HP
-        this.attack = struct.unpack("<H", raw_data.subarray(244, 246))[0]      // Attack stat
-        this.defense = struct.unpack("<H", raw_data.subarray(246, 248))[0]     // Defense stat
-        this.speed = struct.unpack("<H", raw_data.subarray(248, 250))[0]       // Speed stat
-        this.spatk = struct.unpack("<H", raw_data.subarray(250, 252))[0]       // Special attack stat
-        this.spdef = struct.unpack("<H", raw_data.subarray(252, 254))[0]       // Special defense stat
+
+        this.statusbyte = struct.unpack("<B", raw_data.subarray(332, 333))[0]  // Status byte
+        this.level = struct.unpack("B", raw_data.subarray(336, 337))[0]        // Current level
+        this.cur_hp = struct.unpack("<H", raw_data.subarray(340, 342))[0]      // Current HP
+        this.maxhp = struct.unpack("<H", raw_data.subarray(342, 344))[0]       // Max HP
+        this.attack = struct.unpack("<H", raw_data.subarray(344, 346))[0]      // Attack stat
+        this.defense = struct.unpack("<H", raw_data.subarray(346, 348))[0]     // Defense stat
+        this.speed = struct.unpack("<H", raw_data.subarray(348, 350))[0]       // Speed stat
+        this.spatk = struct.unpack("<H", raw_data.subarray(350, 352))[0]       // Special attack stat
+        this.spdef = struct.unpack("<H", raw_data.subarray(352, 354))[0]       // Special defense stat
         this.ivhp = ivloc & 31                                                 // HP IV
         this.ivattack = (ivloc >> 5) & 31                                      // Attack IV
         this.ivdefense = (ivloc >> 10) & 31                                    // Defense IV
@@ -72,6 +72,13 @@ class Pokemon {
         let pokedata = JSON.parse(fileData);
         let formdata = JSON.parse(fileformData);
         let pokemon;
+
+
+        if (this.dex_number === 6) {
+            console.log('raw_data ', raw_data[0x14B])
+            console.log('data ', data[0x14B])
+        }
+
         try {
             if (this.dex_number in formdata) {
                 let form = formdata[this.dex_number][this.form];

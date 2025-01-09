@@ -1,5 +1,5 @@
 <template>
-  <div class="row" style="margin-top:20px" v-if="false">
+  <div class="row" style="margin-top:20px">
     <div class="col-sm">
       <div class="row row-cols-2" v-if="this.selectedPokemon">
         <div v-for="(move, index) in this.selectedPokemon.moves" :key="index" v-show="move && move.discovered">
@@ -23,9 +23,9 @@
 </template>
 
 <script>
-import PokemonPanel from './PokemonPanel'
+import PokemonPanel from '@/components/basic-comps/PokemonPanel'
 import MovementCard from './MovementCard'
-import PokemonTeamList from './PokemonTeamList';
+import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
 
 export default {
   name: "CombatPanel",

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import PokemonCard from "@/components/PokemonCard";
+import PokemonCard from "@/components/basic-comps/PokemonCard";
 
 export default {
   name: "PokemonTeamList",
