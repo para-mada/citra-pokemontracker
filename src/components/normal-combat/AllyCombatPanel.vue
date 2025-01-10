@@ -1,23 +1,23 @@
 <template>
-  <div class="row">
-    <div class="col-sm">
+  <v-row class="ml-2 w-100">
+    <v-col sm cols="4">
       <PokemonPanel :pokemon="this.selectedPokemon" team="you"/>
-    </div>
-    <div class="col-sm"></div>
-    <div class="col-sm">
+    </v-col>
+    <v-col sm cols="4"></v-col>
+    <v-col sm cols="4">
       <PokemonTeamList @pokemonSelected="selectPokemon" team="you" :data="this.data"/>
-    </div>
-  </div>
-  <div class="row" style="margin-top:20px">
-    <div class="col-sm">
-      <div class="row row-cols-2" v-if="this.selectedPokemon">
-        <div class="col" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
-          <MovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move" v-if="move"/>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm"></div>
-  </div>
+    </v-col>
+  </v-row>
+  <v-row class="mt-4 ml-2 w-100">
+    <v-col sm cols="10">
+      <v-row v-if="this.selectedPokemon">
+        <v-col cols="6" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
+          <MovementCard :pokemon="this.selectedPokemon" :enemy_data="enemy_data" :movement="move" v-if="move"/>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col sm></v-col>
+  </v-row>
 </template>
 
 <script>
@@ -36,22 +36,19 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    enemy_data: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
-      selectedPokemon: null,
-      enemyPokemon: null
+      selectedPokemon: null
     }
-  },
-  created() {
-    window.electron.onDataReceived('selected_enemy', (event, data) => {
-      this.enemyPokemon = data.pokemon;
-    })
   },
   methods: {
     selectPokemon: function (pokemon) {
-      this.emitter.emit('select-pokemon-ally', pokemon)
       this.selectedPokemon = pokemon;
     },
   }

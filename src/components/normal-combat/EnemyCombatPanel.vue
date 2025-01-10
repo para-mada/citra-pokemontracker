@@ -1,25 +1,23 @@
 <template>
-  <div class="row" style="margin-top:20px" v-if="false">
-    <div class="col-sm">
-      <div class="row row-cols-2" v-if="this.selectedPokemon">
-        <div v-for="(move, index) in this.selectedPokemon.moves" :key="index" v-show="move && move.discovered">
-          <div class="col" v-if="move">
-            <MovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move"/>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm"></div>
-  </div>
-  <div class="row">
-    <div class="col-sm">
-      <PokemonPanel :pokemon="this.selectedPokemon" team="enemy"/>
-    </div>
-    <div class="col-sm"></div>
-    <div class="col-sm">
-      <PokemonTeamList team="enemy" :data="this.data"/>
-    </div>
-  </div>
+  <v-row class="mt-4" v-if="false">
+    <v-col sm>
+      <v-row v-if="this.selectedPokemon">
+        <v-col cols="6" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
+          <MovementCard :pokemon="this.selectedPokemon" :enemy_data="enemy_data" :movement="move" v-if="move"/>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col sm></v-col>
+  </v-row>
+  <v-row>
+    <v-col sm>
+      <PokemonPanel :pokemon="this.data.team[this.data.selected_pokemon[0]]" team="enemy"/>
+    </v-col>
+    <v-col sm></v-col>
+    <v-col sm>
+      <PokemonTeamList @pokemonSelected="selectPokemon" team="enemy" :data="this.data"/>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -36,6 +34,10 @@ export default {
   },
   props: {
     data: {
+      type: Object,
+      required: true
+    },
+    enemy_data: {
       type: Object,
       required: true
     }

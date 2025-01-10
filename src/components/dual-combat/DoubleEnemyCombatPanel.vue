@@ -1,30 +1,28 @@
 <template>
-  <div class="row" style="margin-top:20px" v-if="false">
-    <div class="col-sm">
-      <div class="row row-cols-2" v-if="this.selectedPokemon">
-        <div v-for="(move, index) in this.selectedPokemon.moves" :key="index" v-show="move && move.discovered">
-          <div class="col" v-if="move">
-            <MultiMovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move"/>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm"></div>
-  </div>
-
-  <div class="row">
-    <div class="col-sm" v-for="(slot, index) in this.data.selected_pokemon" :key="index">
+  <v-row class="mt-4" v-if="false">
+    <v-col sm>
+      <v-row v-if="this.selectedPokemon">
+        <v-col cols="6" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
+          <MovementCard :pokemon="this.selectedPokemon" :movement="move" :enemy_data="enemy_data" v-if="move"/>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col sm></v-col>
+  </v-row>
+  <v-row>
+    <v-col sm v-for="(slot, index) in this.data.selected_pokemon" :key="index">
       <PokemonPanel :pokemon="this.data.team[slot]" team="enemy"/>
-    </div>
-    <div class="col-sm">
-      <PokemonTeamList :data="this.data" team="enemy"/>
-    </div>
-  </div>
+    </v-col>
+    <v-col sm></v-col>
+    <v-col sm>
+      <PokemonTeamList team="enemy" :data="this.data"/>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import PokemonPanel from '@/components/basic-comps/PokemonPanel'
-import MultiMovementCard from '@/components/basic-comps/MultiMovementCard'
+import MovementCard from '@/components/basic-comps/MovementCard'
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
 
 export default {
@@ -32,10 +30,14 @@ export default {
   components: {
     PokemonTeamList,
     PokemonPanel,
-    MultiMovementCard
+    MovementCard
   },
   props: {
     data: {
+      type: Object,
+      required: true
+    },
+    enemy_data: {
       type: Object,
       required: true
     }

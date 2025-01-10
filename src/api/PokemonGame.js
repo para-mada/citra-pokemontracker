@@ -1,11 +1,7 @@
 import {Pokemon, validatePokemon} from './pokemon'
-import {RomData} from './romData'
-import {logger} from './logging'
 import {CitraClient} from './CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import struct from "python-struct";
-import WebSocket from "ws";
-import config from "config";
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 332;

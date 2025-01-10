@@ -1,5 +1,11 @@
 <template>
-  <img :src="pokemon ? pokemon.sprite_url : missingno" class="img-thumbnail" width="96" alt="" @click="$emit('click', pokemon)" style="display: inline">
+  <v-tooltip location="bottom">
+    <template v-slot:activator="{props}">
+      <v-img :src="pokemon ? pokemon.sprite_url : missingno" class="img-thumbnail" width="70" aspect-ratio="1/1"
+             @click="$emit('click', pokemon)" v-bind="props"></v-img>
+    </template>
+    {{ pokemon ? pokemon.mote : '' }}
+  </v-tooltip>
 </template>
 
 <script>
@@ -23,4 +29,7 @@ export default {
 
 <style scoped>
 
+.img-thumbnail {
+  cursor: pointer;
+}
 </style>

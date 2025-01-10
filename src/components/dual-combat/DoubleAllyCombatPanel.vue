@@ -1,38 +1,43 @@
 <template>
-  <div class="row">
-    <div class="col-sm" v-for="(slot, index) in this.data.selected_pokemon" :key="index">
-        <PokemonPanel :pokemon="this.data.team[slot]" team="you"/>
-    </div>
-    <div class="col-sm">
-      <PokemonTeamList @pokemonSelected="selectPokemon" :data="this.data" team="you"/>
-    </div>
-  </div>
-  <div class="row" style="margin-top:20px">
-    <div class="col-sm">
-      <div class="row row-cols-2" v-if="this.selectedPokemon">
-        <div class="col" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
-          <MultiMovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move" v-if="move"/>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm"></div>
-  </div>
+  <v-row>
+    <v-col sm v-for="(slot, index) in this.data.selected_pokemon" :key="index">
+      <PokemonPanel :pokemon="this.data.team[slot]" team="you"/>
+    </v-col>
+    <v-col sm></v-col>
+    <v-col sm>
+      <PokemonTeamList @pokemonSelected="selectPokemon" team="you" :data="this.data"/>
+    </v-col>
+  </v-row>
+  <v-row class="mt-4">
+    <v-col sm cols="12">
+      <v-row v-if="this.selectedPokemon">
+        <v-col cols="6" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
+          <MovementCard :pokemon="this.selectedPokemon" :enemy_data="enemy_data" :movement="move" v-if="move"/>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col sm cols="12"></v-col>
+  </v-row>
 </template>
 
 <script>
 import PokemonPanel from '@/components/basic-comps/PokemonPanel'
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
-import MultiMovementCard from '@/components/basic-comps/MultiMovementCard'
+import MovementCard from '@/components/basic-comps/MovementCard'
 
 export default {
   name: "CombatPanel",
   components: {
     PokemonTeamList,
     PokemonPanel,
-    MultiMovementCard
+    MovementCard
   },
   props: {
     data: {
+      type: Object,
+      required: true
+    },
+    enemy_data: {
       type: Object,
       required: true
     }

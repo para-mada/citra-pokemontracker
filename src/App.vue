@@ -1,26 +1,24 @@
 <template>
-  <div class="container-fluid">
-    <div v-if="gameData && gameData.combat_info.combat_type === 'OFF'">
-      <div class="row" style="margin-top:20px"></div>
-      <div class="row" style="height: 1rem"></div>
+  <v-container fluid>
+    <div v-if="gameData && gameData.combat_info.combat_type === 'OFF'" class="row justify-content-center">
       <AllyCombatPanel :data="gameData.your_data"/>
     </div>
     <div v-if="gameData && gameData.combat_info.combat_type === 'NORMAL'">
-      <EnemyCombatPanel :data="gameData.enemy_data"/>
+      <EnemyCombatPanel :data="gameData.enemy_data" :enemy_data="gameData.your_data"/>
       <div class="row" style="height: 1rem"></div>
-      <AllyCombatPanel :data="gameData.your_data"/>
+      <AllyCombatPanel :data="gameData.your_data" :enemy_data="gameData.enemy_data"/>
     </div>
     <div v-if="gameData && gameData.combat_info.combat_type === 'DOUBLE'">
-      <DoubleEnemyCombatPanel :data="gameData.enemy_data"/>
+      <DoubleEnemyCombatPanel :data="gameData.enemy_data" :enemy_data="gameData.your_data"/>
       <div class="row" style="height: 1rem"></div>
-      <DoubleAllyCombatPanel :data="gameData.your_data"/>
+      <DoubleAllyCombatPanel :data="gameData.your_data" :enemy_data="gameData.enemy_data"/>
     </div>
     <div v-if="gameData && gameData.combat_info.combat_type === 'TRIPLE' && false">
-      <EnemyCombatPanel :data="gameData.enemy_data"/>
+      <EnemyCombatPanel :data="gameData.enemy_data" :enemy_data="gameData.your_data"/>
       <div class="row" style="height: 1rem"></div>
-      <AllyCombatPanel :data="gameData.your_data"/>
+      <AllyCombatPanel :data="gameData.your_data" :enemy_data="gameData.enemy_data"/>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -45,9 +43,7 @@ export default {
   },
   created() {
     window.electron.onDataReceived('updated_game_data', (event, data) => {
-        this.gameData = data;
-        console.log(this.gameData)
-        this.$forceUpdate();
+      this.gameData = data;
     })
     window.electron.startComms()
   }
@@ -65,10 +61,6 @@ export default {
 body {
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.img-thumbnail {
-  cursor: pointer;
 }
 
 * {
