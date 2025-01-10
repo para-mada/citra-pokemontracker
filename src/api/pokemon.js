@@ -1,11 +1,15 @@
 import struct from 'python-struct';
-import {decryptData} from "./CitraReader.js";
-import {STATICS_URL} from './poke-api.js'
-import {Movement} from "./movement.js";
+import {decryptData} from "./PokemonCrypt";
+import {STATICS_URL} from './poke-api'
+import {Movement} from "./movement";
 import {readFileSync} from 'fs'
 import path from "path";
 
-class Pokemon {
+export function validatePokemon(dex_number) {
+    return dex_number >= 1 && dex_number <= 808;
+}
+
+export class Pokemon {
     cleanNickData(nickElements) {
         let result = '';
         for (let char of nickElements) {
@@ -74,11 +78,6 @@ class Pokemon {
         let pokemon;
 
 
-        if (this.dex_number === 6) {
-            console.log('raw_data ', raw_data[0x14B])
-            console.log('data ', data[0x14B])
-        }
-
         try {
             if (this.dex_number in formdata) {
                 let form = formdata[this.dex_number][this.form];
@@ -100,8 +99,8 @@ class Pokemon {
             return {name: value.name.toLowerCase()}
         })
     }
-}
 
-export {
-    Pokemon
+    isAlive() {
+        return this.cur_hp >= 0;
+    }
 }

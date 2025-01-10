@@ -8,7 +8,7 @@ let STAT_DATA_OFFSET = 112
 let STAT_DATA_SIZE = 22
 
 export class RomData {
-    constructor(name, partyaddress, battlewildpartyadd, battlewildoppadd, battletrainerpartyadd, battletraineroppadd, curoppadd, wildppadd, trainerppadd, multippadd, mongap, badgeaddress) {
+    constructor(name, partyaddress, battlewildpartyadd, battlewildoppadd, battletrainerpartyadd, battletraineroppadd, curoppadd, wildppadd, trainerppadd, multippadd, mongap, badgeaddress, multi_combat_mongap) {
         this.name = name;
         this.partyAddress = partyaddress;
         this.battleWildPartyAddress = battlewildpartyadd;
@@ -21,6 +21,7 @@ export class RomData {
         this.multippadd = multippadd;
         this.mongap = mongap;
         this.badgeaddress = badgeaddress;
+        this.multiCombatMonGap = multi_combat_mongap;
     }
 }
 
@@ -37,6 +38,7 @@ export const XY = new RomData(
     136352016,
     580,
     147236512,
+    235568
 );
 export const ROZA = new RomData(
     'OmegaRuby/AlphaSapphire',

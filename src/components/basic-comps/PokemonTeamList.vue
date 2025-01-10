@@ -7,12 +7,12 @@
       Equipo Enemigo
     </div>
     <div class="row" style="padding: 10px;">
-      <div class="col" v-for="(pokemon, i) in party.team.slice(0,3)" :key="i">
+      <div class="col" v-for="(pokemon, i) in this.data.team.slice(0,3)" :key="i">
         <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
       </div>
     </div>
     <div class="row" style="padding: 10px; padding-top: 0px;">
-      <div class="col" v-for="(pokemon, i) in party.team.slice(3,6)" :key="i">
+      <div class="col" v-for="(pokemon, i) in this.data.team.slice(3,6)" :key="i">
         <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
       </div>
     </div>
@@ -29,6 +29,10 @@ export default {
     PokemonCard
   },
   props: {
+    data: {
+      type: Object,
+      required: true
+    },
     team: {
       type: String,
       required: true
@@ -47,17 +51,7 @@ export default {
     }
   },
   created() {
-    window.electron.onDataReceived('party_update', (event, data) => {
-      if (data.team === this.team) {
-        if (JSON.stringify(this.party.team[data.slot]) === JSON.stringify(data.pokemon)) return;
-        this.party.team[data.slot] = data.pokemon;
-      }
-    })
-    if (this.team === 'enemy') {
-      window.electron.onDataReceived('end_combat', () => {
-        this.party.team = [null, null, null, null, null, null];
-      })
-    }
+    console.log(this.data)
   },
   updated() {
     if (!this.party.team[0]) {

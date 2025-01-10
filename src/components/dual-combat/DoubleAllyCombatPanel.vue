@@ -1,18 +1,17 @@
 <template>
   <div class="row">
-    <div class="col-sm">
-      <PokemonPanel :pokemon="this.selectedPokemon" team="you"/>
+    <div class="col-sm" v-for="(slot, index) in this.data.selected_pokemon" :key="index">
+        <PokemonPanel :pokemon="this.data.team[slot]" team="you"/>
     </div>
-    <div class="col-sm"></div>
     <div class="col-sm">
-      <PokemonTeamList @pokemonSelected="selectPokemon" team="you" :data="this.data"/>
+      <PokemonTeamList @pokemonSelected="selectPokemon" :data="this.data" team="you"/>
     </div>
   </div>
   <div class="row" style="margin-top:20px">
     <div class="col-sm">
       <div class="row row-cols-2" v-if="this.selectedPokemon">
         <div class="col" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
-          <MovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move" v-if="move"/>
+          <MultiMovementCard :enemy="this.enemyPokemon" :pokemon="this.selectedPokemon" :movement="move" v-if="move"/>
         </div>
       </div>
     </div>
@@ -23,14 +22,14 @@
 <script>
 import PokemonPanel from '@/components/basic-comps/PokemonPanel'
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
-import MovementCard from '../basic-comps/MovementCard'
+import MultiMovementCard from '@/components/basic-comps/MultiMovementCard'
 
 export default {
   name: "CombatPanel",
   components: {
     PokemonTeamList,
     PokemonPanel,
-    MovementCard
+    MultiMovementCard
   },
   props: {
     data: {
