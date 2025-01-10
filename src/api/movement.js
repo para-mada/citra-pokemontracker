@@ -3,27 +3,27 @@ import path from "path";
 import struct from "python-struct";
 
 let FORCE_TYPE_ABILITIES = {
-    158: {
+    182: {
         name: 'Pixilate',
         forced_from: 'Normal',
         forced_type: 'Fairy'
     },
-    143: {
+    96: {
         name: 'Normalize',
         forced_from: '*',
         forced_type: 'Normal'
     },
-    3: {
+    184: {
         name: 'Aerilate',
         forced_from: 'Normal',
         forced_type: 'Flying'
     },
-    73: {
+    206: {
         name: 'Galvanize',
         forced_from: 'Normal',
         forced_type: 'Electric'
     },
-    181: {
+    174: {
         name: 'Refrigerate',
         forced_from: 'Normal',
         forced_type: 'Ice'
@@ -60,13 +60,15 @@ function Movement(ability, slot, id, pp, move_byte_data) {
     }
 
     let move_type = json_res.typename;
-    let forced_type = Object.keys(FORCE_TYPE_ABILITIES).includes(ability);
+    let forced_type = ability.toString() in FORCE_TYPE_ABILITIES;
 
     if (forced_type) {
         let ability_data = FORCE_TYPE_ABILITIES[ability];
         if (move_type === ability_data.forced_from) {
+            console.log("awa")
             move_type = ability_data.forced_type;
         } else if (ability_data.forced_from === '*') {
+            console.log("awa2")
             move_type = ability_data.forced_type;
         }
     }
@@ -79,7 +81,7 @@ function Movement(ability, slot, id, pp, move_byte_data) {
         current_pp: move_current_pp,
         move_name: json_res.movename,
         max_pp: json_res.movepp,
-        type: json_res.typename,
+        type: move_type,
         power: json_res.movepower,
         accuracy: json_res.moveaccuracy,
         category: json_res.movecategoryname,
