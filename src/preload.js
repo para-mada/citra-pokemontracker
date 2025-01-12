@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electron', {
     getStatic: (...directory) => [__static, directory.join('/')].join('/'),
 
     startComms: () => ipcRenderer.send('open_channel'),
+    obtainTeam: (data) => ipcRenderer.send('get_combat', data),
     onDataReceived: (channel, callback) => ipcRenderer.on(channel, callback)
 });

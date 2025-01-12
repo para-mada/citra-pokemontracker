@@ -50,7 +50,6 @@
     </span>
   </v-tooltip>
 </template>
-
 <script>
 
 function appearances(coverageTypes, enemyTypes) {
@@ -59,7 +58,8 @@ function appearances(coverageTypes, enemyTypes) {
 
 export default {
   name: "MovementCard",
-  components: [],
+  components: [
+  ],
   props: {
     pokemon: {
       type: Object,
@@ -74,20 +74,20 @@ export default {
       required: false
     },
   },
+  created() {
+  },
   methods: {
     multiplier(enemy) {
       if (!enemy) {
         return 1;
       }
 
-
       if (this.category === 'Status') {
         return 1;
       }
-
-      let doubles = appearances(this.movement.coverage.double_damage_to, enemy.types)
-      let halves = appearances(this.movement.coverage.half_damage_to, enemy.types)
-      let zeroes = appearances(this.movement.coverage.no_damage_to, enemy.types)
+      let doubles = appearances(this.movement.coverage_data.double_damage_to, enemy.types)
+      let halves = appearances(this.movement.coverage_data.half_damage_to, enemy.types)
+      let zeroes = appearances(this.movement.coverage_data.no_damage_to, enemy.types)
 
       let multiplier = 1;
       if (zeroes > 0) {

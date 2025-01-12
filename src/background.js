@@ -11,7 +11,8 @@ import fs from "fs";
 import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
-import {PokemonGame} from "./api/PokemonGame";
+import {GameData, CombatType, TeamOwner} from "./api/PokemonGame";
+import {getTeam} from "@/api/TournamentData";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -52,10 +53,9 @@ async function createWindow() {
     const win = new BrowserWindow({
         width: 1200,
         height: 873,
-        icon: './public/icons/icon.png',
-        title: `Mada Pokemon Tracker v${autoUpdater.currentVersion}`,
+        icon: './public/icons/tournament.png',
+        title: `Poke Mada Tournament`,
         autoHideMenuBar: true,
-        resizable: false,
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -72,22 +72,6 @@ async function createWindow() {
     } else {
         createProtocol('app')
         // Load the index.html when not in development
-        autoUpdater.checkForUpdates().then((res) => {
-            if (res && res.updateInfo.version) {
-                dialog.showMessageBox(win, {
-                    type: 'info',
-                    icon: nativeImage.createFromPath('./public/icon.png'),
-                    message: 'Nueva Version encontrada!',
-                    detail: `Una nueva version ${res.updateInfo.version} ha sido encontrada`,
-                    buttons: ['Close'],
-                    defaultId: 0
-                }).then(() => {
-                    res.downloadPromise.then(() => {
-                        app.quit();
-                    })
-                })
-            }
-        })
         await win.loadURL('app://./index.html')
     }
     return win
@@ -112,9 +96,9 @@ app.on('activate', () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
     let win = await createWindow();
-    const tomlConfig = loadTomlConfig(win);
-    config.util.extendDeep(config, tomlConfig);
-    let SOCKET_URL = config.get('app.websocket');
+    //const tomlConfig = loadTomlConfig(win);
+    //config.util.extendDeep(config, tomlConfig);
+    //let SOCKET_URL = config.get('app.websocket');
 
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
@@ -125,11 +109,32 @@ app.on('ready', async () => {
         }
     }
 
-    let game = new PokemonGame(XY, SOCKET_URL);
-    ipcMain.on('open_channel', (event) => {
-        game.alreadySent = null;
-        game.stop();
-        game.startComms(event);
+    //let game = new PokemonGame(XY);
+    ipcMain.on('get_combat', (event, data) => {
+        let ally = data.your_trainer;
+        let enemy = data.enemy_trainer;
+
+        let gameData = new GameData({
+            your_data: {
+                team: getTeam(ally),
+                owner: TeamOwner.YOU,
+                discovered_pokemons: [0, 1, 2, 3, 4, 5],
+                is_enemy: false
+            },
+            enemy_data: {
+                team: getTeam(enemy),
+                owner: TeamOwner.ENEMY,
+                discovered_pokemons: [0, 1, 2, 3, 4, 5],
+                is_enemy: true
+            },
+            combat_info: {
+                combat_type: CombatType.SHOWDOWN,
+                in_combat: true,
+                ally_selected: [null, null],
+                enemy_selected: [null, null]
+            }
+        })
+        event.reply('updated_game_data', gameData)
     });
     win.reload();
 })

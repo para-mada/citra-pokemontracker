@@ -8,19 +8,20 @@ let SLOT_DATA_SIZE = 332;
 let STAT_DATA_OFFSET = 112;
 let STAT_DATA_SIZE = 22;
 
-const CombatType = Object.freeze({
+export const CombatType = Object.freeze({
     OFF: "OFF",
     NORMAL: "NORMAL",
     DOUBLE: "DOUBLE",
-    TRIPLE: "TRIPLE"
+    TRIPLE: "TRIPLE",
+    SHOWDOWN: "SHOWDOWN"
 });
 
-const TeamOwner = Object.freeze({
+export const TeamOwner = Object.freeze({
     YOU: 'YOU',
     ENEMY: 'ENEMY'
 });
 
-class GameData {
+export class GameData {
     constructor(options) {
         this.communicating = false;
         this.combat_info = new CombatData(options.combat_info);

@@ -1,15 +1,15 @@
 <template>
   <v-card type="primary" class="mt-2" border>
     <v-alert :type="team === 'enemy' ? 'primary' : 'success'" class="p-0">
-      <v-card-title v-if="team === 'enemy'">
+      <span v-if="team === 'enemy'">
         Pokemon enemigo
-      </v-card-title>
-      <v-card-title v-if="team === 'you'">
+      </span>
+      <span v-if="team === 'you'">
         Pokemon atacando
-      </v-card-title>
+      </span>
     </v-alert>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="2">
         <v-row>
           <v-col>
             <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="cursor-pointer card-img-top" width="130" alt="">
@@ -24,7 +24,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="2">
         <v-alert :type="team === 'enemy' ? 'info' : 'success'" variant="tonal" class="pb-0 pt-0 mt-1">
           <template v-slot:prepend>
           </template>
@@ -34,7 +34,14 @@
         </v-alert>
         <p class="text-center font-weight-bold">{{ pokemon ? pokemon.species : '???' }}</p>
         <p class="text-center">{{ pokemon ? pokemon.types.map((v) => v.name).join("/") : '???' }}</p>
-        <v-btn color="teal accent-4" class="cursor-pointer" v-if="pokemon" @click="show_moves(pokemon)" text="movimientos"></v-btn>
+        <v-btn @click="deselect_pokemon()" v-if="pokemon" color="teal accent-4">Quitar</v-btn>
+      </v-col>
+      <v-col cols="8">
+        <v-row v-if="pokemon">
+          <v-col cols="6" v-for="(move, index) in pokemon.moves" :key="index">
+            <MovementCard :pokemon="pokemon" :enemy_data="enemy_data" :movement="move" v-if="move"/>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-card>
@@ -50,12 +57,14 @@
 
 <script>
 import VerticalPokemonTeamList from "@/components/basic-comps/VerticalPokemonTeamList";
+import MovementCard from "@/components/basic-comps/MovementCard";
 
 export default {
   name: "PokemonCard",
-  emits:['selected_pokemon', 'show_moves'],
+  emits:['selected_pokemon', 'show_moves', 'deselect_pokemon'],
   components: {
-    VerticalPokemonTeamList
+    VerticalPokemonTeamList,
+    MovementCard
   },
   props: {
     team: {
@@ -63,6 +72,10 @@ export default {
       required: true
     },
     team_data: {
+      type: Object,
+      required: true
+    },
+    enemy_data: {
       type: Object,
       required: true
     }
@@ -75,6 +88,10 @@ export default {
     },
     show_moves(pokemon) {
       this.$emit('show_moves', pokemon);
+    },
+    deselect_pokemon() {
+      this.pokemon = null;
+      this.$emit('deselect_pokemon')
     },
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);

@@ -15,12 +15,12 @@ module.exports = defineConfig({
     electronBuilder: {
       preload: 'src/preload.js',
       builderOptions: {
-        appId: 'com.paramada.poke-mada',
-        productName: 'PokeMada',
+        appId: 'com.paramada.poke-mada-tournament',
+        productName: 'PokeMadaTournament',
         win: {
           target: 'nsis',
         },
-        icon: 'public/icons/icon.png',
+        icon: 'public/icons/tournament.png',
         publish: ['github']
       }
     }

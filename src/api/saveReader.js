@@ -31,7 +31,5 @@ export const stopWatching = function (FILE_NAME) {
     try {
         fs.unwatchFile(FILE_NAME)
     } catch (e) {
-
-        console.log('file not read')
     }
 }

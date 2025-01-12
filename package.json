@@ -5,7 +5,7 @@
     "url": "https://www.para-mada.com"
   },
   "description": "This project is supposed to help you get help while playing",
-  "name": "poke-mada",
+  "name": "poke-mada-tournament",
   "version": "0.1.14",
   "private": true,
   "scripts": {

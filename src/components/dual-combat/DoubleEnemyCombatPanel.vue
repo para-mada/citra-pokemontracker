@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mt-4" v-if="false">
+  <v-row class="mt-4" v-if="true">
     <v-col sm>
       <v-row v-if="this.selectedPokemon">
         <v-col cols="6" v-for="(move, index) in this.selectedPokemon.moves" :key="index">
@@ -48,22 +48,8 @@ export default {
       enemyPokemon: null
     }
   },
-  created() {
-    window.electron.onDataReceived('selected_enemy', (event, data) => {
-      this.selectedPokemon = data.pokemon;
-    })
-
-    window.electron.onDataReceived('end_combat', () => {
-      this.selectedPokemon = null;
-      this.enemyPokemon = null;
-    })
-  },
   mounted() {
-    this.emitter.on('select-pokemon-ally', (pokemon) => {
-      this.enemyPokemon = pokemon;
-    });
-  },
-  methods: {}
+  }
 }
 </script>
 
