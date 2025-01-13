@@ -1,5 +1,6 @@
 'use strict'
 
+import { compareVersions } from 'compare-versions';
 import {app, BrowserWindow, dialog, ipcMain, nativeImage, protocol} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
@@ -72,8 +73,9 @@ async function createWindow() {
     } else {
         createProtocol('app')
         // Load the index.html when not in development
-        autoUpdater.checkForUpdates().then((res) => {
-            if (res && res.updateInfo.version) {
+        autoUpdater.checkForUpdatesAndNotify().then((res) => {
+            let is_updateVersion = compareVersions(autoUpdater.currentVersion.toString(), res.updateInfo.version.toString()) < 0;
+            if (res && is_updateVersion) {
                 dialog.showMessageBox(win, {
                     type: 'info',
                     icon: nativeImage.createFromPath('./public/icon.png'),
@@ -129,14 +131,12 @@ app.on('ready', async () => {
     ipcMain.on('open_channel', (event) => {
         if (client) {
             client.close()
-            stopWatching(config.get("app.save_file"))
         }
 
-        watchSave(HOST_URL, config.get("app.save_file"))
-        game.alreadySent = null;
         game.stop();
         game.startComms(event, HOST_URL);
     });
+    watchSave(HOST_URL, config.get("app.save_file"))
     win.reload();
 })
 

@@ -45,16 +45,13 @@ export default {
       game_data: null,
     }
   },
-  methods: {
-  },
   created() {
     window.electron.onDataReceived('updated_game_data', async (event, data) => {
       this.game_data = data;
       for (let slot = 0; slot < this.game_data.your_data.team.length; slot++) {
         let mote = this.game_data.your_data.team[slot].mote;
-        let coach_data = await fetch(`http://137.184.87.251:8000/coach_data/xshaf/${mote}`).then((res) => res.json()).catch(() => {})
+        let coach_data = await fetch(`http://137.184.87.251:8000/coach_data/xshaf/${mote}`).then((res) => res.json())
         if (coach_data) {
-          console.log(coach_data)
           this.game_data.your_data.team[slot].coach_data = coach_data;
         } else {
           this.game_data.your_data.team[slot].coach_data = {

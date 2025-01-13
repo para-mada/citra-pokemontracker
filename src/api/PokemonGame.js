@@ -316,6 +316,7 @@ export class PokemonGame {
     }
 
     stop() {
+        this.alreadySent = null;
         this.data.communicating = false;
     }
 }

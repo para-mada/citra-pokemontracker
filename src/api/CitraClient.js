@@ -14,6 +14,7 @@ let MAX_REQUEST_DATA_SIZE = 32
 class CitraClient {
     constructor() {
         this.socket = dgram.createSocket('udp4');  // Crear un socket UDP v4
+        this.socket.setMaxListeners(99);
     }
 
     _generateHeader(requestType, dataSize) {
@@ -76,6 +77,7 @@ class CitraClient {
                 const replyData = this._readAndValidateHeader(msg, requestId, 1);  // 1 = ReadMemory, 2 = WriteMemory
                 if (replyData) {
                     resolve(replyData);
+                    this.socket.removeListener('message', listener)
                 }
             }
             this.socket.once('message', listener);

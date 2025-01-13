@@ -1,11 +1,11 @@
 <template>
   <v-card type="primary" class="mt-2" border>
-    <v-alert :type="team === 'enemy' ? 'primary' : 'success'" class="p-0">
+    <v-alert :color="team === 'enemy' ? 'primary' : 'success'" class="p-0">
       <span v-if="team === 'enemy'">
-        PokemonTeamData enemigo
+        Pokemon enemigo
       </span>
       <span v-if="team === 'you'">
-        PokemonTeamData atacando
+        Pokemon atacando
       </span>
     </v-alert>
     <v-row class="mt-1">

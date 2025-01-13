@@ -29,7 +29,7 @@ let FORCE_TYPE_ABILITIES = {
         forced_type: 'Ice'
     }
 }
-function Movement(ability, slot, id, pp, move_byte_data) {
+function Movement(item_held, ability, slot, id, pp, move_byte_data) {
     if (id === 0) return;
 
     let move_current_pp = struct.unpack('B', move_byte_data.slice(14 * slot))[0];
