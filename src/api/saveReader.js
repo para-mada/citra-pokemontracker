@@ -14,7 +14,7 @@ export const watchSave = function (HOST_URL, FILE_NAME) {
     fs.watchFile(FILE_NAME, {
         bigint: true,
         persistent: false,
-        interval: 5000
+        interval: 2000
     }, () => {
         const formData = new FormData();
         formData.append('file', fs.createReadStream(FILE_NAME), {
