@@ -12,7 +12,13 @@
       <v-col cols="2">
         <v-row>
           <v-col>
-            <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top" width="130" alt="">
+            <v-tooltip location="top">
+              <template v-slot:activator="{props}">
+                <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top"
+                     width="130" alt="" v-bind="props">
+              </template>
+              <span v-if="pokemon && pokemon.coach_data" v-html="pokemon.coach_data.data.notes.replace('\\n', '<br/>')"/>
+            </v-tooltip>
           </v-col>
         </v-row>
         <v-row justify="end">
@@ -53,7 +59,7 @@ import SingleMovementCard from "@/components/basic-comps/SingleMovementCard";
 
 export default {
   name: "PokemonCard",
-  emits:[],
+  emits: [],
   components: {
     SingleMovementCard
   },

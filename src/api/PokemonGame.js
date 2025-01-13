@@ -3,6 +3,7 @@ import {InBattlePokemonData} from "@/api/InBattlePokemonData";
 import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import struct from "python-struct";
+import os from 'os'
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 332;
@@ -36,7 +37,7 @@ class GameData {
     }
 
     // eslint-disable-next-line no-unused-vars
-    async startComms(rom, ipc, pokemon_game) {
+    async startComms(rom, ipc, pokemon_game, host_url) {
         let citra = new CitraClient();
         try {
             // eslint-disable-next-line no-constant-condition
@@ -283,7 +284,7 @@ class CombatData {
 }
 
 export class PokemonGame {
-    constructor(rom, WEBSOCKET_URL) {
+    constructor(rom) {
         this.alreadySent = null;
         this.rom = rom;
         this.data = new GameData({
@@ -304,14 +305,13 @@ export class PokemonGame {
                 in_combat: false,
                 ally_selected: [],
                 enemy_selected: []
-            },
-            WEBSOCKET_URL: WEBSOCKET_URL
+            }
         });
     }
 
-    startComms(ipc) {
+    startComms(ipc, host_url) {
         this.data.communicating = true;
-        this.data.startComms(this.rom, ipc, this).catch(() => {
+        this.data.startComms(this.rom, ipc, this, host_url).catch(() => {
         })
     }
 

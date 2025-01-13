@@ -12,7 +12,14 @@
       <v-col cols="2">
         <v-row>
           <v-col>
-            <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top" width="130" alt="">
+            <v-tooltip location="top" max-width="400">
+              <template v-slot:activator="{props}">
+                <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top" width="130" alt="" v-bind="props">
+              </template>
+              <span v-if="pokemon && pokemon.coach_data">
+                {{ pokemon.coach_data.data.notes.replace('\n', '<>') }}
+              </span>
+            </v-tooltip>
           </v-col>
         </v-row>
         <v-row justify="end">

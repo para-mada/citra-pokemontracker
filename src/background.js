@@ -12,6 +12,7 @@ import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
 import {PokemonGame} from "./api/PokemonGame";
+import {stopWatching, watchSave} from "@/api/saveReader";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -25,7 +26,7 @@ function loadTomlConfig(win) {
         });
         let data = {
             app: {
-                websocket: 'ws://137.184.87.251:8000/',
+                host_url: '137.184.87.251:8000',
                 save_file: save_file[0]
             }
         }
@@ -113,7 +114,7 @@ app.on('ready', async () => {
     let win = await createWindow();
     const tomlConfig = loadTomlConfig(win);
     config.util.extendDeep(config, tomlConfig);
-    let SOCKET_URL = config.get('app.websocket');
+    let HOST_URL = config.get('app.host_url');
 
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
@@ -123,12 +124,18 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString())
         }
     }
-
-    let game = new PokemonGame(XY, SOCKET_URL);
+    let client = null;
+    let game = new PokemonGame(XY);
     ipcMain.on('open_channel', (event) => {
+        if (client) {
+            client.close()
+            stopWatching(config.get("app.save_file"))
+        }
+
+        watchSave(HOST_URL, config.get("app.save_file"))
         game.alreadySent = null;
         game.stop();
-        game.startComms(event);
+        game.startComms(event, HOST_URL);
     });
     win.reload();
 })
