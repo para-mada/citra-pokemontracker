@@ -68,6 +68,7 @@ class CitraClient {
                 readAddress += replyData.length;
             }
         }
+        this.socket.removeAllListeners('message')
         return result;
     }
 
@@ -77,7 +78,6 @@ class CitraClient {
                 const replyData = this._readAndValidateHeader(msg, requestId, 1);  // 1 = ReadMemory, 2 = WriteMemory
                 if (replyData) {
                     resolve(replyData);
-                    this.socket.removeListener('message', listener)
                 }
             }
             this.socket.once('message', listener);

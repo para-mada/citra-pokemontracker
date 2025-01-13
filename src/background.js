@@ -126,13 +126,8 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString())
         }
     }
-    let client = null;
     let game = new PokemonGame(XY);
     ipcMain.on('open_channel', (event) => {
-        if (client) {
-            client.close()
-        }
-
         game.stop();
         game.startComms(event, HOST_URL);
     });

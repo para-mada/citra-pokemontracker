@@ -1,5 +1,8 @@
 <template>
   <v-container fluid>
+    <v-row v-if="!game_data">
+
+    </v-row>
     <v-row v-if="game_data && game_data.combat_info.combat_type === 'OFF'">
       <v-col sm>
         <PokemonTeamList team="you" :data="game_data.your_data" :enemy_data="null"/>
