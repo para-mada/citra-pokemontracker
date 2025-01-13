@@ -17,7 +17,7 @@
                 <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top"
                      width="130" alt="" v-bind="props">
               </template>
-              <span v-if="pokemon && pokemon.coach_data" v-html="pokemon.coach_data.data.notes.replace('\\n', '<br/>')"/>
+              <span v-if="pokemon && pokemon.coach_data && pokemon.coach_data.data" v-html="pokemon.coach_data.data.notes.replace('\\n', '<br/>')"/>
             </v-tooltip>
           </v-col>
         </v-row>
