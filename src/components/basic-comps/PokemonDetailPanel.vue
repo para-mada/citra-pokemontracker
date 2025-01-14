@@ -1,3 +1,4 @@
+<!--suppress JSVoidFunctionReturnValueUsed -->
 <template>
   <v-card type="primary" class="mt-2" border>
     <v-alert type="success">
@@ -17,8 +18,13 @@
           <v-row>
             <v-spacer/>
             <v-col>
-              <v-img :src="`./assets/types/${type_name(type.name)}.png`" v-for="(type, i) in pokemon_types" :key="i"
-                     width="32" inline></v-img>
+              <v-row>
+                <v-spacer/>
+                <v-col>
+                  <v-img :src="`./assets/types/${type_name(type.name)}.png`" v-for="(type, i) in pokemon_types" :key="i"
+                         width="32" inline></v-img>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
         </v-col>
@@ -91,5 +97,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
