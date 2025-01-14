@@ -35,7 +35,7 @@
         </v-col>
       </v-row>
       <v-row v-if="enemy_data">
-        <v-col v-for="(enemy_slot, index) in this.enemy_data.selected_pokemon" :key="index" class="pr-0">
+        <v-col sm v-for="(enemy_slot, index) in this.enemy_data.selected_pokemon" :key="index" class="pr-0">
           <div v-if="this.multiplier(enemy_data.team[enemy_slot]) !== 1">
             <v-img :src="enemy_data.team[enemy_slot].sprite_url" width="64" aspect-ratio="1/1"></v-img>
             <v-badge

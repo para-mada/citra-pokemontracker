@@ -1,6 +1,6 @@
 'use strict'
 
-import { compareVersions } from 'compare-versions';
+import {compareVersions} from 'compare-versions';
 import {app, BrowserWindow, dialog, ipcMain, nativeImage, protocol} from 'electron'
 import {createProtocol} from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, {VUEJS3_DEVTOOLS} from 'electron-devtools-installer'
@@ -13,7 +13,7 @@ import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
 import {PokemonGame} from "./api/PokemonGame";
-import {watchSave} from "@/api/saveReader";
+import {getSaveName} from "@/api/saveReader";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -27,7 +27,6 @@ function loadTomlConfig(win) {
         });
         let data = {
             app: {
-                host_url: 'https://pokemon.para-mada.com',
                 save_file: save_file[0]
             }
         }
@@ -116,7 +115,7 @@ app.on('ready', async () => {
     let win = await createWindow();
     const tomlConfig = loadTomlConfig(win);
     config.util.extendDeep(config, tomlConfig);
-    let HOST_URL = config.get('app.host_url');
+    let SAVE_FILE_PATH = config.get("app.save_file");
 
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
@@ -126,12 +125,14 @@ app.on('ready', async () => {
             console.error('Vue Devtools failed to install:', e.toString())
         }
     }
+
+
     let game = new PokemonGame(XY);
-    ipcMain.on('open_channel', (event) => {
+    ipcMain.on('open_channel', (ipc) => {
         game.stop();
-        game.startComms(event, HOST_URL);
+        game.startComms(ipc, SAVE_FILE_PATH);
     });
-    watchSave(HOST_URL, config.get("app.save_file"))
+
     win.reload();
 })
 
