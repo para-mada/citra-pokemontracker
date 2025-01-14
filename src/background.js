@@ -71,24 +71,24 @@ async function createWindow() {
         await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
         //if (!process.env.IS_TEST) win.webContents.openDevTools()
     } else {
+        let new_version = null;
         createProtocol('app')
         // Load the index.html when not in development
         autoUpdater.checkForUpdatesAndNotify().then((res) => {
             let is_updateVersion = compareVersions(autoUpdater.currentVersion.toString(), res.updateInfo.version.toString()) < 0;
             if (res && is_updateVersion) {
-                dialog.showMessageBox(win, {
-                    type: 'info',
-                    icon: nativeImage.createFromPath('./public/icon.png'),
-                    message: 'Nueva Version encontrada!',
-                    detail: `Una nueva version ${res.updateInfo.version} ha sido encontrada`,
-                    buttons: ['Close'],
-                    defaultId: 0
-                }).then(() => {
-                    res.downloadPromise.then(() => {
-                        app.quit();
-                    })
+                new_version = res.updateInfo.version.toString();
+                res.downloadPromise.then(() => {
+                    app.quit();
                 })
             }
+        })
+
+        autoUpdater.on('download-progress', (progress_object) => {
+            win.webContents.send('update-progress', {
+                progress: progress_object.percent,
+                version: new_version
+            });
         })
         await win.loadURL('app://./index.html')
     }

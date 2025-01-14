@@ -24,6 +24,24 @@
       <AllyCombatPanel :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
     </v-row>
   </v-container>
+  <v-dialog v-model="update_dialog" persistent max-width="500">
+    <v-card>
+      <template v-slot:title>
+        <h3>Nueva version {{update_data.version}} encontrada!</h3>
+      </template>
+      <template v-slot:text>
+        <p>Descargando actualizacion {{update_data.version}}</p>
+        <v-progress-linear :model-value="update_data.progress" striped height="25">
+          <template v-slot:default="{ value }">
+            <strong>{{ Math.ceil(value) }}%</strong>
+          </template>
+        </v-progress-linear>
+      </template>
+      <template v-slot:actions>
+        <v-btn @click="update_dialog = false" v-if="update_data.progress === 100">Cerrar</v-btn>
+      </template>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -46,6 +64,11 @@ export default {
   data() {
     return {
       game_data: null,
+      update_dialog: false,
+      update_data: {
+        progress: 69,
+        version: '-1'
+      }
     }
   },
   created() {
@@ -64,6 +87,12 @@ export default {
           }
         }
       }
+    });
+    window.electron.onDataReceived('update-progress', (event, data) => {
+      if (!this.update_dialog) {
+        this.update_dialog = true;
+      }
+      this.update_data = data;
     })
     window.electron.startComms()
   }
