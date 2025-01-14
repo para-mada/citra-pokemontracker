@@ -13,7 +13,7 @@ import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
 import {PokemonGame} from "./api/PokemonGame";
-import {stopWatching, watchSave} from "@/api/saveReader";
+import {watchSave} from "@/api/saveReader";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -27,7 +27,7 @@ function loadTomlConfig(win) {
         });
         let data = {
             app: {
-                host_url: '137.184.87.251:8000',
+                host_url: 'https://pokemon.para-mada.com',
                 save_file: save_file[0]
             }
         }

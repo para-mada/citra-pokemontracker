@@ -61,6 +61,7 @@ class GameData {
                 }
 
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
+                    console.log(this.combat_info)
                     ipc.reply('updated_game_data', this);
                     pokemon_game.alreadySent = JSON.stringify(this);
                 }
@@ -88,7 +89,6 @@ class TeamData {
         for (let slot of Object.keys(this.team)) {
             let pokemon = this.team[slot]
             if (!pokemon) {
-                this.discovered_pokemons.push(slot);
                 return slot;
             }
             if (dex_number === pokemon.dex_number) {
@@ -106,6 +106,10 @@ class TeamData {
     async startComms(rom, game_data, addresses, selected_pokemon_dex, citra) {
         await this.loadPokemonData(rom, game_data, addresses, citra);
         this.selected_pokemon = [];
+        if (!game_data.combat_info.in_combat) {
+            return;
+        }
+
         for (const dex_number of selected_pokemon_dex) {
             let slot = this.findSelectedMon(dex_number);
             this.selected_pokemon.push(slot)

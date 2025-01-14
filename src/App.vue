@@ -53,7 +53,7 @@ export default {
       this.game_data = data;
       for (let slot = 0; slot < this.game_data.your_data.team.length; slot++) {
         let mote = this.game_data.your_data.team[slot].mote;
-        let coach_data = await fetch(`http://137.184.87.251:8000/coach_data/xshaf/${mote}`).then((res) => res.json())
+        let coach_data = await fetch(`https://pokemon.para-mada.com/coach_data/xshaf/${mote}`).then((res) => res.json())
         if (coach_data) {
           this.game_data.your_data.team[slot].coach_data = coach_data;
         } else {
