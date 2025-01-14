@@ -23,11 +23,8 @@
           </v-row>
         </v-col>
         <v-col cols="6">
-          <v-alert type="info" variant="tonal" class="pb-0 pt-0 mt-1">
+          <v-alert type="info" variant="tonal" class="pb-0 pt-0 mt-1" :text="pokemon.mote">
             <template v-slot:prepend></template>
-            <template v-slot:text>
-              {{ pokemon.mote }}
-            </template>
           </v-alert>
           <p class="text-left font-weight-bold">{{ pokemon.species }}</p>
           <p class="text-left">Nivel <strong>{{ pokemon.level }}</strong></p>

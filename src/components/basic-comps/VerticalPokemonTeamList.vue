@@ -12,7 +12,7 @@
     </v-alert>
     <v-row class="pa-1">
       <div v-for="(pokemon, i) in this.data.team" :key="i">
-        <v-col sm cols="4">
+        <v-col sm cols="6">
           <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
         </v-col>
       </div>
