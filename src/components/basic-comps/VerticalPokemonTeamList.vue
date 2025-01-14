@@ -3,19 +3,18 @@
     <v-alert :type="team === 'enemy' ? 'primary' : 'success'" class="p-0">
       <template v-slot:prepend>
       </template>
-      <span v-if="team === 'enemy'" >
+      <span v-if="team === 'enemy'">
         Equipo Enemigo
       </span>
-      <span v-if="team === 'you'" >
+      <span v-if="team === 'you'">
         Tu Equipo
       </span>
     </v-alert>
     <v-row class="pa-1">
-      <div v-for="(pokemon, i) in this.data.team" :key="i">
-        <v-col sm cols="6">
-          <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
-        </v-col>
-      </div>
+      <v-col cols="6" v-for="(pokemon, i) in this.data.team" :key="i">
+        <PokemonCard :pokemon="pokemon" @click="selectPokemon(pokemon)"/>
+        <v-spacer v-if="i % 2=== 0"/>
+      </v-col>
     </v-row>
   </v-card>
 </template>

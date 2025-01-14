@@ -3,15 +3,10 @@
     <v-app-bar scroll-behavior="collapse" :color="this.inlive ? 'teal-darken-4' : 'purple-darken-4'" elevation="4">
       <v-app-bar-title @click="disable_displays()"><span v-if="!inlive">COACH VIEW</span><span v-if="inlive">{{ trainer_name }}</span></v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn :variant="displays.combat ? 'tonal' : 'text'" @click="switch_display('combat')" :disabled="!inlive">Combates</v-btn>
-      <v-tooltip location="bottom">
-        <template v-slot:activator="{props}">
-          <v-btn v-bind="props" class="disabled">Cajas</v-btn>
-        </template>
-        WIP
-      </v-tooltip>
+      <v-btn :variant="displays.combat ? 'tonal' : 'text'" @click="switch_display('combat')" v-if="inlive">Combates</v-btn>
+      <v-btn :variant="displays.boxes ? 'tonal' : 'text'" @click="switch_display('boxes')" >Cajas</v-btn>
       <v-btn :variant="displays.team ? 'tonal' : 'text'" @click="switch_display('team')">Equipo</v-btn>
-      <v-tooltip location="bottom">
+      <v-tooltip location="bottom" v-if="!inlive">
         <template v-slot:activator="{props}">
           <v-btn v-bind="props" class="disabled">Notas</v-btn>
         </template>

@@ -65,6 +65,7 @@ class GameData {
                 for (let slot = 0; slot < your_team_length; slot++) {
                     let pokemon = this.your_data.team[slot];
                     if (!pokemon) continue;
+                    pokemon.discovered = true;
                     pokemon.battle_data = this.combat_info.ally_battle_data[slot];
                 }
 
@@ -72,6 +73,10 @@ class GameData {
                 for (let slot = 0; slot < enemy_team_length; slot++) {
                     let pokemon = this.enemy_data.team[slot];
                     if (!pokemon) continue;
+                    console.log(this.enemy_data.selected_pokemon)
+                    if (slot in this.enemy_data.discovered_pokemons) {
+                        pokemon.discovered = true;
+                    }
                     pokemon.battle_data = this.combat_info.enemy_battle_data[slot];
                 }
 
