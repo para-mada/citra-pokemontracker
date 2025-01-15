@@ -3,6 +3,7 @@
     <v-app-bar scroll-behavior="collapse" :color="this.inlive ? 'teal-darken-4' : 'purple-darken-4'" elevation="4">
       <v-app-bar-title @click="disable_displays()"><span v-if="!inlive">COACH VIEW</span><span v-if="inlive">{{ trainer_name }}</span></v-app-bar-title>
       <v-spacer></v-spacer>
+      <v-btn variant="text" @click="download_save" v-if="!inlive">Descargar Save</v-btn>
       <v-btn :variant="displays.combat ? 'tonal' : 'text'" @click="switch_display('combat')" v-if="inlive">Combates</v-btn>
       <v-btn :variant="displays.boxes ? 'tonal' : 'text'" @click="switch_display('boxes')" >Cajas</v-btn>
       <v-btn :variant="displays.team ? 'tonal' : 'text'" @click="switch_display('team')">Equipo</v-btn>
@@ -70,6 +71,9 @@ export default {
     }
   },
   methods: {
+    download_save() {
+      window.electron.downloadSave(this.trainer_name)
+    },
     switch_display(display_name) {
       for (const display in this.displays) {
         this.displays[display] = display === display_name;

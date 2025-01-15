@@ -13,6 +13,7 @@ import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
 import {PokemonGame} from "./api/PokemonGame";
+import {session} from "@/store";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -134,6 +135,13 @@ app.on('ready', async () => {
         game.stop();
         game.startComms(ipc, SAVE_FILE_PATH);
     });
+
+    ipcMain.on('download_save', (ipc, trainer_name) => {
+        session.get(`/saves/${trainer_name}`).then((response) => {
+            const downloadFolder = process.env.USERPROFILE + "/Downloads";
+            fs.writeFileSync(downloadFolder + '/' + trainer_name, response.data)
+        })
+    })
 
     win.reload();
 })
