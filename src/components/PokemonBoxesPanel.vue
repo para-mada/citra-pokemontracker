@@ -16,31 +16,48 @@
                         v-model="selected_box"></v-select>
             </v-col>
             <v-col>
-              <v-btn>Ver Equipo</v-btn>
+              <v-btn @click="pokemon_team_display = true; selected_pokemon = null">Ver Equipo</v-btn>
             </v-col>
             <v-col>
               <span>Caja de {{ box_data.trainer_name }}</span>
             </v-col>
           </v-row>
-          <v-row v-for="(box_row, index) in box_data.box" :key="index">
-            <v-col cols="2" v-for="(pokemon, slot) in box_row" :key="slot">
-              <PokemonCard :pokemon="pokemon"/>
+          <v-row>
+            <v-col cols="2" v-for="(pokemon, index) in box_data.boxes[this.selected_box]" :key="index">
+              <PokemonCard :pokemon="pokemon" @click="select_pokemon"/>
             </v-col>
           </v-row>
         </div>
       </v-card>
     </v-col>
   </v-row>
+  <v-dialog v-model="display_box_detail">
+    <PokemonDetailPanel :pokemon="selected_pokemon"/>
+  </v-dialog>
+  <v-dialog v-model="pokemon_team_display">
+    <v-row>
+      <v-col cols="3">
+        <VerticalPokemonTeamList team="you" :data="{team: box_data.team}" @select_pokemon="select_pokemon_team"/>
+      </v-col>
+      <v-col>
+        <PokemonDetailPanel v-if="selected_pokemon" :pokemon="selected_pokemon"/>
+      </v-col>
+    </v-row>
+  </v-dialog>
 </template>
 
 <script>
 import {session} from '@/store'
 import PokemonCard from "@/components/basic-comps/PokemonCard";
+import PokemonDetailPanel from "@/components/basic-comps/PokemonDetailPanel";
+import VerticalPokemonTeamList from "@/components/basic-comps/VerticalPokemonTeamList";
 
 export default {
   name: "PokemonTeamPanel",
   components: {
-    PokemonCard
+    VerticalPokemonTeamList,
+    PokemonCard,
+    PokemonDetailPanel
   },
   props: {
     trainer_name: {
@@ -50,17 +67,13 @@ export default {
   },
   data() {
     return {
-      selected_box: 1,
+      display_box_detail: false,
+      pokemon_team_display: false,
+      selected_box: 0,
       selected_pokemon: null,
       box_data: {
-        team: [null,null,null,null,null,null],
-        box: [
-          [null, null, null, null, null, null],
-          [null, null, null, null, null, null],
-          [null, null, null, null, null, null],
-          [null, null, null, null, null, null],
-          [null, null, null, null, null, null]
-        ]
+        team: [null, null, null, null, null, null],
+        boxes: []
       }
     }
   },
@@ -68,7 +81,7 @@ export default {
     boxes() {
       return [...Array(31).keys()].map((value) => {
         return {
-          _id: value + 1,
+          _id: value,
           name: `PC #${value + 1}`
         }
       })
@@ -77,18 +90,18 @@ export default {
   created() {
     setInterval(() => {
       // eslint-disable-next-line no-constant-condition
-      session.get(`/updated_save/${this.trainer_name}`).then((json_res) => {
-        if (json_res.status === 200) {
-          session.get(`/boxes/${this.trainer_name}`).then((data) => {
-            console.log(data)
-          }).catch(() => {
-          })
-        }
+      session.get(`/boxes/${this.trainer_name}`).then((data) => {
+        this.box_data = data.data
+      }).catch(() => {
       })
     }, 500)
   },
   methods: {
     select_pokemon(pokemon) {
+      this.display_box_detail = true;
+      this.selected_pokemon = pokemon;
+    },
+    select_pokemon_team(pokemon) {
       this.selected_pokemon = pokemon;
     },
   },
