@@ -19,7 +19,7 @@
               <v-btn @click="pokemon_team_display = true; selected_pokemon = null">Ver Equipo</v-btn>
             </v-col>
             <v-col>
-              <span>Caja de {{ box_data.trainer_name }}</span>
+              <span>Caja de {{ trainer_name }}</span>
             </v-col>
           </v-row>
           <v-row>
