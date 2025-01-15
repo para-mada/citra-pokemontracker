@@ -12,6 +12,7 @@
 <script>
 import VerticalPokemonTeamList from '@/components/basic-comps/VerticalPokemonTeamList';
 import PokemonDetailPanel from '@/components/basic-comps/PokemonDetailPanel';
+import {session} from "@/store";
 
 export default {
   name: "PokemonTeamPanel",
@@ -39,11 +40,12 @@ export default {
     },
   },
   created() {
-    fetch(`https://pokemon.para-mada.com/team_for_coach/${this.trainer_name}`).then((res) => res.json()).then((json_res) => {
-      console.log(json_res)
-      this.team_data.team = json_res.team;
-    }).catch(() => {
-    })
+    setInterval(() => {
+      session.get(`/team_for_coach/${this.trainer_name}`).then((json_res) => {
+        this.team_data.team = json_res.data.team;
+      }).catch(() => {
+      })
+    }, 500)
   }
 }
 </script>

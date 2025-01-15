@@ -53,6 +53,7 @@ export default {
       selected_box: 1,
       selected_pokemon: null,
       box_data: {
+        team: [null,null,null,null,null,null],
         box: [
           [null, null, null, null, null, null],
           [null, null, null, null, null, null],
@@ -80,6 +81,7 @@ export default {
         if (json_res.status === 200) {
           session.get(`/boxes/${this.trainer_name}`).then((data) => {
             console.log(data)
+          }).catch(() => {
           })
         }
       })
