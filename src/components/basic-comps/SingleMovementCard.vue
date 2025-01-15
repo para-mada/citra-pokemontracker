@@ -63,7 +63,14 @@ export default {
       required: false
     },
   },
-  methods: {},
+  methods: {
+    pokemon_types(pokemon) {
+      if (pokemon.battle_data) {
+        return pokemon.battle_data.types;
+      }
+      return pokemon.types;
+    }
+  },
   computed: {
     multiplier() {
       if (!this.enemy_data) {
@@ -79,9 +86,9 @@ export default {
         return 1;
       }
 
-      let doubles = appearances(this.movement.coverage_data.double_damage_to, enemy.types)
-      let halves = appearances(this.movement.coverage_data.half_damage_to, enemy.types)
-      let zeroes = appearances(this.movement.coverage_data.no_damage_to, enemy.types)
+      let doubles = appearances(this.movement.coverage_data.double_damage_to, this.pokemon_types(enemy))
+      let halves = appearances(this.movement.coverage_data.half_damage_to, this.pokemon_types(enemy))
+      let zeroes = appearances(this.movement.coverage_data.no_damage_to, this.pokemon_types(enemy))
 
       let multiplier = 1;
       if (zeroes > 0) {

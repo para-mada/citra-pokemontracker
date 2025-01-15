@@ -2,7 +2,7 @@
   <v-row>
     <v-col cols="12">
       <v-card border class="mt-2">
-        <v-alert :type="team === 'enemy' ? 'primary' : 'success'" class="p-0">
+        <v-alert type="success" class="p-0">
           <template v-slot:prepend>
           </template>
           <span>
@@ -12,7 +12,8 @@
         <div class="pa-4">
           <v-row justify="space-between">
             <v-col>
-              <v-select label="Cajas" :items="boxes" item-value="_id" item-title="name" v-model="selected_box"></v-select>
+              <v-select label="Cajas" :items="boxes" item-value="_id" item-title="name"
+                        v-model="selected_box"></v-select>
             </v-col>
             <v-col>
               <v-btn>Ver Equipo</v-btn>
@@ -33,6 +34,7 @@
 </template>
 
 <script>
+import {session} from '@/store'
 import PokemonCard from "@/components/basic-comps/PokemonCard";
 
 export default {
@@ -72,10 +74,16 @@ export default {
     }
   },
   created() {
-    let ws = new WebSocket(`ws://localhost:8000/boxes/${this.trainer_name}`);
-    ws.on('update_boxes', (data) => {
-      console.log(data)
-    })
+    setInterval(() => {
+      // eslint-disable-next-line no-constant-condition
+      session.get(`/updated_save/${this.trainer_name}`).then((json_res) => {
+        if (json_res.status === 200) {
+          session.get(`/boxes/${this.trainer_name}`).then((data) => {
+            console.log(data)
+          })
+        }
+      })
+    }, 500)
   },
   methods: {
     select_pokemon(pokemon) {

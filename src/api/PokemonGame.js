@@ -29,15 +29,6 @@ const TeamOwner = Object.freeze({
     ENEMY: 'ENEMY'
 });
 
-
-let HOST_URL;
-const DEV = false;
-if (DEV) {
-    HOST_URL = 'http://localhost:8000';
-} else {
-    HOST_URL = 'https://pokemon.para-mada.com';
-}
-
 class GameData {
     constructor(options) {
         this.is_communicating = false;
@@ -53,7 +44,7 @@ class GameData {
             await citra.readMemory(0,1).then(() => {
                 trainer_name = getSaveName(save_file_path);
                 ipc.reply('trainer_name', trainer_name);
-                watchSave(HOST_URL, save_file_path)
+                watchSave(save_file_path)
             });
 
             while (this.is_communicating) {
@@ -73,8 +64,7 @@ class GameData {
                 for (let slot = 0; slot < enemy_team_length; slot++) {
                     let pokemon = this.enemy_data.team[slot];
                     if (!pokemon) continue;
-                    console.log(this.enemy_data.selected_pokemon)
-                    if (slot in this.enemy_data.discovered_pokemons) {
+                    if (this.enemy_data.discovered_pokemons.includes(slot.toString())) {
                         pokemon.discovered = true;
                     }
                     pokemon.battle_data = this.combat_info.enemy_battle_data[slot];
@@ -110,16 +100,15 @@ class TeamData {
     }
 
     findSelectedMon(dex_number) {
-        for (let slot of Object.keys(this.team)) {
+        for (let slot in Object.keys(this.team)) {
             let pokemon = this.team[slot]
             if (!pokemon) {
-                return slot;
+                continue;
             }
+
             if (dex_number === pokemon.dex_number) {
-                if (slot && slot in this.discovered_pokemons) {
-                    if (this.team[slot].isAlive()) {
-                        return slot;
-                    }
+                if (slot && this.discovered_pokemons.includes(slot.toString())) {
+                    return slot;
                 }
                 this.discovered_pokemons.push(slot);
                 return slot;
@@ -133,6 +122,7 @@ class TeamData {
         if (!game_data.combat_info.in_combat) {
             return;
         }
+
 
         for (const dex_number of selected_pokemon_dex) {
             let slot = this.findSelectedMon(dex_number);
