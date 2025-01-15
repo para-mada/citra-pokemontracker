@@ -72,22 +72,6 @@ async function createWindow() {
         let new_version = null;
         createProtocol('app')
         // Load the index.html when not in development
-        autoUpdater.checkForUpdatesAndNotify().then((res) => {
-            let is_updateVersion = compareVersions(autoUpdater.currentVersion.toString(), res.updateInfo.version.toString()) < 0;
-            if (res && is_updateVersion) {
-                new_version = res.updateInfo.version.toString();
-                res.downloadPromise.then(() => {
-                    app.quit();
-                })
-            }
-        })
-
-        autoUpdater.on('download-progress', (progress_object) => {
-            win.webContents.send('update-progress', {
-                progress: progress_object.percent,
-                version: new_version
-            });
-        })
         await win.loadURL('app://./index.html')
     }
     return win
@@ -128,6 +112,25 @@ app.on('ready', async () => {
 
     let game = new PokemonGame(XY);
     ipcMain.on('open_channel', (ipc) => {
+        if (!process.env.WEBPACK_DEV_SERVER_URL) {
+            let new_version = null;
+            autoUpdater.checkForUpdatesAndNotify().then((res) => {
+                let is_updateVersion = compareVersions(autoUpdater.currentVersion.toString(), res.updateInfo.version.toString()) < 0;
+                if (res && is_updateVersion) {
+                    new_version = res.updateInfo.version.toString();
+                    res.downloadPromise.then(() => {
+                        app.quit();
+                    })
+                }
+            });
+
+            autoUpdater.on('download-progress', (progress_object) => {
+                win.webContents.send('update-progress', {
+                    progress: progress_object.percent,
+                    version: new_version
+                });
+            });
+        }
         game.stop();
         game.startComms(ipc, SAVE_FILE_PATH);
     });

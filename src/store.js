@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 let HOST_URL;
-const DEV = true;
+const DEV = false;
 if (DEV) {
     HOST_URL = 'http://localhost:8000';
 } else {
