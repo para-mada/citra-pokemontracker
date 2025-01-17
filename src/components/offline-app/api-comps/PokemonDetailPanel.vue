@@ -34,7 +34,7 @@
           </v-alert>
           <p class="text-left font-weight-bold">{{ pokemon.species }}</p>
           <p class="text-left">Nivel <strong>{{ pokemon.level }}</strong></p>
-          <p class="text-left">HP: <strong>{{ pokemon.cur_hp }}/{{ pokemon.maxhp }}</strong></p>
+          <p class="text-left">HP: <strong>{{ pokemon.cur_hp }}/{{ pokemon.max_hp }}</strong></p>
           <p class="text-left">Ataque: <strong>{{ pokemon.attack }}</strong></p>
           <p class="text-left">Defensa: <strong>{{ pokemon.defense }}</strong></p>
           <p class="text-left">Ataque Especial: <strong>{{ pokemon.special_attack }}</strong></p>

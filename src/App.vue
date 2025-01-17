@@ -8,6 +8,7 @@
 <script>
 import MainAppComponent from '@/components/offline-app/MainAppComponent';
 import UpdateDialog from '@/components/offline-app/UpdateDialog';
+// import {session} from "@/store";
 
 
 export default {
@@ -30,19 +31,25 @@ export default {
   created() {
     window.electron.onDataReceived('updated_game_data', async (event, data) => {
       this.game_data = data;
-      for (let slot = 0; slot < this.game_data.your_data.team.length; slot++) {
-        let mote = this.game_data.your_data.team[slot].mote;
-        let coach_data = await fetch(`https://pokemon.para-mada.com/coach_data/${this.trainer_name}/${mote}`).then((res) => res.json())
-        if (coach_data) {
-          this.game_data.your_data.team[slot].coach_data = coach_data;
-        } else {
-          this.game_data.your_data.team[slot].coach_data = {
-            data: {
-              notes: ''
-            }
-          }
-        }
-      }
+      console.log(data)
+      // for (let slot = 0; slot < this.game_data.your_data.team.length; slot++) {
+      //   let mote = this.game_data.your_data.team[slot].mote;
+      //   await session.get(`/notes/${this.trainer_name}/${mote}/`).then((response) => {
+      //     if (response.status === 200) {
+      //       let coach_data = response.data
+      //       if (coach_data) {
+      //         this.game_data.your_data.team[slot].coach_data = coach_data;
+      //       } else {
+      //         this.game_data.your_data.team[slot].coach_data = {
+      //           data: {
+      //             notes: ''
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }).catch(()=>{
+      //   })
+      // }
     });
     window.electron.onDataReceived('update-progress', (event, data) => {
       if (!this.update_dialog) {

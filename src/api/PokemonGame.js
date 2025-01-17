@@ -73,13 +73,13 @@ class GameData {
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
                     ipc.reply('updated_game_data', this);
                     pokemon_game.alreadySent = JSON.stringify(this);
-                    await session.post(`/update_team/${trainer_name}/`, {
-                        data: {
-                            team: this.your_data.team
-                        }
-                    }).catch(()=> {
-                        console.log("error")
-                    })
+                    // await session.post(`/update_team/${trainer_name}/`, {
+                    //     data: {
+                    //         team: this.your_data.team
+                    //     }
+                    // }).catch(()=> {
+                    //     console.log("error")
+                    // })
                 }
             }
             // eslint-disable-next-line no-empty
@@ -274,7 +274,7 @@ class CombatData {
         } else if (validatePokemon(third_dex_number) || validatePokemon(fourth_dex_number)) {
             if (this.combat_env === CombatEnv.WILD) {
                 this.combat_type = CombatType.HORDE;
-                return [CombatType.DOUBLE, [first_dex_number], [second_dex_number, third_dex_number, fourth_dex_number]];
+                return [CombatType.HORDE, [first_dex_number], [second_dex_number, third_dex_number, fourth_dex_number]];
             } else {
                 this.combat_env = CombatEnv.MULTI;
                 return [CombatType.DOUBLE, [first_dex_number, third_dex_number], [second_dex_number, fourth_dex_number]];

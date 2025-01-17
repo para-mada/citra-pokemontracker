@@ -87,8 +87,15 @@ export default {
       }
     }
   },
-  computed: {},
+  updated() {
+    session.get('/api/trainers/list_trainers/').then((response) => {
+      this.trainers = response.data
+    });
+  },
   created() {
+    session.get('/api/trainers/list_trainers/').then((response) => {
+      this.trainers = response.data
+    });
     session.get(`/boxes/${this.selected_trainer}/`).then((response) => {
       this.box_data.boxes = response.data
     }).catch(() => {
@@ -97,9 +104,6 @@ export default {
       this.box_data.team = response.data.current_team.team
     }).catch(() => {
     })
-    session.get('/api/trainers/list_trainers/').then((response) => {
-      this.trainers = response.data
-    });
   },
   methods: {
     open_box() {

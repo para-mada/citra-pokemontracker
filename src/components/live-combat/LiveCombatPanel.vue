@@ -46,9 +46,8 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-    }
+  updated() {
+    console.log(this.game_data)
   }
 }
 </script>
