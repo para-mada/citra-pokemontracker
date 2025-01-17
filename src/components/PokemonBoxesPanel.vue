@@ -56,7 +56,7 @@
 
 <script>
 import {session} from '@/store'
-import PokemonCard from "@/components/basic-comps/PokemonCard";
+import PokemonCard from "@/components/offline-app/api-comps/PokemonCard";
 import PokemonDetailPanel from "@/components/offline-app/api-comps/PokemonDetailPanel";
 import VerticalPokemonTeamList from "@/components/offline-app/api-comps/VerticalPokemonTeamList";
 

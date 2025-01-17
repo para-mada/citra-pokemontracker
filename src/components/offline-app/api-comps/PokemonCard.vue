@@ -21,6 +21,9 @@ export default {
       required: false
     }
   },
+  updated() {
+    console.log(this.pokemon)
+  },
   data() {
     return {
       missingno: 'https://static.wikia.nocookie.net/bec6f033-936d-48c5-9c1e-7fb7207e28af'
