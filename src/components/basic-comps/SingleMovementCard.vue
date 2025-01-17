@@ -17,8 +17,8 @@
             <v-col sm>
               <v-badge bordered :content="category" color="secondary" inline></v-badge>
               <v-badge v-if="stab" color="success" content="STAB" bordered inline></v-badge>
-              <v-badge bordered :content="`x${this.multiplier}`" v-if="this.category !== 'Status'"
-                       :color="this.multiplier > 1 ? 'success' : 'danger'" inline></v-badge>
+              <v-badge bordered :content="`x${this.multiplier}`" v-if="this.category !== 'Status' && this.enemy_data"
+                       :color="this.multiplier > 1 ? 'success' : this.multiplier < 1 ? 'error' : 'info'" inline></v-badge>
             </v-col>
           </v-row>
         </template>
@@ -30,8 +30,8 @@
           {{ movement.flavor_text }}
         </v-col>
         <v-col cols="12">
-          <v-badge v-if="movement.power !== -1" color="danger" :content="`Power: ${movement.power}`" inline></v-badge>
-          <v-badge v-if="movement.power === -1" color="danger" content="Power: -" inline></v-badge>
+          <v-badge v-if="movement.power !== -1" color="error" :content="`Power: ${movement.power}`" inline></v-badge>
+          <v-badge v-if="movement.power === -1" color="error" content="Power: -" inline></v-badge>
           <v-badge v-if="movement.accuracy !== -1" color="info" :content="`Accuracy: ${movement.accuracy}%`" inline></v-badge>
           <v-badge v-if="movement.accuracy === -1" color="info" content="Accuracy: -" inline></v-badge>
         </v-col>

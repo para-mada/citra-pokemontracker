@@ -12,19 +12,27 @@
         <div class="pa-4">
           <v-row justify="space-between">
             <v-col>
-              <v-select label="Cajas" :items="boxes" item-value="_id" item-title="name"
+              <v-select label="Cajas" :items="this.box_data.boxes" item-value="box_number" item-title="box_identifier"
                         v-model="selected_box"></v-select>
             </v-col>
             <v-col>
               <v-btn @click="pokemon_team_display = true; selected_pokemon = null">Ver Equipo</v-btn>
             </v-col>
             <v-col>
-              <span>Caja de {{ trainer_name }}</span>
+              <v-select label="Entrenadores" :items="trainers" item-value="name" item-title="streamer_name"
+                        v-model="selected_trainer" @update:modelValue="open_box"></v-select>
             </v-col>
           </v-row>
-          <v-row>
-            <v-col cols="2" v-for="(pokemon, index) in box_data.boxes[this.selected_box]" :key="index">
-              <PokemonCard :pokemon="pokemon" @click="select_pokemon"/>
+          <v-row v-if="box_data.boxes[this.selected_box]">
+            <v-col cols="2" v-for="(slot, index) in [...Array(30)].keys()" :key="index"
+                   style="border: 1px solid #CACACACA">
+              <v-row>
+                <v-spacer></v-spacer>
+                <v-col>
+                  <PokemonCard :pokemon="get_slot(slot) ? get_slot(slot).pokemon : null" @click="select_pokemon"/>
+                </v-col>
+                <v-spacer></v-spacer>
+              </v-row>
             </v-col>
           </v-row>
         </div>
@@ -49,8 +57,8 @@
 <script>
 import {session} from '@/store'
 import PokemonCard from "@/components/basic-comps/PokemonCard";
-import PokemonDetailPanel from "@/components/basic-comps/PokemonDetailPanel";
-import VerticalPokemonTeamList from "@/components/basic-comps/VerticalPokemonTeamList";
+import PokemonDetailPanel from "@/components/offline-app/api-comps/PokemonDetailPanel";
+import VerticalPokemonTeamList from "@/components/offline-app/api-comps/VerticalPokemonTeamList";
 
 export default {
   name: "PokemonTeamPanel",
@@ -67,6 +75,8 @@ export default {
   },
   data() {
     return {
+      selected_trainer: this.trainer_name,
+      trainers: [],
       display_box_detail: false,
       pokemon_team_display: false,
       selected_box: 0,
@@ -77,29 +87,48 @@ export default {
       }
     }
   },
-  computed: {
-    boxes() {
-      return [...Array(31).keys()].map((value) => {
-        return {
-          _id: value,
-          name: `PC #${value + 1}`
-        }
-      })
-    }
-  },
+  computed: {},
   created() {
-    setInterval(() => {
-      // eslint-disable-next-line no-constant-condition
-      session.get(`/boxes/${this.trainer_name}`).then((data) => {
-        this.box_data = data.data
-      }).catch(() => {
-      })
-    }, 500)
+    session.get(`/boxes/${this.selected_trainer}/`).then((response) => {
+      this.box_data.boxes = response.data
+    }).catch(() => {
+    })
+    session.get(`/trainer/${this.selected_trainer}/`).then((response) => {
+      this.box_data.team = response.data.current_team.team
+    }).catch(() => {
+    })
+    session.get('/api/trainers/list_trainers/').then((response) => {
+      this.trainers = response.data
+    });
   },
   methods: {
+    open_box() {
+      session.get(`/boxes/${this.selected_trainer}/`).then((response) => {
+        this.box_data.boxes = response.data
+      }).catch(() => {
+      })
+      session.get(`/trainer/${this.selected_trainer}/`).then((response) => {
+        this.box_data.team = response.data.current_team.team
+      }).catch(() => {
+      })
+    },
     select_pokemon(pokemon) {
-      this.display_box_detail = true;
-      this.selected_pokemon = pokemon;
+      if (pokemon) {
+        this.display_box_detail = true;
+        this.selected_pokemon = pokemon;
+      }
+    },
+    get_box(box_index) {
+      return this.box_data.boxes[box_index]
+    },
+    get_slot(slot) {
+      const box = this.get_box(this.selected_box);
+      const slots = box.slots;
+      const filtered = slots.filter((value) => value.slot === slot);
+      if (filtered) {
+        return filtered[0];
+      }
+      return null;
     },
     select_pokemon_team(pokemon) {
       this.selected_pokemon = pokemon;

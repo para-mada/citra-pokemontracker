@@ -37,8 +37,8 @@
           <p class="text-left">HP: <strong>{{ pokemon.cur_hp }}/{{ pokemon.maxhp }}</strong></p>
           <p class="text-left">Ataque: <strong>{{ pokemon.attack }}</strong></p>
           <p class="text-left">Defensa: <strong>{{ pokemon.defense }}</strong></p>
-          <p class="text-left">Ataque Especial: <strong>{{ pokemon.spatk }}</strong></p>
-          <p class="text-left">Defensa Especial: <strong>{{ pokemon.spdef }}</strong></p>
+          <p class="text-left">Ataque Especial: <strong>{{ pokemon.special_attack }}</strong></p>
+          <p class="text-left">Defensa Especial: <strong>{{ pokemon.special_defense }}</strong></p>
           <p class="text-left">Velocidad: <strong>{{ pokemon.speed }}</strong></p>
           <p class="text-left">{{ pokemon_types.map((v) => v.name).join("/") }}</p>
         </v-col>
@@ -47,12 +47,12 @@
         <v-col cols="6">
           <p class="text-left">Naturaleza: <strong>{{ pokemon.nature_name }}</strong></p>
           <p class="text-left">Habilidad: <strong>{{ pokemon.ability_name }}</strong></p>
-          <p class="text-left">Objeto: <strong>{{ pokemon.item_name }}</strong></p>
+          <p class="text-left">Objeto: <strong>{{ pokemon.held_item_name }}</strong></p>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="6" v-for="(move, index) in pokemon.moves" :key="index">
-          <MovementCard :enemy_data="enemy_data" :pokemon="pokemon" :movement="move" v-if="move"/>
+          <MovementCard :enemy_data="null" :pokemon="pokemon" :movement="move" v-if="move"/>
         </v-col>
       </v-row>
     </div>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import MovementCard from "@/components/basic-comps/MovementCard";
+import MovementCard from "./SingleMovementCard";
 
 export default {
   name: "PokemonCard",
