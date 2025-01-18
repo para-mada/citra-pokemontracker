@@ -1,6 +1,27 @@
 <template>
   <TeamSelectorPanel @search="search_combat" :default_trainer="trainer_name" v-if="!combat_data"/>
   <v-row v-if="combat_data">
+    <v-col cols="12">
+      <v-row>
+        <v-spacer/>
+        <v-col>
+          <v-card>
+            <template v-slot:text>
+              <v-row>
+                <v-spacer/>
+                <v-col>
+                  <v-btn color="teal" @click="speed_table_display = true">Tabla de velocidades</v-btn>
+                </v-col>
+                <v-spacer/>
+              </v-row>
+            </template>
+          </v-card>
+        </v-col>
+        <v-spacer/>
+      </v-row>
+    </v-col>
+  </v-row>
+  <v-row v-if="combat_data">
     <v-col>
       <DoubleCombatPanel :trainer_name="this.combat_data.enemy_trainer.name"
                          @selected_pokemon="select_enemy_pokemon" team="enemy"
@@ -13,17 +34,35 @@
                          :enemy_data="combat_data.enemy_trainer.current_team"/>
     </v-col>
   </v-row>
+  <v-dialog v-model="speed_table_display">
+    <v-row>
+      <v-spacer/>
+      <v-col>
+        <v-card>
+          <template v-slot:actions>
+            <v-btn text="Cerrar" color="teal" variant="text" @click="speed_table_display = false"></v-btn>
+          </template>
+          <template v-slot:text>
+            <SpeedTable :combat_info="combat_data"/>
+          </template>
+        </v-card>
+      </v-col>
+      <v-spacer/>
+    </v-row>
+  </v-dialog>
 </template>
 
 <script>
 import TeamSelectorPanel from "@/components/offline-app/showdown/TeamSelectorPanel";
 import DoubleCombatPanel from "@/components/offline-app/showdown/DoubleCombatPanel";
+import SpeedTable from "@/components/offline-app/api-comps/SpeedTable";
 
 export default {
   name: "ShowdownCombatPanel",
   components: {
     TeamSelectorPanel,
-    DoubleCombatPanel
+    DoubleCombatPanel,
+    SpeedTable
   },
   props: {
     trainer_name: {
@@ -33,6 +72,7 @@ export default {
   },
   data() {
     return {
+      speed_table_display: false,
       combat_data: null,
     }
   },
