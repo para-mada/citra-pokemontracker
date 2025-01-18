@@ -31,7 +31,6 @@ export default {
   created() {
     window.electron.onDataReceived('updated_game_data', async (event, data) => {
       this.game_data = data;
-      console.log(data)
       // for (let slot = 0; slot < this.game_data.your_data.team.length; slot++) {
       //   let mote = this.game_data.your_data.team[slot].mote;
       //   await session.get(`/notes/${this.trainer_name}/${mote}/`).then((response) => {

@@ -29,7 +29,8 @@
         <v-col cols="12">
           <v-badge v-if="movement.power !== -1" color="danger" :content="`Power: ${movement.power}`" inline></v-badge>
           <v-badge v-if="movement.power === -1" color="danger" content="Power: -" inline></v-badge>
-          <v-badge v-if="movement.accuracy !== -1" color="info" :content="`Accuracy: ${movement.accuracy}%`" inline></v-badge>
+          <v-badge v-if="movement.accuracy !== -1" color="info" :content="`Accuracy: ${movement.accuracy}%`"
+                   inline></v-badge>
           <v-badge v-if="movement.accuracy === -1" color="info" content="Accuracy: -" inline></v-badge>
           <v-badge v-if="stab" color="success" content="STAB" bordered inline></v-badge>
         </v-col>
@@ -40,6 +41,7 @@
             <v-img :src="enemy_data.team[enemy_slot].sprite_url" width="64" aspect-ratio="1/1"></v-img>
             <v-badge
                 bordered
+                v-if="multiplier(enemy_data.team[enemy_slot]) !== null"
                 :content="`x${multiplier(enemy_data.team[enemy_slot])}`"
                 :color="multiplier(enemy_data.team[enemy_slot]) > 1 ? 'success' : multiplier(enemy_data.team[enemy_slot]) < 1 ? 'error' : 'info'"
                 inline
@@ -54,7 +56,7 @@
 <script>
 
 function appearances(coverageTypes, enemyTypes) {
-  return enemyTypes.filter(item => coverageTypes.includes(item.name)).length;
+  return enemyTypes.filter(item => item.name && coverageTypes.includes(item.name.toLowerCase())).length;
 }
 
 export default {
@@ -77,13 +79,15 @@ export default {
   methods: {
     multiplier(enemy) {
       if (!enemy) {
-        return 1;
+        return null;
       }
       let enemy_types = this.pokemon_types(enemy);
-
+      if (!enemy_types) {
+        return null;
+      }
 
       if (this.category === 'Status') {
-        return 1;
+        return null;
       }
 
       let doubles = appearances(this.movement.coverage_data.double_damage_to, enemy_types)

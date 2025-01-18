@@ -43,7 +43,7 @@
 <script>
 
 function appearances(coverageTypes, enemyTypes) {
-  return enemyTypes.filter(item => coverageTypes.includes(item.name.toLowerCase())).length;
+  return enemyTypes.filter(item => item.name && coverageTypes.includes(item.name.toLowerCase())).length;
 }
 
 export default {
@@ -74,18 +74,21 @@ export default {
   computed: {
     multiplier() {
       if (!this.enemy_data) {
-        return 1;
+        return null;
       }
       let enemy = this.enemy_data.team[this.enemy_data.selected_pokemon];
       if (!enemy) {
-        return 1;
-      }
-
-
-      if (this.category === 'Status') {
-        return 1;
+        return null;
       }
       let enemy_types = this.pokemon_types(enemy);
+      if (!enemy_types) {
+        return null;
+      }
+
+      if (this.category === 'Status') {
+        return null;
+      }
+
       let doubles = appearances(this.movement.coverage_data.double_damage_to, enemy_types)
       let halves = appearances(this.movement.coverage_data.half_damage_to, enemy_types)
       let zeroes = appearances(this.movement.coverage_data.no_damage_to, enemy_types)

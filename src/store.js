@@ -12,3 +12,5 @@ export const session = axios.create({
 })
 
 export const SERVER_URL = HOST_URL;
+
+export const IS_DEV = DEV;

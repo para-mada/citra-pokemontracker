@@ -3,7 +3,7 @@
     <template v-slot:activator="{props}">
       <img :src="pokemon ? pokemon.sprite_url : missingno" width="70" alt=""
            @click="$emit('click', pokemon)" v-bind="props" class="cursor-pointer"/>
-      <v-badge color="error" dot bordered location="bottom right" v-if="pokemon && pokemon.held_item && pokemon.held_item !== 0">
+      <v-badge color="error" dot bordered location="bottom right" v-if="pokemon && pokemon.held_item_name !== 'None'">
       </v-badge>
     </template>
     {{ pokemon ? pokemon.mote : '' }}
@@ -21,7 +21,7 @@ export default {
       required: false
     }
   },
-  updated() {
+  created() {
     console.log(this.pokemon)
   },
   data() {

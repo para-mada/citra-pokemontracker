@@ -23,6 +23,18 @@
       <!--      <v-btn prepend-icon="mdi-magnify"/>-->
     </v-app-bar>
     <v-main>
+      <v-snackbar
+          max-width="400"
+          closable
+          color="success"
+          border="start"
+          location="top right"
+          v-model="notification_alert"
+          close-delay="2000"
+          transition="v-slide-x-transition">
+        <div class="text-subtitle-1 pb-2">Notificacion!</div>
+        <p>{{notification_data}}</p>
+      </v-snackbar>
       <PokemonBoxesPanel v-if="displays.boxes" :trainer_name="trainer_name"/>
       <PokemonTeamPanel v-if="displays.team && !inlive" :trainer_name="trainer_name"/>
       <LivePokemonTeamPanel v-if="displays.team && inlive" :trainer_name="trainer_name" :team_data="game_data.your_data"/>
@@ -63,6 +75,8 @@ export default {
   },
   data() {
     return {
+      notification_alert: false,
+      notification_data: 'Archivo de guardado descargado con éxito!',
       displays: {
         boxes: false,
         team: false,
@@ -97,6 +111,13 @@ export default {
   },
   created() {
     this.disable_displays()
+    window.electron.onDataReceived('notify', (event, data) => {
+      if (!this.notification_alert) {
+        this.notification_alert = true;
+      }
+
+      this.notification_data = data.message;
+    })
   },
   updated() {
     this.disable_displays()
