@@ -24,10 +24,15 @@ export default {
     trainer_name: {
       type: String,
       required: true
+    },
+    active: {
+      type: Boolean,
+      required: false
     }
   },
   data() {
     return {
+      interval: 0,
       selected_pokemon: null,
       team_data: {
         team: [null, null, null, null, null, null]
@@ -41,12 +46,23 @@ export default {
     },
   },
   created() {
-    setInterval(() => {
+    session.get(`/trainer/${this.trainer_name}/`).then((response) => {
+      this.team_data.team = response.data.current_team.team;
+    }).catch(() => {
+    })
+  },
+
+  mounted() {
+    this.interval = setInterval(() => {
+      if (!this.active) return;
       session.get(`/trainer/${this.trainer_name}/`).then((response) => {
         this.team_data.team = response.data.current_team.team;
       }).catch(() => {
       })
-    }, 500)
+    }, 5000)
+  },
+  unmounted() {
+    clearInterval(this.interval)
   }
 }
 </script>

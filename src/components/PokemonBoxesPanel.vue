@@ -12,15 +12,17 @@
         <div class="pa-4">
           <v-row justify="space-between">
             <v-col>
-              <v-select label="Cajas" :items="this.box_data.boxes" item-value="box_number" item-title="box_identifier"
-                        v-model="selected_box"></v-select>
+              <v-autocomplete label="Cajas" :items="this.box_data.boxes" item-value="box_number" item-title="box_identifier"
+                        v-model="selected_box"></v-autocomplete>
             </v-col>
+            <v-spacer></v-spacer>
             <v-col>
               <v-btn @click="pokemon_team_display = true; selected_pokemon = null">Ver Equipo</v-btn>
             </v-col>
+            <v-spacer></v-spacer>
             <v-col>
-              <v-select label="Entrenadores" :items="trainers" item-value="name" item-title="streamer_name"
-                        v-model="selected_trainer" @update:modelValue="open_box"></v-select>
+              <v-autocomplete label="Entrenadores" :items="trainers" item-value="name" item-title="streamer_name"
+                        v-model="selected_trainer" @update:modelValue="open_box"></v-autocomplete>
             </v-col>
           </v-row>
           <v-row v-if="box_data.boxes[this.selected_box]">
@@ -71,6 +73,10 @@ export default {
     trainer_name: {
       type: String,
       required: true
+    },
+    active: {
+      type: Boolean,
+      required: false
     }
   },
   data() {

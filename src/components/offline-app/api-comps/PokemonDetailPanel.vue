@@ -52,7 +52,7 @@
       </v-row>
       <v-row>
         <v-col cols="6" v-for="(move, index) in pokemon.moves" :key="index">
-          <MovementCard :enemy_data="null" :pokemon="pokemon" :movement="move" v-if="move"/>
+          <MovementCard :enemy_data="enemy_data" :pokemon="pokemon" :movement="move" v-if="move" :forced_type="get_forced_type(move)"/>
         </v-col>
       </v-row>
     </div>
@@ -60,7 +60,8 @@
 </template>
 
 <script>
-import MovementCard from "./SingleMovementCard";
+import MovementCard from "./MovementCard";
+import {FORCE_TYPE_ABILITIES, SPECIAL_MOVES} from '@/data/force_type_data'
 
 export default {
   name: "PokemonCard",
@@ -79,6 +80,28 @@ export default {
     }
   },
   methods: {
+    get_forced_type(movement) {
+      let forced_type = this.pokemon.ability.toString() in FORCE_TYPE_ABILITIES;
+      let move_type = movement.move_type;
+
+
+      if (forced_type) {
+        let ability_data = FORCE_TYPE_ABILITIES[this.pokemon.ability];
+        if (move_type === ability_data.forced_from) {
+          move_type = ability_data.forced_type;
+        } else if (ability_data.forced_from === '*') {
+          move_type = ability_data.forced_type;
+        }
+      }
+
+      if (movement.index in SPECIAL_MOVES) {
+        let special_move = SPECIAL_MOVES[movement.index];
+        if (this.pokemon.item_held in special_move) {
+          move_type = special_move[this.pokemon.item_held];
+        }
+      }
+      return move_type;
+    },
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
     },

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <MainAppComponent :trainer_name="trainer_name" :game_data="game_data" :inlive="game_data !== null"/>
+    <MainAppComponent :live_trainer_name="trainer_name" :game_data="game_data" :inlive="game_data !== null"/>
     <UpdateDialog :update_data="update_data" v-if="update_dialog"/>
   </v-container>
 </template>
@@ -8,7 +8,6 @@
 <script>
 import MainAppComponent from '@/components/offline-app/MainAppComponent';
 import UpdateDialog from '@/components/offline-app/UpdateDialog';
-// import {session} from "@/store";
 
 
 export default {
