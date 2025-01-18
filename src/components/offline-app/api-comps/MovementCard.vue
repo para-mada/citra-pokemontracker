@@ -127,7 +127,6 @@ export default {
   },
   computed: {
     enemies() {
-      console.log(this.enemy_data)
       if (this.is_selected) {
         return this.enemy_data.selected_pokemon
       }
@@ -155,12 +154,13 @@ export default {
       }
     },
     stab() {
+      console.log(this.category)
       if (this.category === 'Status') {
         return false;
       }
       try {
-        let this_type = this.movement.type.toLowerCase();
-        let pokemon_types = this.pokemon.types.map((item) => item.name.toLowerCase());
+        let this_type = this.movement.move_type.toLowerCase();
+        let pokemon_types = this.pokemon_types(this.pokemon).map((item) => item.name.toLowerCase());
         return !!pokemon_types.includes(this_type);
       } catch (e) {
         return false;
