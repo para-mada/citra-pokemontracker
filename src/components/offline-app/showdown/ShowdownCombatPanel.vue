@@ -1,33 +1,42 @@
 <template>
   <TeamSelectorPanel @search="search_combat" :default_trainer="trainer_name" v-if="!combat_data"/>
   <v-row v-if="combat_data">
-    <v-col cols="12">
-      <v-row>
-        <v-spacer/>
-        <v-col>
-          <v-card>
-            <template v-slot:text>
-              <v-row>
-                <v-spacer/>
-                <v-col>
-                  <v-btn color="teal" @click="speed_table_display = true">Tabla de velocidades</v-btn>
-                </v-col>
-                <v-spacer/>
-              </v-row>
-            </template>
-          </v-card>
-        </v-col>
-        <v-spacer/>
-      </v-row>
-    </v-col>
-  </v-row>
-  <v-row v-if="combat_data">
     <v-col>
       <DoubleCombatPanel :trainer_name="this.combat_data.enemy_trainer.name"
                          @selected_pokemon="select_enemy_pokemon" team="enemy"
                          :data="combat_data.enemy_trainer.current_team"
                          :enemy_data="combat_data.your_trainer.current_team"/>
-
+      <v-row>
+        <v-col sm cols="4">
+          <PokemonTeamList team="enemy" :data="this.combat_data.your_trainer.current_team"
+                           :enemy_data="this.combat_data.enemy_trainer.current_team" :trainer_name="this.combat_data.enemy_trainer.name"/>
+        </v-col>
+        <v-spacer/>
+        <v-col>
+          <v-row class="h-100 w-100" justify="center" align="center">
+            <v-spacer/>
+            <v-col>
+              <v-card>
+                <template v-slot:text>
+                  <v-row>
+                    <v-spacer/>
+                    <v-col>
+                      <v-btn color="teal" @click="speed_table_display = true">Tabla de velocidades</v-btn>
+                    </v-col>
+                    <v-spacer/>
+                  </v-row>
+                </template>
+              </v-card>
+            </v-col>
+            <v-spacer/>
+          </v-row>
+        </v-col>
+        <v-spacer/>
+        <v-col sm cols="4">
+          <PokemonTeamList team="you" :data="this.combat_data.enemy_trainer.current_team"
+                           :enemy_data="this.combat_data.your_trainer.current_team" :trainer_name="trainer_name"/>
+        </v-col>
+      </v-row>
       <DoubleCombatPanel :trainer_name="this.combat_data.your_trainer.name"
                          @selected_pokemon="select_you_pokemon" team="you"
                          :data="combat_data.your_trainer.current_team"
@@ -35,8 +44,8 @@
     </v-col>
   </v-row>
   <v-dialog v-model="speed_table_display">
-    <v-row>
-      <v-spacer/>
+    <v-row justify="center">
+      <v-spacer @click="speed_table_display = false"/>
       <v-col>
         <v-card>
           <template v-slot:actions>
@@ -47,7 +56,7 @@
           </template>
         </v-card>
       </v-col>
-      <v-spacer/>
+      <v-spacer @click="speed_table_display = false"/>
     </v-row>
   </v-dialog>
 </template>
@@ -55,6 +64,7 @@
 <script>
 import TeamSelectorPanel from "@/components/offline-app/showdown/TeamSelectorPanel";
 import DoubleCombatPanel from "@/components/offline-app/showdown/DoubleCombatPanel";
+import PokemonTeamList from '@/components/offline-app/api-comps/PokemonTeamList';
 import SpeedTable from "@/components/offline-app/api-comps/SpeedTable";
 
 export default {
@@ -62,6 +72,7 @@ export default {
   components: {
     TeamSelectorPanel,
     DoubleCombatPanel,
+    PokemonTeamList,
     SpeedTable
   },
   props: {

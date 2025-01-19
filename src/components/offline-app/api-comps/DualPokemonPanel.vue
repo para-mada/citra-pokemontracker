@@ -11,26 +11,31 @@
       </v-alert>
     </template>
     <template v-slot:text>
-      <v-row class="mt-1" width="auto">
+      <v-row class="mt-0" width="auto">
         <v-col cols="2">
           <v-row>
+            <v-spacer/>
             <v-col>
               <v-tooltip location="top" max-width="400">
                 <template v-slot:activator="{props}">
                   <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="cursor-pointer"
-                       width="130" alt="" v-bind="props">
+                       width="100" alt="" v-bind="props">
                 </template>
                 <span v-if="pokemon && pokemon.notes" v-html="pokemon.notes.replace('\r\n', '<br/>')">
               </span>
               </v-tooltip>
             </v-col>
+            <v-spacer/>
           </v-row>
-          <v-row justify="end">
-            <v-col></v-col>
-            <v-col sm>
+          <v-row>
+            <v-spacer/>
+            <v-col>
               <div v-if="pokemon">
                 <v-img :src="`./assets/types/${type_name(type.name)}.png`" v-for="(type, i) in pokemon_types" :key="i"
                        width="32" inline></v-img>
+              </div>
+              <div v-if="!pokemon">
+                <v-img :src="missingno" width="32" inline></v-img>
               </div>
             </v-col>
           </v-row>

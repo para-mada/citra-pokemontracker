@@ -6,7 +6,7 @@
           :headers="headers">
         <template #item="{item}">
           <tr :class="itemRowBackground(item)">
-            <td class="pa-0"><v-img :src="item.sprite_url"/></td>
+            <td class="pa-0"><v-img :src="item.sprite_url" height="32"/></td>
             <td>{{item.mote}}</td>
             <td>{{item.speed}}</td>
           </tr>
