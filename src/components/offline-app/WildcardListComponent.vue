@@ -22,7 +22,6 @@
             <v-row>
               <v-col
                   v-for="item in wildcards"
-                  :order="!item.inventory"
                   :key="item.id"
                   xs="12"
                   sm="6"
@@ -126,6 +125,14 @@ export default {
   computed: {
     wildcards() {
       const cards = this.list_wildcards;
+      const ordered_cards = cards.sort((prev_card, card) => {
+        if (card.inventory < prev_card.inventory) {
+          return -1;
+        } else if (card.inventory > prev_card.inventory) {
+          return 1;
+        }
+        return 0
+      })
       return cards;
     }
   },
