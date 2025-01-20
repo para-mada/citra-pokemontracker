@@ -13,7 +13,7 @@ import config from 'config'
 import toml from 'toml'
 import TOML from '@iarna/toml'
 import {PokemonGame} from "./api/PokemonGame";
-import {session} from "@/store";
+import {session} from "@/stores/backend";
 
 function loadTomlConfig(win) {
     const tomlFilePath = 'config/config.toml'; // Ruta a tu archivo TOML
@@ -148,24 +148,6 @@ app.on('ready', async () => {
             })
         })
     })
-
-    ipcMain.on('showdown-combat', async (ipc, data) => {
-        let enemy_trainer = await session.get(`/trainer/${data.enemy_trainer}/`, {
-            params: {
-                localization: 'en'
-            }
-        }).then((response) => response.data);
-        let your_trainer = await session.get(`/trainer/${data.your_trainer}/`, {
-            params: {
-                localization: 'en'
-            }
-        }).then((response) => response.data);
-
-        ipc.reply('showdown-data', {
-            enemy_trainer,
-            your_trainer
-        })
-    });
 
     win.reload();
 })

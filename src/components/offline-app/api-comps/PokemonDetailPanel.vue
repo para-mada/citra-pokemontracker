@@ -108,10 +108,7 @@ export default {
   },
   computed: {
     pokemon_types() {
-      if (this.pokemon.battle_data) {
-        return this.pokemon.battle_data.types;
-      }
-      return this.pokemon.types;
+      return this.pokemon.types || [];
     }
   },
   data() {

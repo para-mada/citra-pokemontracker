@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="6">
+    <v-col sm="12" xs="12" md="6">
       <DualPokemonPanel :pk_slot="0" :team="team" :team_data="this.data" :enemy_data="enemy_data" @selected_pokemon="select_pokemon"/>
     </v-col>
-    <v-col sm cols="6">
+    <v-col sm="12" xs="12" md="6">
       <DualPokemonPanel :pk_slot="1" :team="team" :team_data="this.data" :enemy_data="enemy_data" @selected_pokemon="select_pokemon"/>
     </v-col>
   </v-row>

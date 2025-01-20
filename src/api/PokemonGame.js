@@ -2,8 +2,8 @@ import {PokemonTeamData, validatePokemon} from '@/api/PokemonTeamData'
 import {InBattlePokemonData} from "@/api/InBattlePokemonData";
 import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
-import {session} from "@/store";
 import {getSaveName, watchSave} from "@/api/saveReader";
+import {session} from '@/stores/backend'
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 232;
@@ -64,7 +64,8 @@ class GameData {
                 for (let slot = 0; slot < enemy_team_length; slot++) {
                     let pokemon = this.enemy_data.team[slot];
                     if (!pokemon) continue;
-                    if (this.enemy_data.discovered_pokemons.includes(slot.toString())) {
+                    let included = this.enemy_data.discovered_pokemons.includes(slot.toString());
+                    if (included) {
                         pokemon.discovered = true;
                     }
                     pokemon.battle_data = this.combat_info.enemy_battle_data[slot];
@@ -73,13 +74,13 @@ class GameData {
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
                     ipc.reply('updated_game_data', this);
                     pokemon_game.alreadySent = JSON.stringify(this);
-                    // await session.post(`/update_team/${trainer_name}/`, {
-                    //     data: {
-                    //         team: this.your_data.team
-                    //     }
-                    // }).catch(()=> {
-                    //     console.log("error")
-                    // })
+                    await session.post(`/api/trainers/update_live_team/`, {
+                        data: {
+                            team: this.your_data.team
+                        },
+                    }).catch(()=> {
+                        console.warn('TODO: update_live_team')
+                    })
                 }
             }
             // eslint-disable-next-line no-empty

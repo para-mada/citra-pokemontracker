@@ -1,17 +1,21 @@
 <template>
-      <v-data-table
-          hide-default-footer
-          items-per-page="12"
-          :items="speed_ordered_pokemon"
-          :headers="headers">
-        <template #item="{item}">
-          <tr :class="itemRowBackground(item)">
-            <td class="pa-0"><v-img :src="item.sprite_url" height="32"/></td>
-            <td>{{item.mote}}</td>
-            <td>{{item.speed}}</td>
-          </tr>
-        </template>
-      </v-data-table>
+  <v-data-table
+      height="55vh"
+      density="comfortable"
+      hide-default-footer
+      items-per-page="20"
+      :items="speed_ordered_pokemon"
+      :headers="headers">
+    <template #item="{item}">
+      <tr :class="itemRowBackground(item)">
+        <td class="pa-0">
+          <v-img :src="item.sprite_url" height="48"/>
+        </td>
+        <td>{{ item.mote }}</td>
+        <td>{{ item.speed }}</td>
+      </tr>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -26,9 +30,9 @@ export default {
   data() {
     return {
       headers: [
-        { title: '', value: 'sprite_url' },
-        { title: 'Nombre', value: 'mote' },
-        { title: 'Velocidad', value: 'speed' },
+        {title: '', value: 'sprite_url'},
+        {title: 'Nombre', value: 'mote'},
+        {title: 'Velocidad', value: 'speed'},
       ]
     }
   },
@@ -76,7 +80,6 @@ export default {
 </script>
 
 <style scoped>
-
 .success {
   background-color: rgb(76, 175, 80);
   color: white;

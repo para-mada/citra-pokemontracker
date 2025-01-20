@@ -1,10 +1,10 @@
 <template>
-  <v-row class="ml-2 w-100">
+  <v-row class="ml-2">
     <v-col cols="8">
       <SinglePokemonPanel :pokemon="this.selectedPokemon" team="you" :team_data="data" :enemy_data="enemy_data" :pk_slot="this.data.selected_pokemon[0]"/>
     </v-col>
     <v-col sm cols="4">
-      <PokemonTeamList @pokemonSelected="selectPokemon" team="you" :data="this.data" :enemy_data="enemy_data"/>
+      <PokemonTeamList team="you" :data="this.data" :enemy_data="enemy_data"/>
     </v-col>
   </v-row>
 </template>
@@ -37,9 +37,6 @@ export default {
     }
   },
   methods: {
-    selectPokemon: function (pokemon) {
-      this.selectedPokemon = pokemon;
-    },
   }
 }
 </script>
