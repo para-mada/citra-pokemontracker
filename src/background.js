@@ -149,6 +149,24 @@ app.on('ready', async () => {
         })
     })
 
+    ipcMain.on('showdown-combat', async (ipc, data) => {
+        let enemy_trainer = await session.get(`/trainer/${data.enemy_trainer}/`, {
+            params: {
+                localization: 'en'
+            }
+        }).then((response) => response.data);
+        let your_trainer = await session.get(`/trainer/${data.your_trainer}/`, {
+            params: {
+                localization: 'en'
+            }
+        }).then((response) => response.data);
+
+        ipc.reply('showdown-data', {
+            enemy_trainer,
+            your_trainer
+        })
+    });
+
     win.reload();
 })
 
