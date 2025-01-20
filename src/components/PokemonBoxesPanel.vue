@@ -79,10 +79,6 @@ export default {
     PokemonDetailPanel
   },
   props: {
-    trainer_name: {
-      type: String,
-      required: false
-    },
     trainer_id: {
       type: Number,
       required: true
@@ -119,6 +115,9 @@ export default {
   },
   methods: {
     async load_trainer_team() {
+      if (!this.selected_box) {
+        return;
+      }
       const response = await session.get(`/api/trainers/${this.selected_trainer}/`);
       this.box_data.team = response.data.current_team.team
     },
@@ -127,10 +126,16 @@ export default {
       this.trainers = response.data;
     },
     async load_boxes() {
+      if (!this.selected_box) {
+        return;
+      }
       const response = await session.get(`/api/trainers/${this.selected_trainer}/list_boxes/`);
       this.box_data.selectable_boxes = response.data;
     },
     async open_box() {
+      if (!this.selected_box) {
+        return;
+      }
       this.loading_box = true;
       const config = {
         params: {

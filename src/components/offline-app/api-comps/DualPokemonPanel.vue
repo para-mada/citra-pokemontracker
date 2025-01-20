@@ -14,11 +14,16 @@
       <v-row class="mt-0">
         <v-col cols="2">
           <v-row class="w-100" justify="center">
-            <v-col>
+            <v-col >
               <v-tooltip location="top">
                 <template v-slot:activator="{props}">
-                  <v-img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true"
-                         class="cursor-pointer" width="96" max-width="96" alt="" v-bind="props"/>
+                  <img :src="pokemon ? pokemon.sprite_url : missingno"
+                         @click="dialog = true"
+                         class="cursor-pointer"
+                         content-class="cursor-pointer"
+                         width="96"
+                         max-width="96"
+                         v-bind="props"/>
                 </template>
                 <template v-slot:default>
                   <span v-if="pokemon && pokemon.notes"
@@ -43,7 +48,7 @@
         <v-col cols="2">
           <v-row>
             <v-spacer/>
-            <v-col>
+            <v-col class="text-center">
               <span class="justify-center mote" :class="team === 'enemy' ? 'info' : 'success'">
                 {{ pokemon ? pokemon.mote : '???' }}
               </span>

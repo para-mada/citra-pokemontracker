@@ -11,21 +11,17 @@
     <v-row class="mt-1">
       <v-col cols="2">
         <v-row>
+          <v-spacer/>
           <v-col>
-            <v-tooltip location="top">
-              <template v-slot:activator="{props}">
-                <img :src="pokemon ? pokemon.sprite_url : missingno" @click="dialog = true" class="card-img-top"
-                     width="130" alt="" v-bind="props">
-              </template>
-              <span v-if="pokemon && pokemon.coach_data && pokemon.coach_data.data" v-html="pokemon.coach_data.data.notes.replace('\\n', '<br/>')"/>
-            </v-tooltip>
+            <v-img :src="pokemon ? pokemon.sprite_url : missingno" class="card-img-top" width="130"/>
           </v-col>
         </v-row>
-        <v-row class="w-100" justify="end">
+        <v-row>
           <v-col sm>
             <div v-if="pokemon">
-              <v-img :src="`./assets/types/${type_name(type.name)}.png`" v-for="(type, i) in pokemon_types" :key="i"
-                     width="32" inline></v-img>
+              <v-img v-for="(type, i) in pokemon_types" :key="i"
+                     :src="`./assets/types/${type_name(type.name)}.png`"
+                     width="32" inline/>
             </div>
           </v-col>
         </v-row>
@@ -33,7 +29,7 @@
       <v-col cols="2">
         <v-row>
           <v-spacer/>
-          <v-col>
+          <v-col class="text-center">
               <span class="justify-center mote" :class="team === 'enemy' ? 'info' : 'success'">
                 {{ pokemon ? pokemon.mote : '???' }}
               </span>

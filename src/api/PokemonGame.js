@@ -21,6 +21,7 @@ const CombatEnv = Object.freeze({
     OFF: "OFF",
     WILD: "WILD",
     TRAINER: "TRAINER",
+    SPECIAL: "SPECIAL",
     MULTI: "MULTI"
 });
 
@@ -41,7 +42,7 @@ class GameData {
         let citra = new CitraClient();
         try {
             let trainer_name;
-            await citra.readMemory(0,1).then(() => {
+            await citra.readMemory(0, 1).then(() => {
                 trainer_name = getSaveName(save_file_path);
                 ipc.reply('trainer_name', trainer_name);
                 watchSave(save_file_path)
@@ -78,7 +79,7 @@ class GameData {
                         data: {
                             team: this.your_data.team
                         },
-                    }).catch(()=> {
+                    }).catch(() => {
                         console.warn('TODO: update_live_team')
                     })
                 }
@@ -177,10 +178,8 @@ class CombatData {
         this.addresses = {};
         this.enemy_selected = [];
         this.ally_selected = [];
-        this.ally_battle_data = [
-        ];
-        this.enemy_battle_data = [
-        ];
+        this.ally_battle_data = [];
+        this.enemy_battle_data = [];
     }
 
     async getAddresses(rom, citra) {
@@ -193,14 +192,12 @@ class CombatData {
 
         let wildData = await citra.readMemory(rom.battleWildPartyAddress, rom.slot_data_size);
         let rawWildData = decryptData(wildData);
+        let wildPP = (await citra.readMemory(rom.wildppadd, 1)).readUInt8(0);
+        let wildDex = rawWildData.subarray(8).readUInt16LE()
 
         let trainerData = await citra.readMemory(rom.battleTrainerPartyAddress, rom.slot_data_size);
         let rawTrainerData = decryptData(trainerData);
-
-        let wildPP = (await citra.readMemory(rom.wildppadd, 1)).readUInt8(0);
         let trainerPP = (await citra.readMemory(rom.trainerppadd, 1)).readUInt8(0);
-
-        let wildDex = rawWildData.subarray(8).readUInt16LE()
         let trainerDex = rawTrainerData.subarray(8).readUInt16LE()
 
         if (validatePokemon(wildDex) && wildPP < 65) {
@@ -316,6 +313,24 @@ class CombatData {
             this.ally_battle_data = [];
             this.enemy_battle_data = [];
         }
+    }
+
+    async debugFunction(citra) {
+        let first_pokemon_address = 138309784;
+        let second_pokemon_address = 138545352;
+        let third_pokemon_address = 138780920;
+        let fourth_pokemon_address = 139016488;
+        let fifth_pokemon_address = 139252056;
+        let sixth_pokemon_address = 139487624;
+
+        let first_dex_number = (await citra.readMemory(first_pokemon_address, 2)).readUInt16LE()
+        let second_dex_number = (await citra.readMemory(second_pokemon_address, 2)).readUInt16LE()
+        let third_dex_number = (await citra.readMemory(third_pokemon_address, 2)).readUInt16LE()
+        let fourth_dex_number = (await citra.readMemory(fourth_pokemon_address, 2)).readUInt16LE()
+        let fifth_dex_number = (await citra.readMemory(fifth_pokemon_address, 2)).readUInt16LE()
+        let sixth_dex_number = (await citra.readMemory(sixth_pokemon_address, 2)).readUInt16LE()
+
+        console.log(first_dex_number, second_dex_number, third_dex_number, fourth_dex_number, fifth_dex_number, sixth_dex_number)
     }
 }
 

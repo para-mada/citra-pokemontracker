@@ -41,6 +41,11 @@
           v-if="logged_in"
           @click="logoff_dialog = true;"
           text="Cerrar Sesión"/>
+      <v-btn
+          v-if="!logged_in"
+          :variant="get_variant('login')"
+          @click="switch_display('login');"
+          text="Iniciar Sesión"/>
       <CoinsComponent
           v-if="logged_in"
           :coins="this.economy"/>
@@ -67,7 +72,7 @@
         <PokemonTeamPanel v-if="displays.team && !inlive" :trainer_name="trainer_name"/>
         <ShowdownCombatPanel v-if="displays.showdown" :trainer_id="trainer_data.id"/>
       </div>
-      <LoginComponentPanel v-if="!logged_in && !inlive" @login="logged_in = true"/>
+      <LoginComponentPanel v-if="!logged_in && (!inlive || displays.login)" @login="logged_in = true; disable_displays()"/>
     </v-main>
   </v-layout>
   <v-dialog v-model="logoff_dialog">
@@ -86,8 +91,8 @@
             <v-row>
               <v-spacer/>
               <v-col cols="4">
-                <v-btn @click="logoff_dialog = false" variant="tonal" color="primary" text="Cancelar"/>
-                <v-btn @click="log_off" variant="text" color="error" text="Cerrar Sesión"/>
+                <v-btn @click="logoff_dialog = false;" variant="tonal" color="primary" text="Cancelar"/>
+                <v-btn @click="log_off(); logoff_dialog = false;" variant="text" color="error" text="Cerrar Sesión"/>
               </v-col>
             </v-row>
           </template>
@@ -154,7 +159,8 @@ export default {
           team: false,
           showdown: false,
           combat: true,
-          wildcards: false
+          wildcards: false,
+          login: false
         }
       } else {
         this.displays = {
@@ -162,7 +168,8 @@ export default {
           team: true,
           showdown: false,
           combat: false,
-          wildcards: false
+          wildcards: false,
+          login: false
         }
       }
     },
@@ -195,7 +202,8 @@ export default {
         boxes: false,
         team: false,
         combat: true,
-        wildcards: false
+        wildcards: false,
+        login: false
       },
     }
   },
