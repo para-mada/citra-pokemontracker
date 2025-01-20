@@ -133,7 +133,7 @@ export default {
         }
         return 0
       })
-      return cards;
+      return ordered_cards;
     }
   },
   mounted() {
