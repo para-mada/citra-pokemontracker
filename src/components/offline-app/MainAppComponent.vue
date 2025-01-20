@@ -71,8 +71,9 @@
         <PokemonBoxesPanel v-if="displays.boxes" :trainer_id="trainer_data.id"/>
         <PokemonTeamPanel v-if="displays.team && !inlive" :trainer_name="trainer_name"/>
         <ShowdownCombatPanel v-if="displays.showdown" :trainer_id="trainer_data.id"/>
+        <WildcardListComponent v-if="displays.wildcards" :trainer_id="trainer_data.id"/>
       </div>
-      <LoginComponentPanel v-if="!logged_in && (!inlive || displays.login)" @login="logged_in = true; disable_displays()"/>
+      <LoginComponentPanel v-if="!logged_in && (!inlive || displays.login)" @login="log_in"/>
     </v-main>
   </v-layout>
   <v-dialog v-model="logoff_dialog">
@@ -111,10 +112,12 @@ import CoinsComponent from '@/components/offline-app/CoinsComponent'
 import ShowdownCombatPanel from '@/components/offline-app/showdown/ShowdownCombatPanel'
 import LoginComponentPanel from "@/components/offline-app/api-comps/LoginComponentPanel";
 import {session} from "@/stores";
+import WildcardListComponent from "@/components/offline-app/WildcardListComponent";
 
 export default {
   name: "MainAppComponent",
   components: {
+    WildcardListComponent,
     PokemonTeamPanel,
     LiveCombatPanel,
     PokemonBoxesPanel,
@@ -176,6 +179,9 @@ export default {
     log_off() {
       localStorage.removeItem('api_token');
       this.logged_in = false;
+    },
+    log_in() {
+      window.location.href = window.location;
     }
   },
   computed: {
@@ -224,6 +230,7 @@ export default {
     if (this.logged_in) {
       session.get(`/api/trainers/get_trainer/`).then((response) => {
         this.trainer_data = response.data;
+      }).catch(() =>{
       })
     }
 
@@ -236,6 +243,7 @@ export default {
           this.notification_data = `Se te han agregado ${response.data - this.trainer_data.economy} monedas a tu cuenta`
         }
         this.economy = response.data;
+      }).catch(() =>{
       })
     }, 5000)
   },

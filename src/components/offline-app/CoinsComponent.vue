@@ -1,6 +1,6 @@
 <template>
   <!--  TODO: economy transactions log screen -->
-  <v-img class="mr-2" src="./assets/coin.gif" max-height="16" max-width="16"/>
+  <img class="mr-2" src="assets/coin.gif" height="16" width="16" style="display: inline"/>
   <span class="mr-2">{{ coins }}</span>
 </template>
 

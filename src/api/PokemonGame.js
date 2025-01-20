@@ -87,6 +87,7 @@ class GameData {
             // eslint-disable-next-line no-empty
         } catch (e) {
         } finally {
+            ipc.reply('stop-comms', true);
             citra.socket.close()
         }
     }

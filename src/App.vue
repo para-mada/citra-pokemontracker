@@ -33,6 +33,10 @@ export default {
       this.game_data = data;
       this.inlive = true;
     });
+    window.electron.onDataReceived('stop-comms', async () => {
+      this.game_data = null;
+      this.inlive = false;
+    });
     window.electron.onDataReceived('update-progress', (event, data) => {
       if (!this.update_dialog) {
         this.update_dialog = true;
