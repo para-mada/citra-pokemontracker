@@ -18,7 +18,7 @@ export default {
   },
   data() {
     return {
-      economy: parseInt(localStorage.getItem('coins')) || 0,
+      economy: parseInt(localStorage.getItem('coins') || 0) || 0,
     }
   },
   computed: {

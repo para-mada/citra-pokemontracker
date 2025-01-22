@@ -20,7 +20,7 @@ export default {
     const token = localStorage.getItem('api_token');
     return {
       logged_in: token && token.length > 0,
-      economy: parseInt(localStorage.getItem('coins')) || 0,
+      economy: parseInt(localStorage.getItem('coins') || 0) || 0,
     }
   },
   computed: {
