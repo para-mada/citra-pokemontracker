@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       economy: parseInt(localStorage.getItem('coins')) || 0,
-      trainer_id: parseInt(localStorage.getItem('trainer_id'))
+      trainer_id: parseInt(localStorage.getItem('trainer_id') || 0)
     }
   },
   computed: {
