@@ -111,7 +111,7 @@ app.on('ready', async () => {
 
 
     let game = new PokemonGame(XY);
-    ipcMain.on('open_channel', (ipc) => {
+    ipcMain.on('open_channel', async (ipc) => {
         if (!process.env.WEBPACK_DEV_SERVER_URL) {
             let new_version = null;
             autoUpdater.checkForUpdatesAndNotify().then((res) => {
@@ -131,9 +131,7 @@ app.on('ready', async () => {
                 });
             });
         }
-        game.stop().then(() => {
-            game.startComms(ipc, SAVE_FILE_PATH, win);
-        });
+        game.startComms(ipc, SAVE_FILE_PATH, win);
     });
 
     ipcMain.on('download_save', (ipc, trainer_name) => {
@@ -149,24 +147,6 @@ app.on('ready', async () => {
             })
         })
     })
-
-    ipcMain.on('showdown-combat', async (ipc, data) => {
-        let enemy_trainer = await session.get(`/trainer/${data.enemy_trainer}/`, {
-            params: {
-                localization: 'en'
-            }
-        }).then((response) => response.data);
-        let your_trainer = await session.get(`/trainer/${data.your_trainer}/`, {
-            params: {
-                localization: 'en'
-            }
-        }).then((response) => response.data);
-
-        ipc.reply('showdown-data', {
-            enemy_trainer,
-            your_trainer
-        })
-    });
 
     win.reload();
 })

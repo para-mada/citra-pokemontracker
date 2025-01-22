@@ -108,7 +108,7 @@ export default {
       } else if (this.team === 'ally') {
         return this.get_ally_pokemon(this.pk_slot)
       }
-      if (this.pk_slot) {
+      if (this.pk_slot !== undefined) {
         return this.team_data.team[this.pk_slot];
       }
       return null;

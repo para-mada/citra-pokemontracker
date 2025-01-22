@@ -48,7 +48,7 @@ export default {
       if (this.team_data.selected_pokemon[1] === undefined) {
         return this.ally_data.selected_pokemon[1];
       }
-      return this.team_data.selected_pokemon[1];
+      return parseInt(this.team_data.selected_pokemon[1]);
     },
     first_slot_team() {
       if (this.team === 'enemy') {

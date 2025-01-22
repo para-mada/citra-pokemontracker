@@ -3,7 +3,6 @@ import {InBattlePokemonData} from "@/api/InBattlePokemonData";
 import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import {getSaveName, watchSave} from "@/api/saveReader";
-import {session} from '@/stores/backend'
 import {logger} from "@/api/logging";
 
 let SLOT_OFFSET = 484;
@@ -75,39 +74,21 @@ class GameData {
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
                     ipc.reply('updated_game_data', this);
                     pokemon_game.alreadySent = JSON.stringify(this);
-                    await session.post(`/api/trainers/update_live_team/`, {
-                        data: {
-                            team: this.your_data.team
-                        },
-                    }).catch(() => {
-                        console.warn('TODO: update_live_team')
-                    })
                 }
             }
-            // eslint-disable-next-line no-empty
         } catch (e) {
-            ipc.reply('stop-comms', true);
+            console.log(e)
         } finally {
+            this.is_communicating = false;
             this.comms_closed = true;
+            console.log('e2')
             citra.socket.close()
         }
-    }
-
-    async stopComms() {
-        return new Promise((resolve) => {
-            setInterval(() => {
-                if (!this.comms_closed) {
-                    this.is_communicating = false;
-                }
-                resolve()
-            }, 500)
-        })
     }
 }
 
 class TeamData {
     constructor(options) {
-        // @ts-ignore
         this.owner = options.owner;
         this.team = options.team;
         this.selected_pokemon = [];
@@ -142,7 +123,9 @@ class TeamData {
         for (const dex_number of selected_pokemon_dex) {
             if (!raw_dex) {
                 let slot = this.findSelectedMon(dex_number);
-                this.selected_pokemon.push(slot)
+                if (slot) {
+                    this.selected_pokemon.push(parseInt(slot))
+                }
             } else {
                 this.selected_pokemon.push(dex_number)
             }
@@ -359,42 +342,6 @@ class CombatData {
             this.ally_npc_battle_data = [];
         }
     }
-
-    async debugFunction(citra, rom) {
-        let first_pokemon_address = 138309784;
-        let second_pokemon_address = 138545352;
-        let third_pokemon_address = 138780920;
-        let fourth_pokemon_address = 139016488;
-        let fifth_pokemon_address = 139252056;
-        let sixth_pokemon_address = 139487624;
-
-        let multi_address = 136355224;
-        let multi_first_pokemon_address = multi_address - this.addresses.multi_combat_mongap;
-        let multi_second_pokemon_address = multi_address;
-        let multi_third_pokemon_address = multi_address + this.addresses.multi_combat_mongap;
-        let multi_fourth_pokemon_address = multi_address + this.addresses.multi_combat_mongap * 2;
-
-        let multi_first_dex_number = (await citra.readMemory(multi_first_pokemon_address, 2)).readUInt16LE()
-        let multi_second_dex_number = (await citra.readMemory(multi_second_pokemon_address, 2)).readUInt16LE()
-        let multi_third_dex_number = (await citra.readMemory(multi_third_pokemon_address, 2)).readUInt16LE()
-        let multi_fourth_dex_number = (await citra.readMemory(multi_fourth_pokemon_address, 2)).readUInt16LE()
-
-        console.log(
-            multi_first_dex_number,
-            multi_second_dex_number,
-            multi_third_dex_number,
-            multi_fourth_dex_number,
-        )
-
-        let first_dex_number = (await citra.readMemory(first_pokemon_address, 2)).readUInt16LE()
-        let second_dex_number = (await citra.readMemory(second_pokemon_address, 2)).readUInt16LE()
-        let third_dex_number = (await citra.readMemory(third_pokemon_address, 2)).readUInt16LE()
-        let fourth_dex_number = (await citra.readMemory(fourth_pokemon_address, 2)).readUInt16LE()
-        let fifth_dex_number = (await citra.readMemory(fifth_pokemon_address, 2)).readUInt16LE()
-        let sixth_dex_number = (await citra.readMemory(sixth_pokemon_address, 2)).readUInt16LE()
-
-        console.log(first_dex_number, second_dex_number, third_dex_number, fourth_dex_number, fifth_dex_number, sixth_dex_number)
-    }
 }
 
 export class PokemonGame {
@@ -431,13 +378,10 @@ export class PokemonGame {
 
     startComms(ipc, save_file_path, win) {
         this.alreadySent = null;
-        this.data.is_communicating = true;
-        this.data.startComms(this.rom, ipc, this, save_file_path, win).catch(() => {
-
-        });
-    }
-
-    async stop() {
-        await this.data.stopComms();
+        if (!this.data.is_communicating) {
+            this.data.is_communicating = true;
+            this.data.startComms(this.rom, ipc, this, save_file_path, win).catch(()=>{
+            });
+        }
     }
 }

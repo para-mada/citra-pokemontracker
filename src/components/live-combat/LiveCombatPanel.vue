@@ -55,6 +55,7 @@ import EnemyCombatPanel from "@/components/live-combat/normal-combat/EnemyCombat
 import DoubleCombatPanel from "@/components/live-combat/dual-combat/DoubleCombatPanel";
 import LivePokemonTeamPanel from '@/components/LivePokemonTeamPanel';
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
+import {useGameStore} from "@/stores/app";
 
 export default {
   name: "LiveCombatPanel",
@@ -68,14 +69,15 @@ export default {
     LivePokemonTeamPanel,
     PokemonTeamList
   },
-  props: {
-    game_data: {
-      type: Object,
-      required: true
-    }
+  computed: {
+    store () {
+      return useGameStore();
+    },
+    game_data () {
+      return this.store.game_data;
+    },
   },
   mounted() {
-    console.log(this.game_data)
   }
 }
 </script>

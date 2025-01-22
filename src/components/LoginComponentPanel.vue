@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {login_session} from "@/stores";
+import {login_session, session} from "@/stores";
 import SvgIcon from '@jamescoyle/vue-icon';
 import {mdiKey, mdiAccount} from '@mdi/js';
 
@@ -75,13 +75,19 @@ export default {
       login_session.post('/user/login/', {
         username: this.username,
         password: this.password
-      }).then((response) => {
+      }).then(async (response) => {
         localStorage.setItem('api_token', response.data.token);
-        this.$emit('login');
-        this.loading = false;
+        await session.get(`api/trainers/get_trainer/`).then((response) => {
+          localStorage.setItem('trainer_id', response.data.id)
+        }).catch(() => {
+          session.get(`api/trainers/get_coached_trainer/`).then((response) => {
+            localStorage.setItem('trainer_id', response.data.id)
+          })
+        })
+        this.$router.push('/');
       }).catch((error_response) => {
+        console.log(error_response)
         this.request = error_response.response.data
-        this.loading = false;
       })
     }
   }
