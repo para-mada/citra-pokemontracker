@@ -10,40 +10,40 @@
         to="/"
         text="Combates"/>
     <v-btn
-      v-if="logged_in"
-      to="/showdown"
-      text="Showdown"/>
+        v-if="logged_in"
+        to="/showdown"
+        text="Showdown"/>
     <v-btn
-      v-if="logged_in"
-      variant="text"
-      @click="download_save"
-      text="Descargar Save"/>
+        v-if="logged_in"
+        variant="text"
+        @click="download_save"
+        text="Descargar Save"/>
     <v-btn
-      v-if="logged_in"
-      to="/boxes"
-      text="Cajas"/>
+        v-if="logged_in"
+        to="/boxes"
+        text="Cajas"/>
     <v-btn
-      v-if="logged_in"
-      to="/team"
-      text="Equipo"/>
+        v-if="logged_in"
+        to="/team"
+        text="Equipo"/>
     <v-btn
-      v-if="logged_in"
-      to="/wildcards"
-      text="Comodines"/>
+        v-if="logged_in"
+        to="/wildcards"
+        text="Comodines"/>
     <v-spacer></v-spacer>
     <v-btn
-      v-if="logged_in"
-      @click="log_off"
-      text="Cerrar Sesión"/>
+        v-if="logged_in"
+        @click="log_off"
+        text="Cerrar Sesión"/>
     <CoinsComponent
-      v-if="logged_in"
-      :coins="this.economy"/>
+        v-if="logged_in"
+        :coins="this.economy"/>
   </v-app-bar>
 </template>
 
 <script>
 import CoinsComponent from '@/components/basic-comps/CoinsComponent';
-import {session} from "@/stores";
+import {session, emitter} from "@/stores";
 import {useGameStore} from "@/stores/app";
 
 export default {
@@ -102,9 +102,9 @@ export default {
       this.log_off();
     }
 
-    setInterval(() => {
-      this.economy = parseInt(localStorage.getItem('coins'));
-    }, 5000)
+    emitter.on('coins_updated', (data) => {
+      this.economy = data;
+    })
 
     if (this.$route.name === '/login' && this.logged_in) {
       this.$router.push('/');

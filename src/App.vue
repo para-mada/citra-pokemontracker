@@ -1,6 +1,48 @@
 <template>
   <v-app style="background: url('./assets/kalos.png') no-repeat fixed; background-size: cover">
+    <v-snackbar
+        max-width="400"
+        closable
+        color="success"
+        border="start"
+        location="top right"
+        v-model="notification_alert"
+        close-delay="2000"
+        transition="v-slide-x-transition">
+      <div class="text-subtitle-1 pb-2">{{notification.title}}</div>
+      <p>{{ notification.message }}</p>
+      <template v-slot:actions>
+        <v-btn
+            color="red"
+            variant="text"
+            @click="notification_alert = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     <router-view/>
+    <v-snackbar
+        max-width="400"
+        closable
+        :color="action_notification.type"
+        border="start"
+        location="bottom center"
+        v-model="action_notification_alert"
+        close-delay="2000"
+        transition="v-slide-y-transition">
+      <div class="text-subtitle-1 pb-2">{{ action_notification.title }}</div>
+      <p>{{ action_notification.message }}</p>
+      <template v-slot:actions>
+        <v-btn
+            color="red"
+            variant="text"
+            @click="action_notification_alert = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     <UpdateDialog :update_data="update_data" v-if="update_dialog"/>
     <v-dialog v-model="logoff_dialog">
       <v-row class="h-100 w-100" justify="center" align="center">
@@ -34,8 +76,9 @@
 <!--suppress JSUnresolvedFunction -->
 <script>
 import UpdateDialog from '@/components/UpdateDialog';
-
+import {session, emitter} from "@/stores";
 const {useGameStore} = require("@/stores/app");
+
 export default {
   name: 'App',
   components: {
@@ -49,10 +92,30 @@ export default {
         progress: 69,
         version: '0.0.0'
       },
-      logoff_dialog: false
+      logoff_dialog: false,
+      action_notification_alert: false,
+      action_notification: {
+        title: '',
+        message: ''
+      },
+      notification_alert: false,
+      notification: {
+        type: 'success',
+        title: '¡Notificación!',
+        message: 'Archivo de guardado descargado con éxito!',
+      },
     }
   },
   methods: {
+    refresh_economy() {
+      session.get(`api/trainers/get_economy/`).then((response) => {
+        if (this.economy !== response.data) {
+          localStorage.setItem('coins', response.data);
+          emitter.emit('coins_updated', response.data)
+          this.economy = response.data
+        }
+      });
+    },
     log_off() {
       localStorage.removeItem('api_token');
       localStorage.removeItem('trainer_id');
@@ -80,6 +143,26 @@ export default {
       this.update_data = data;
     })
     window.electron.startComms()
+
+    emitter.on('notification', (data) => {
+      this.notification_alert = true;
+      this.notification = {
+        title: data.title,
+        message: data.message
+      }
+    });
+    emitter.on('action-notification', (data) => {
+      this.action_notification_alert = true;
+
+      this.action_notification = {
+        type: data.type || 'success',
+        title: data.title,
+        message: data.message
+      }
+    });
+    this.interval = setInterval(() => {
+      this.refresh_economy();
+    }, 5000);
   }
 }
 </script>
