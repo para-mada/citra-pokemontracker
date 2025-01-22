@@ -4,6 +4,7 @@ import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import {getSaveName, watchSave} from "@/api/saveReader";
 import {session} from '@/stores/backend'
+import {logger} from "@/api/logging";
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 232;
@@ -27,7 +28,8 @@ const CombatEnv = Object.freeze({
 
 const TeamOwner = Object.freeze({
     YOU: 'YOU',
-    ENEMY: 'ENEMY'
+    ENEMY: 'ENEMY',
+    ALLY: 'ALLY'
 });
 
 class GameData {
@@ -36,41 +38,39 @@ class GameData {
         this.combat_info = new CombatData(options.combat_info);
         this.your_data = new TeamData(options.your_data);
         this.enemy_data = new TeamData(options.enemy_data);
+        this.ally_data = new TeamData(options.ally_data);
+        this.comms_closed = true;
     }
 
-    async startComms(rom, ipc, pokemon_game, save_file_path) {
+    async startComms(rom, ipc, pokemon_game, save_file_path, win) {
         let citra = new CitraClient();
         try {
+            this.comms_closed = false;
             let trainer_name;
             await citra.readMemory(0, 1).then(() => {
                 trainer_name = getSaveName(save_file_path);
                 ipc.reply('trainer_name', trainer_name);
-                watchSave(save_file_path)
+                watchSave(win, save_file_path)
             });
 
             while (this.is_communicating) {
                 await this.combat_info.startComms(rom, this, citra);
                 await this.your_data.startComms(rom, this, this.combat_info.addresses.ally, this.combat_info.ally_selected, citra);
-                await this.enemy_data.startComms(rom, this, this.combat_info.addresses.enemy, this.combat_info.enemy_selected, citra);
+                await this.enemy_data.startComms(rom, this, this.combat_info.addresses.enemy, this.combat_info.enemy_selected, citra, true);
+                await this.ally_data.startComms(rom, this, this.combat_info.addresses.ally, this.combat_info.ally_selected, citra, true);
 
                 let your_team_length = this.your_data.team.filter((pokemon) => pokemon && validatePokemon(pokemon.dex_number)).length
                 for (let slot = 0; slot < your_team_length; slot++) {
                     let pokemon = this.your_data.team[slot];
                     if (!pokemon) continue;
                     pokemon.discovered = true;
-                    pokemon.battle_data = this.combat_info.ally_battle_data[slot];
+                    pokemon.battle_data = this.combat_info.your_battle_data[slot];
                 }
 
-                let enemy_team_length = this.enemy_data.team.filter((pokemon) => pokemon && validatePokemon(pokemon.dex_number)).length
-                for (let slot = 0; slot < enemy_team_length; slot++) {
-                    let pokemon = this.enemy_data.team[slot];
-                    if (!pokemon) continue;
-                    let included = this.enemy_data.discovered_pokemons.includes(slot.toString());
-                    if (included) {
-                        pokemon.discovered = true;
-                    }
-                    pokemon.battle_data = this.combat_info.enemy_battle_data[slot];
+                if (this.combat_info.enemy_battle_data.length > 0) {
+                    this.enemy_data.team = this.combat_info.enemy_battle_data;
                 }
+                this.ally_data.team = this.combat_info.ally_npc_battle_data;
 
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
                     ipc.reply('updated_game_data', this);
@@ -86,10 +86,22 @@ class GameData {
             }
             // eslint-disable-next-line no-empty
         } catch (e) {
-        } finally {
             ipc.reply('stop-comms', true);
+        } finally {
+            this.comms_closed = true;
             citra.socket.close()
         }
+    }
+
+    async stopComms() {
+        return new Promise((resolve) => {
+            setInterval(() => {
+                if (!this.comms_closed) {
+                    this.is_communicating = false;
+                }
+                resolve()
+            }, 500)
+        })
     }
 }
 
@@ -120,17 +132,20 @@ class TeamData {
         }
     }
 
-    async startComms(rom, game_data, addresses, selected_pokemon_dex, citra) {
+    async startComms(rom, game_data, addresses, selected_pokemon_dex, citra, raw_dex = false) {
         await this.loadPokemonData(rom, game_data, addresses, citra);
         this.selected_pokemon = [];
         if (!game_data.combat_info.in_combat) {
             return;
         }
 
-
         for (const dex_number of selected_pokemon_dex) {
-            let slot = this.findSelectedMon(dex_number);
-            this.selected_pokemon.push(slot)
+            if (!raw_dex) {
+                let slot = this.findSelectedMon(dex_number);
+                this.selected_pokemon.push(slot)
+            } else {
+                this.selected_pokemon.push(dex_number)
+            }
         }
     }
 
@@ -179,8 +194,10 @@ class CombatData {
         this.addresses = {};
         this.enemy_selected = [];
         this.ally_selected = [];
-        this.ally_battle_data = [];
+
+        this.your_battle_data = [];
         this.enemy_battle_data = [];
+        this.ally_npc_battle_data = [];
     }
 
     async getAddresses(rom, citra) {
@@ -255,12 +272,19 @@ class CombatData {
         let fifth_pokemon_address = this.addresses.current_opponent_address + (this.addresses.multi_combat_mongap * 3);
         let sixth_pokemon_address = this.addresses.current_opponent_address + (this.addresses.multi_combat_mongap * 4);
 
-        let first_dex_number = (await citra.readMemory(first_pokemon_address, 2)).readUInt16LE()
-        let second_dex_number = (await citra.readMemory(second_pokemon_address, 2)).readUInt16LE()
-        let third_dex_number = (await citra.readMemory(third_pokemon_address, 2)).readUInt16LE()
-        let fourth_dex_number = (await citra.readMemory(fourth_pokemon_address, 2)).readUInt16LE()
-        let fifth_dex_number = (await citra.readMemory(fifth_pokemon_address, 2)).readUInt16LE()
-        let sixth_dex_number = (await citra.readMemory(sixth_pokemon_address, 2)).readUInt16LE()
+        let first_data = await citra.readMemory(first_pokemon_address, 332);
+        let second_data = await citra.readMemory(second_pokemon_address, 332);
+        let third_data = await citra.readMemory(third_pokemon_address, 332);
+        let fourth_data = await citra.readMemory(fourth_pokemon_address, 332);
+        let fifth_data = await citra.readMemory(fifth_pokemon_address, 332);
+        let sixth_data = await citra.readMemory(sixth_pokemon_address, 332);
+
+        let first_dex_number = first_data.subarray(0, 2).readUInt16LE()
+        let second_dex_number = second_data.subarray(0, 2).readUInt16LE()
+        let third_dex_number = third_data.subarray(0, 2).readUInt16LE()
+        let fourth_dex_number = fourth_data.subarray(0, 2).readUInt16LE()
+        let fifth_dex_number = fifth_data.subarray(0, 2).readUInt16LE()
+        let sixth_dex_number = sixth_data.subarray(0, 2).readUInt16LE()
 
         if (validatePokemon(sixth_dex_number) || validatePokemon(fifth_dex_number)) {
             if (this.combat_env === CombatEnv.WILD) {
@@ -290,39 +314,77 @@ class CombatData {
         if (this.in_combat) {
             let [combatType, allySelected, enemySelected] = await this.getCombatData(citra);
             this.combat_type = combatType;
-            this.enemy_selected = enemySelected;
+            this.enemy_selected = enemySelected.filter(item => !!item).map(item => item.toString());
             this.ally_selected = allySelected;
             let combat_data_address = rom.getBattleDataAddress(this.combat_env);
-            let your_team_length = game_data.your_data.team.filter((pokemon) => pokemon && validatePokemon(pokemon.dex_number)).length
-            for (let slot = 0; slot < your_team_length; slot++) {
-                let slot_address = combat_data_address + (slot * rom.mongap)
-                let mon_data = await citra.readMemory(slot_address, rom.slot_data_size)
-                this.ally_battle_data[slot] = new InBattlePokemonData(rom, mon_data);
-            }
+            let total_combat_data_slots = 24;
 
-            let enemy_team_length = game_data.enemy_data.team.filter((pokemon) => pokemon && validatePokemon(pokemon.dex_number)).length
-            for (let slot = 0; slot < enemy_team_length; slot++) {
-                let slot_address = combat_data_address + ((your_team_length + slot) * rom.mongap)
-                let mon_data = await citra.readMemory(slot_address, rom.slot_data_size)
-                this.enemy_battle_data[slot] = new InBattlePokemonData(rom, mon_data);
+            this.your_battle_data = [];
+            this.enemy_battle_data = [];
+            this.ally_npc_battle_data = [];
+
+            // eslint-disable-next-line no-unused-vars
+            let your_slots = [0, 1, 2, 3, 4, 5];
+            // eslint-disable-next-line no-unused-vars
+            const ally_npc_slots = [6, 7, 8, 9, 10, 11];
+            // eslint-disable-next-line no-unused-vars
+            const enemy_slots = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+
+            for (let slot = 0; slot < total_combat_data_slots; slot++) {
+                let slot_address = combat_data_address + (slot * rom.mongap);
+                let mon_data = await citra.readMemory(slot_address, rom.slot_data_size);
+                let pokemon = new InBattlePokemonData(rom, mon_data);
+                if (pokemon && !validatePokemon(pokemon.dex_number)) {
+                    continue
+                }
+
+                if (your_slots.includes(pokemon.battle_slot)) {
+                    this.your_battle_data.push(pokemon);
+                } else if (ally_npc_slots.includes(pokemon.battle_slot)) {
+                    this.ally_npc_battle_data.push(pokemon);
+                } else if (enemy_slots.includes(pokemon.battle_slot)) {
+                    this.enemy_battle_data.push(pokemon);
+                } else {
+                    logger.error(`team not found for battle data slot ${slot} with data ${pokemon}`)
+                }
             }
 
         } else {
             this.combat_type = CombatType.OFF;
             this.enemy_selected = [];
             this.ally_selected = [];
-            this.ally_battle_data = [];
+
+            this.your_battle_data = [];
             this.enemy_battle_data = [];
+            this.ally_npc_battle_data = [];
         }
     }
 
-    async debugFunction(citra) {
+    async debugFunction(citra, rom) {
         let first_pokemon_address = 138309784;
         let second_pokemon_address = 138545352;
         let third_pokemon_address = 138780920;
         let fourth_pokemon_address = 139016488;
         let fifth_pokemon_address = 139252056;
         let sixth_pokemon_address = 139487624;
+
+        let multi_address = 136355224;
+        let multi_first_pokemon_address = multi_address - this.addresses.multi_combat_mongap;
+        let multi_second_pokemon_address = multi_address;
+        let multi_third_pokemon_address = multi_address + this.addresses.multi_combat_mongap;
+        let multi_fourth_pokemon_address = multi_address + this.addresses.multi_combat_mongap * 2;
+
+        let multi_first_dex_number = (await citra.readMemory(multi_first_pokemon_address, 2)).readUInt16LE()
+        let multi_second_dex_number = (await citra.readMemory(multi_second_pokemon_address, 2)).readUInt16LE()
+        let multi_third_dex_number = (await citra.readMemory(multi_third_pokemon_address, 2)).readUInt16LE()
+        let multi_fourth_dex_number = (await citra.readMemory(multi_fourth_pokemon_address, 2)).readUInt16LE()
+
+        console.log(
+            multi_first_dex_number,
+            multi_second_dex_number,
+            multi_third_dex_number,
+            multi_fourth_dex_number,
+        )
 
         let first_dex_number = (await citra.readMemory(first_pokemon_address, 2)).readUInt16LE()
         let second_dex_number = (await citra.readMemory(second_pokemon_address, 2)).readUInt16LE()
@@ -346,6 +408,12 @@ export class PokemonGame {
                 discovered_pokemons: [0, 1, 2, 3, 4, 5],
                 is_enemy: false
             },
+            ally_data: {
+                team: [],
+                owner: TeamOwner.ALLY,
+                discovered_pokemons: [0, 1, 2, 3, 4, 5],
+                is_enemy: false
+            },
             enemy_data: {
                 team: [],
                 owner: TeamOwner.ENEMY,
@@ -361,15 +429,15 @@ export class PokemonGame {
         });
     }
 
-    startComms(ipc, save_file_path) {
+    startComms(ipc, save_file_path, win) {
         this.alreadySent = null;
         this.data.is_communicating = true;
-        this.data.startComms(this.rom, ipc, this, save_file_path).catch(() => {
+        this.data.startComms(this.rom, ipc, this, save_file_path, win).catch(() => {
 
         });
     }
 
-    stop() {
-        this.data.is_communicating = false;
+    async stop() {
+        await this.data.stopComms();
     }
 }

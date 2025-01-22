@@ -2,7 +2,6 @@
   <v-row class="ml-2">
     <v-col cols="8">
       <SinglePokemonPanel
-          :pokemon="this.selectedPokemon"
           :team="team"
           :team_data="data"
           :enemy_data="enemy_data"
@@ -45,8 +44,6 @@ export default {
     return {
       selectedPokemon: null
     }
-  },
-  methods: {
   }
 }
 </script>

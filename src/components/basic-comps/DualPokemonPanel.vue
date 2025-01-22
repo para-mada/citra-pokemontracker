@@ -1,12 +1,16 @@
+<!--suppress JSVoidFunctionReturnValueUsed -->
 <template>
   <v-card border>
     <template v-slot:title>
-      <v-alert :color="team === 'enemy' ? 'primary' : 'success'" class="p-0">
+      <v-alert :color="team === 'enemy' ? 'error' : team === 'ally' ? 'info' : 'success'" class="p-0">
       <span v-if="team === 'enemy'">
         Pokemon enemigo
       </span>
         <span v-if="team === 'you'">
         Pokemon atacando
+      </span>
+        <span v-if="team === 'ally'">
+        Pokemon aliado atacando
       </span>
       </v-alert>
     </template>
@@ -33,9 +37,9 @@
           <v-row>
             <v-spacer/>
             <v-col class="text-center">
-            <span class="justify-center mote" :class="team === 'enemy' ? 'info' : 'success'">
-              {{ pokemon ? pokemon.mote : '???' }}
-            </span>
+              <span class="justify-center mote" :class="team === 'enemy' ? 'info' : 'success'">
+                {{ pokemon ? pokemon.mote : '???' }}
+              </span>
             </v-col>
             <v-spacer/>
           </v-row>
@@ -59,7 +63,7 @@
 import MovementCard from "@/components/basic-comps/MovementCard";
 
 export default {
-  name: "PokemonCard",
+  name: "DualPokemonPanel",
   emits: [],
   components: {
     MovementCard
@@ -70,12 +74,16 @@ export default {
       required: true
     },
     pk_slot: {
-      type: String,
-      required: true
+      type: Number,
+      required: false
     },
     team_data: {
       type: Object,
       required: true
+    },
+    ally_data: {
+      type: Object,
+      required: false
     },
     enemy_data: {
       type: Object,
@@ -85,11 +93,25 @@ export default {
   methods: {
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+    },
+    get_enemy_pokemon(dex_number) {
+      return this.team_data.team.filter(enemy => enemy && enemy.dex_number.toString() === dex_number.toString())[0]
+    },
+    get_ally_pokemon(dex_number) {
+      return this.ally_data.team.filter(ally => ally && ally.dex_number.toString() === dex_number.toString())[0]
     }
   },
   computed: {
     pokemon() {
-      return this.team_data.team[this.pk_slot];
+      if (this.team === 'enemy') {
+        return this.get_enemy_pokemon(this.pk_slot)
+      } else if (this.team === 'ally') {
+        return this.get_ally_pokemon(this.pk_slot)
+      }
+      if (this.pk_slot) {
+        return this.team_data.team[this.pk_slot];
+      }
+      return null;
     },
     pokemon_types() {
       if (this.pokemon.battle_data) {

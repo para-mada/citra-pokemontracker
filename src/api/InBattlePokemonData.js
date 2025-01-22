@@ -1,3 +1,7 @@
+import {STATICS_URL} from "@/api/poke-api";
+import {MON_DATA} from '@/data/mon_data';
+import {validatePokemon} from "@/api/PokemonTeamData";
+
 export class InBattlePokemonData {
 
     constructor(rom, data) {
@@ -6,7 +10,7 @@ export class InBattlePokemonData {
         this.form = data.slice(rom.battle_data_addresses.form).readUInt8()
         this.level = data.slice(rom.battle_data_addresses.level).readUInt8()
         this.stats = {
-            hp: data.slice(rom.battle_data_addresses.stats.hp).readUInt16LE(),
+            max_hp: data.slice(rom.battle_data_addresses.stats.max_hp).readUInt16LE(),
             attack: data.slice(rom.battle_data_addresses.stats.attack).readUInt16LE(),
             defense: data.slice(rom.battle_data_addresses.stats.defense).readUInt16LE(),
             special_attack: data.slice(rom.battle_data_addresses.stats.special_attack).readUInt16LE(),
@@ -55,6 +59,18 @@ export class InBattlePokemonData {
         if (type3 && type1 !== type3 && type2 !== type3) {
             this.types.push({name: type3})
         }
+        if (validatePokemon(this.dex_number)) {
+            try {
+                this.species = MON_DATA[this.dex_number.toString()][this.form].name;
+                this.mote = MON_DATA[this.dex_number.toString()][this.form].name;
+            } catch (e) {
+                this.species = MON_DATA[this.dex_number.toString()]['0'].name;
+                this.mote = MON_DATA[this.dex_number.toString()]['0'].name;
+            }
+        } else {
+            this.species = 'Invalid-Pokemon';
+        }
+        this.sprite_url = STATICS_URL + `/sprites/master/sprites/pokemon/${this.dex_number}.png`;
     }
 }
 

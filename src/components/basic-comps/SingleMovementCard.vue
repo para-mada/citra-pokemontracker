@@ -64,6 +64,9 @@ export default {
     },
   },
   methods: {
+    get_enemy_pokemon(dex_number) {
+      return this.enemy_data.team.filter(enemy => enemy && enemy.dex_number.toString() === dex_number.toString())[0]
+    },
     pokemon_types(pokemon) {
       if (pokemon.battle_data) {
         return pokemon.battle_data.types;
@@ -76,7 +79,7 @@ export default {
       if (!this.enemy_data) {
         return null;
       }
-      let enemy = this.enemy_data.team[this.enemy_data.selected_pokemon];
+      let enemy = this.get_enemy_pokemon(this.enemy_data.selected_pokemon);
       if (!enemy) {
         return null;
       }

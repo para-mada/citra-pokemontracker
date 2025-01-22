@@ -26,23 +26,26 @@ export class PokemonTeamData {
         return result;
     }
 
-    constructor(move_data, data) {
+    constructor(move_data, data, debug=false) {
         if (data[0] === 0) return;
         let raw_data = decryptData(data);
-        this.dex_number = struct.unpack("<H", raw_data.subarray(8, 10))[0]
+        this.dex_number = raw_data.subarray(8, 10).readUInt16LE()
         if (this.dex_number === 0 || this.dex_number >= 808) {
             return;
         }
-        this.held_item_num = struct.unpack("<H", raw_data.subarray(10, 12))[0]
-        this.ability_num = struct.unpack("B", raw_data.subarray(20, 21))[0]  // Ability
-        this.nature_num = struct.unpack("B", raw_data.subarray(28, 29))[0]   // Nature
-        this.form = struct.unpack("B", raw_data.subarray(29, 30))[0]         // FORM: mega, mega-x, mega-y, alola...
-        this.evhp = struct.unpack("B", raw_data.subarray(30, 31))[0]         // HP EV
-        this.evattack = struct.unpack("B", raw_data.subarray(31, 32))[0]     // Attack EV
-        this.evdefense = struct.unpack("B", raw_data.subarray(32, 33))[0]    // Defense EV
-        this.evspeed = struct.unpack("B", raw_data.subarray(33, 34))[0]      // Speed EV
-        this.evspatk = struct.unpack("B", raw_data.subarray(34, 35))[0]      // Special attack EV
-        this.evspdef = struct.unpack("B", raw_data.subarray(35, 36))[0]      // Special defense EV
+        if (debug) {
+            console.log(this.dex_number)
+        }
+        this.held_item_num = raw_data.subarray(10, 12).readUInt16LE()
+        this.ability_num = raw_data.subarray(20, 21).readUInt8()  // Ability
+        this.nature_num = raw_data.subarray(28, 29).readUInt8()   // Nature
+        this.form = raw_data.subarray(29, 30).readUInt8()         // FORM: mega, mega-x, mega-y, alola...
+        this.evhp = raw_data.subarray(30, 31).readUInt8()         // HP EV
+        this.evattack = raw_data.subarray(31, 32).readUInt8()     // Attack EV
+        this.evdefense = raw_data.subarray(32, 33).readUInt8()    // Defense EV
+        this.evspeed = raw_data.subarray(33, 34).readUInt8()      // Speed EV
+        this.evspatk = raw_data.subarray(34, 35).readUInt8()      // Special attack EV
+        this.evspdef = raw_data.subarray(35, 36).readUInt8()      // Special defense EV
         let mote = struct.unpack("12<H", raw_data.subarray(64, 90))
         this.moves = []
 

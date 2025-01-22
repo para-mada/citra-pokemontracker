@@ -16,7 +16,7 @@ export function getSaveName(FILE_PATH) {
     return get_string(original_thrash_nick);
 }
 
-export const watchSave = function (FILE_NAME) {
+export const watchSave = function (win, FILE_NAME) {
     if (!fs.existsSync(FILE_NAME)) {
         console.log(FILE_NAME)
         console.log('file cannot be read')
@@ -36,11 +36,15 @@ export const watchSave = function (FILE_NAME) {
             console.log('upload faked')
             return;
         }
-        session.post(`/upload_save/`, formData, {
-            headers: {
-                ...formData.getHeaders(),  // Añade los encabezados necesarios para multipart/form-data
-            },
-        }).then(() => console.log('succeeded')).catch((err) => console.error(err))
+        win.webContents.executeJavaScript('localStorage.getItem("api_token");', true)
+        .then(result => {
+            session.post(`/upload_save/`, formData, {
+                headers: {
+                    Authorization: `Token ${result}`,
+                    ...formData.getHeaders(),  // Añade los encabezados necesarios para multipart/form-data
+                },
+            }).then(() => console.log('succeeded')).catch((err) => console.error(err))
+        });
     })
 }
 export const stopWatching = function (FILE_NAME) {

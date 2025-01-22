@@ -79,12 +79,18 @@ export default {
     }
   },
   methods: {
+    get_enemy_pokemon(dex_number) {
+      return this.team_data.team.filter(enemy => enemy && enemy.dex_number.toString() === dex_number.toString())[0]
+    },
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
     }
   },
   computed: {
     pokemon() {
+      if (this.team === 'enemy') {
+        return this.get_enemy_pokemon(this.pk_slot)
+      }
       return this.team_data.team[this.pk_slot];
     },
     pokemon_types() {

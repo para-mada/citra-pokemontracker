@@ -7,21 +7,23 @@
   </v-row>
 
   <v-row v-if="game_data && game_data.combat_info.combat_type === 'DOUBLE'">
-    <v-row>
-      <DoubleCombatPanel team="enemy" :data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
-    </v-row>
-    <v-row>
-      <v-col>
-        <PokemonTeamList team="enemy" :data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
-      </v-col>
-      <v-spacer/>
-      <v-col>
-        <PokemonTeamList team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <DoubleCombatPanel team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
-    </v-row>
+    <v-col cols="12">
+      <v-row>
+        <DoubleCombatPanel team="enemy" :team_data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
+      </v-row>
+      <v-row>
+        <v-col cols="4">
+          <PokemonTeamList team="enemy" :data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
+        </v-col>
+        <v-spacer/>
+        <v-col cols="4">
+          <PokemonTeamList team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
+        </v-col>
+      </v-row>
+      <v-row>
+        <DoubleCombatPanel team="you" :team_data="game_data.your_data" :ally_data="game_data.ally_data" :enemy_data="game_data.enemy_data"/>
+      </v-row>
+    </v-col>
   </v-row>
   <v-row v-if="game_data && game_data.combat_info.combat_type === 'HORDE'">
     <v-row class="ml-2 mr-2">

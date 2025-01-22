@@ -131,8 +131,9 @@ app.on('ready', async () => {
                 });
             });
         }
-        game.stop();
-        game.startComms(ipc, SAVE_FILE_PATH);
+        game.stop().then(() => {
+            game.startComms(ipc, SAVE_FILE_PATH, win);
+        });
     });
 
     ipcMain.on('download_save', (ipc, trainer_name) => {

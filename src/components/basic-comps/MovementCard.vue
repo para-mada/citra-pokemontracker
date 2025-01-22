@@ -36,14 +36,14 @@
         </v-col>
       </v-row>
       <v-row v-if="enemy_data">
-        <v-col sm v-for="(enemy_slot, index) in enemy_data.selected_pokemon" :key="index" class="pr-0">
-          <div v-if="category !== 'Status'">
-            <v-img :src="enemy_data.team[enemy_slot].sprite_url" width="64" aspect-ratio="1/1"></v-img>
+        <v-col sm v-for="(enemy_dex, index) in enemy_data.selected_pokemon" :key="index" class="pr-0">
+          <div v-if="category !== 'Status' && get_enemy_pokemon(enemy_dex)">
+            <v-img :src="get_enemy_pokemon(enemy_dex).sprite_url" width="64" aspect-ratio="1/1"></v-img>
             <v-badge
                 bordered
-                v-if="multiplier(enemy_data.team[enemy_slot]) !== null"
-                :content="`x${multiplier(enemy_data.team[enemy_slot])}`"
-                :color="multiplier(enemy_data.team[enemy_slot]) > 1 ? 'success' : multiplier(enemy_data.team[enemy_slot]) < 1 ? 'error' : 'info'"
+                v-if="multiplier(get_enemy_pokemon(enemy_dex)) !== null"
+                :content="`x${multiplier(get_enemy_pokemon(enemy_dex))}`"
+                :color="multiplier(get_enemy_pokemon(enemy_dex)) > 1 ? 'success' : multiplier(get_enemy_pokemon(enemy_dex)) < 1 ? 'error' : 'info'"
                 inline
             ></v-badge>
           </div>
@@ -113,6 +113,9 @@ export default {
         return pokemon.battle_data.types;
       }
       return pokemon.types;
+    },
+    get_enemy_pokemon(dex_number) {
+      return this.enemy_data.team.filter(enemy => enemy && enemy.dex_number.toString() === dex_number.toString())[0]
     }
   },
   computed: {
