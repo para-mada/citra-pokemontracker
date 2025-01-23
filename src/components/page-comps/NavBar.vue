@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import CoinsComponent from '@/components/basic-comps/CoinsComponent';
+import CoinsComponent from '@/components/page-comps/CoinsComponent';
 import {session, emitter} from "@/stores";
 import {useGameStore} from "@/stores/app";
 
@@ -71,7 +71,7 @@ export default {
   data() {
     const token = localStorage.getItem('api_token');
     return {
-      economy: parseInt(localStorage.getItem('coins')),
+      economy: parseInt(localStorage.getItem('coins') || 0),
       logged_in: token && token.length > 0
     }
   },

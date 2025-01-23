@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import NavBar from "@/components/basic-comps/NavBar";
-import LoginComponentPanel from "@/components/LoginComponentPanel";
+import NavBar from "@/components/page-comps/NavBar";
+import LoginComponentPanel from "@/components/page-comps/LoginComponentPanel";
 
 export default {
   name: 'LoginPage',

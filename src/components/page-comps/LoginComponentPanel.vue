@@ -77,14 +77,17 @@ export default {
         password: this.password
       }).then(async (response) => {
         localStorage.setItem('api_token', response.data.token);
-        await session.get(`api/trainers/get_trainer/`).then((response) => {
-          localStorage.setItem('trainer_id', response.data.id)
-        }).catch(() => {
-          session.get(`api/trainers/get_coached_trainer/`).then((response) => {
-            localStorage.setItem('trainer_id', response.data.id)
-          })
-        })
-        this.$router.push('/');
+        let trainer_response;
+
+        try {
+          trainer_response = await session.get(`api/trainers/get_trainer/`);
+        } catch (e) {
+          trainer_response = await session.get(`api/trainers/get_coached_trainer/`);
+        } finally {
+          localStorage.setItem('trainer_id', trainer_response.data.id)
+          this.$router.push('/');
+        }
+
       }).catch((error_response) => {
         console.log(error_response)
         this.request = error_response.response.data

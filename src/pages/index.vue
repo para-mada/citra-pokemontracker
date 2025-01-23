@@ -13,7 +13,7 @@
 
 <script>
 import LiveCombatPanel from "@/components/live-combat/LiveCombatPanel";
-import NavBar from "@/components/basic-comps/NavBar";
+import NavBar from "@/components/page-comps/NavBar";
 
 
 export default {

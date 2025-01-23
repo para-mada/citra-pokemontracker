@@ -55,8 +55,8 @@ class GameData {
             while (this.is_communicating) {
                 await this.combat_info.startComms(rom, this, citra);
                 await this.your_data.startComms(rom, this, this.combat_info.addresses.ally, this.combat_info.ally_selected, citra);
-                await this.enemy_data.startComms(rom, this, this.combat_info.addresses.enemy, this.combat_info.enemy_selected, citra, true);
-                await this.ally_data.startComms(rom, this, this.combat_info.addresses.ally, this.combat_info.ally_selected, citra, true);
+                await this.enemy_data.startComms(rom, this, this.combat_info.addresses.enemy, this.combat_info.enemy_selected, citra);
+                await this.ally_data.startComms(rom, this, this.combat_info.addresses.ally, this.combat_info.ally_selected, citra);
 
                 let your_team_length = this.your_data.team.filter((pokemon) => pokemon && validatePokemon(pokemon.dex_number)).length
                 for (let slot = 0; slot < your_team_length; slot++) {
@@ -91,29 +91,13 @@ class TeamData {
     constructor(options) {
         this.owner = options.owner;
         this.team = options.team;
+        this.team_data = [];
         this.selected_pokemon = [];
         this.discovered_pokemons = options.discovered_pokemons;
         this.is_enemy = options.is_enemy;
     }
 
-    findSelectedMon(dex_number) {
-        for (let slot in Object.keys(this.team)) {
-            let pokemon = this.team[slot]
-            if (!pokemon) {
-                continue;
-            }
-
-            if (dex_number === pokemon.dex_number) {
-                if (slot && this.discovered_pokemons.includes(slot.toString())) {
-                    return slot;
-                }
-                this.discovered_pokemons.push(slot);
-                return slot;
-            }
-        }
-    }
-
-    async startComms(rom, game_data, addresses, selected_pokemon_dex, citra, raw_dex = false) {
+    async startComms(rom, game_data, addresses, selected_pokemon_dex, citra) {
         await this.loadPokemonData(rom, game_data, addresses, citra);
         this.selected_pokemon = [];
         if (!game_data.combat_info.in_combat) {
@@ -121,14 +105,7 @@ class TeamData {
         }
 
         for (const dex_number of selected_pokemon_dex) {
-            if (!raw_dex) {
-                let slot = this.findSelectedMon(dex_number);
-                if (slot) {
-                    this.selected_pokemon.push(parseInt(slot))
-                }
-            } else {
-                this.selected_pokemon.push(dex_number)
-            }
+            this.selected_pokemon.push(parseInt(dex_number || 0))
         }
     }
 
@@ -160,9 +137,17 @@ class TeamData {
                 let pokemon = new PokemonTeamData(move_data, data);
                 if (validatePokemon(pokemon.dex_number)) {
                     if (JSON.stringify(this.team[slot]) === JSON.stringify(pokemon)) return;
-                    this.team[slot] = pokemon;
+                    if (this.owner === TeamOwner.YOU) {
+                        this.team[slot] = pokemon;
+                    } else if(this.owner === TeamOwner.ENEMY){
+                        this.team_data[slot] = pokemon;
+                    }
                 } else {
-                    this.team[slot] = null;
+                    if (this.owner === TeamOwner.YOU) {
+                        this.team[slot] = null;
+                    } else if(this.owner === TeamOwner.ENEMY){
+                        this.team_data[slot] = null;
+                    }
                 }
             }
         }

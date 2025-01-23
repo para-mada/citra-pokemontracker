@@ -75,7 +75,7 @@
 
 <!--suppress JSUnresolvedFunction -->
 <script>
-import UpdateDialog from '@/components/UpdateDialog';
+import UpdateDialog from '@/components/page-comps/UpdateDialog';
 import {session, emitter} from "@/stores";
 const {useGameStore} = require("@/stores/app");
 
@@ -128,7 +128,6 @@ export default {
   },
   mounted() {
     window.electron.onDataReceived('updated_game_data', async (event, data) => {
-      console.log(data)
       this.store.activate(data);
     });
 

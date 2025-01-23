@@ -91,11 +91,20 @@ export default {
     }
   },
   methods: {
+    get_imposter_pokemon(dex_number) {
+      return this.enemy_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+    },
+    get_imposter_pokemon_data(dex_number) {
+      return this.enemy_data.team_data.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+    },
+    get_pokemon(dex_number) {
+      if (this.team === 'ally') {
+        this.get_ally_pokemon(dex_number);
+      }
+      return this.team_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+    },
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
-    },
-    get_enemy_pokemon(dex_number) {
-      return this.team_data.team.filter(enemy => enemy && enemy.dex_number.toString() === dex_number.toString())[0]
     },
     get_ally_pokemon(dex_number) {
       return this.ally_data.team.filter(ally => ally && ally.dex_number.toString() === dex_number.toString())[0]
@@ -103,15 +112,18 @@ export default {
   },
   computed: {
     pokemon() {
-      if (this.team === 'enemy') {
-        return this.get_enemy_pokemon(this.pk_slot)
-      } else if (this.team === 'ally') {
-        return this.get_ally_pokemon(this.pk_slot)
+      if (!this.team_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
+        // noinspection UnnecessaryLocalVariableJS
+        const imposter = this.get_imposter_pokemon(this.pk_slot); // TODO: esto tambien cambiaria los stat boosts, ashuda
+
+        if (this.team === 'you') {
+          let data = this.get_imposter_pokemon_data(this.pk_slot);
+          imposter.moves = data.moves;
+        }
+
+        return imposter;
       }
-      if (this.pk_slot !== undefined) {
-        return this.team_data.team[this.pk_slot];
-      }
-      return null;
+      return this.get_pokemon(this.pk_slot);
     },
     pokemon_types() {
       if (this.pokemon.battle_data) {

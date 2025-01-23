@@ -1,17 +1,10 @@
 <template>
-  <v-row class="ml-2">
-    <v-col cols="8">
-      <SinglePokemonPanel
-          :team="team"
-          :team_data="data"
-          :enemy_data="enemy_data"
-          :pk_slot="this.data.selected_pokemon[0]"
-      />
-    </v-col>
-    <v-col sm cols="4">
-      <PokemonTeamList :team="team" :data="this.data" :enemy_data="enemy_data"/>
-    </v-col>
-  </v-row>
+  <v-col cols="8">
+    <SinglePokemonPanel :team="team" :team_data="team_data" :enemy_data="enemy_data" :pk_slot="this.team_data.selected_pokemon[0]"/>
+  </v-col>
+  <v-col cols="4">
+    <PokemonTeamList :team="team" :data="this.team_data" :enemy_data="enemy_data"/>
+  </v-col>
 </template>
 
 <script>
@@ -25,7 +18,7 @@ export default {
     SinglePokemonPanel,
   },
   props: {
-    data: {
+    team_data: {
       type: Object,
       required: true
     },
@@ -38,8 +31,7 @@ export default {
       required: true
     }
   },
-  computed: {
-  },
+  computed: {},
   data() {
     return {
       selectedPokemon: null
