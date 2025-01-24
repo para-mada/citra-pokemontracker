@@ -12,7 +12,7 @@ import SinglePokemonPanel from '@/components/basic-comps/SinglePokemonPanel';
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
 
 export default {
-  name: "CombatPanel",
+  name: "SingleCombatPanel",
   components: {
     PokemonTeamList,
     SinglePokemonPanel,

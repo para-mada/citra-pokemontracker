@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import LiveCombatPanel from "@/components/live-combat/LiveCombatPanel";
+import LiveCombatPanel from "@/components/page-comps/LiveCombatPanel";
 import NavBar from "@/components/page-comps/NavBar";
 
 

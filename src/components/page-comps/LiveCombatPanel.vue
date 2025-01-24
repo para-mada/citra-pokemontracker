@@ -39,7 +39,7 @@
     </v-row>
     <v-row class="ml-2 mr-2">
       <v-col cols="8">
-        <HordeAllyCombatPanel team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
+        <HordeAllyCombatPanel team="you" :team_data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
       </v-col>
       <v-col cols="4">
         <PokemonTeamList team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
@@ -58,7 +58,7 @@ import SingleCombatPanel from "@/components/live-combat/normal-combat/SingleComb
 import HordeCombatPanel from "@/components/live-combat/horde-combat/HordeCombatPanel";
 import HordeAllyCombatPanel from "@/components/live-combat/horde-combat/HordeAllyCombatPanel";
 import DoubleCombatPanel from "@/components/live-combat/dual-combat/DoubleCombatPanel";
-import LivePokemonTeamPanel from '@/components/LivePokemonTeamPanel';
+import LivePokemonTeamPanel from '@/components/live-combat/LivePokemonTeamPanel';
 import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
 import {useGameStore} from "@/stores/app";
 

@@ -5,8 +5,7 @@ import struct from 'python-struct';
 import {decryptData} from "./PokemonCrypt";
 import {STATICS_URL} from './poke-api'
 import {Movement} from "./movement";
-import {readFileSync} from 'fs'
-import path from "path";
+import {MON_DATA, ITEM_DATA, ABILITY_DATA, NATURE_DATA, POKEMON_FORMS_DATA} from '@/data/mon_data';
 
 export function validatePokemon(dex_number) {
     return dex_number >= 1 && dex_number <= 808;
@@ -74,34 +73,37 @@ export class PokemonTeamData {
         this.ivspdef = (ivloc >> 25) & 31                                      // Special defense IV
         this.sprite_url = STATICS_URL + `/sprites/master/sprites/pokemon/${this.dex_number}.png`;
         this.mote = this.cleanNickData(mote);
-        let mon_data_file = readFileSync(path.join(__static, 'data', 'mon_data.json')).toString();
-        let pokemon_forms_data_file = readFileSync(path.join(__static, 'data', 'pokemon_forms.json')).toString();
-        let item_data_file = readFileSync(path.join(__static, 'data', 'item_data.json')).toString();
-        let ability_data_file = readFileSync(path.join(__static, 'data', 'ability_data.json')).toString();
-        let nature_data_file = readFileSync(path.join(__static, 'data', 'nature_data.json')).toString();
-        let item_data = JSON.parse(item_data_file);
-        let ability_data = JSON.parse(ability_data_file);
-        let nature_data = JSON.parse(nature_data_file);
-        let pokedata = JSON.parse(mon_data_file);
-        let formdata = JSON.parse(pokemon_forms_data_file);
         let pokemon;
 
-        this.ability_name = ability_data[this.ability_num].name;
-        this.nature_name = nature_data[this.nature_num].name;
-        this.item_name = item_data[this.held_item_num].name;
+        let ability;
+        let nature;
+        let item;
+        try {
+            ability = ABILITY_DATA[this.ability_num.toString()];
+            nature = NATURE_DATA[this.nature_num.toString()];
+            item = ITEM_DATA[this.held_item_num.toString()];
+
+            this.ability_name = ability.name;
+            this.nature_name = nature.name;
+            this.item_name = item.name;
+        } catch (e) {
+            console.log(this.ability_num, this.nature_num, this.held_item_num)
+            console.log(ability, nature, item)
+        }
 
         try {
-            if (this.dex_number in formdata) {
-                let form = formdata[this.dex_number][this.form];
-                if (form in pokedata[this.dex_number]) {
-                    pokemon = pokedata[this.dex_number][form];
+            if (this.dex_number in POKEMON_FORMS_DATA) {
+                let form = POKEMON_FORMS_DATA[this.dex_number.toString()][this.form.toString()];
+                if (form in MON_DATA[this.dex_number.toString()]) {
+                    pokemon = MON_DATA[this.dex_number.toString()][form.toString()];
                 } else {
-                    pokemon = pokedata[this.dex_number]["0"]
+                    pokemon = MON_DATA[this.dex_number.toString()]["0"]
                 }
             } else {
-                pokemon = pokedata[this.dex_number]["0"]
+                pokemon = MON_DATA[this.dex_number.toString()]["0"]
             }
         } catch (e) {
+            console.log(e)
             console.error('failed for pokemon dex: ', this.dex_number)
             return;
         }

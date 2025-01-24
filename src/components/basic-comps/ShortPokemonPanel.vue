@@ -42,7 +42,7 @@
 <script>
 
 export default {
-  name: "PokemonCard",
+  name: "ShortPokemonPanel",
   emits: [],
   components: {},
   props: {
@@ -65,6 +65,9 @@ export default {
   },
   methods: {
     get_imposter_pokemon(dex_number) {
+      if (!dex_number) {
+        return null;
+      }
       return this.enemy_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
     },
     get_imposter_pokemon_data(dex_number) {

@@ -6,7 +6,7 @@
   },
   "description": "This project is supposed to help you get help while playing",
   "name": "poke-mada",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

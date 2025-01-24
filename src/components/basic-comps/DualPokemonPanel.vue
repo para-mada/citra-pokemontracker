@@ -24,7 +24,7 @@
             <v-col cols="6">
               <v-row class="pa-0 ma-0">
                 <v-col cols="12" class="pa-0 ma-0">
-                  <v-badge bordered
+                  <v-badge bordered v-if="this.team !== 'you'"
                            :color="get_pokemon_boost('attack') < 0? 'error' : get_pokemon_boost('attack') > 0 ? 'success' : 'info'"
                            :content="`Ataque: ${get_pokemon_boost('attack')}`"/>
                 </v-col>
@@ -33,8 +33,8 @@
                            :color="get_pokemon_boost('defense') < 0? 'error' : get_pokemon_boost('defense') > 0 ? 'success' : 'info'"
                            :content="`Defensa: ${get_pokemon_boost('defense')}`"/>
                 </v-col>
-                <v-col cols="12" class="pa-0 ma-0">
-                  <v-badge bordered
+                <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
+                  <v-badge bordered v-if="this.team !== 'you'"
                            :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
                            :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
                 </v-col>
@@ -53,7 +53,7 @@
                            :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
                            :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
                 </v-col>
-                <v-col cols="12" class="pa-0 ma-0">
+                <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
                   <v-badge bordered
                            :color="get_pokemon_boost('accuracy') < 0? 'error' : get_pokemon_boost('accuracy') > 0 ? 'success' : 'info'"
                            :content="`Precisión: ${get_pokemon_boost('accuracy')}`"/>
@@ -130,7 +130,10 @@ export default {
   },
   methods: {
     get_imposter_pokemon(dex_number) {
-      return this.enemy_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+      if (dex_number) {
+        return this.enemy_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+      }
+      return null
     },
     get_pokemon_boost(stat) {
       if (!this.pokemon) {
@@ -139,9 +142,15 @@ export default {
       if (this.pokemon.battle_data) {
         return this.pokemon.battle_data.boosts[stat];
       }
-      return this.pokemon.boosts[stat];
+      if (this.pokemon.boosts) {
+        return this.pokemon.boosts[stat];
+      }
+      return 0;
     },
     get_imposter_pokemon_data(dex_number) {
+      if (!dex_number) {
+        return null;
+      }
       return this.enemy_data.team_data.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
     },
     get_pokemon(dex_number) {
@@ -159,8 +168,12 @@ export default {
   },
   computed: {
     pokemon() {
+      if (!this.pk_slot) {
+        return null;
+      }
       if (!this.team_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
-        if (this.ally_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
+
+        if (this.ally_data && this.ally_data.team && this.ally_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
           return this.get_pokemon(this.pk_slot)
         }
         // noinspection UnnecessaryLocalVariableJS
@@ -168,7 +181,12 @@ export default {
 
         if (this.team === 'you') {
           let data = this.get_imposter_pokemon_data(this.pk_slot);
-          imposter.moves = data.moves;
+          if (data) {
+            imposter.moves = data.moves;
+          } else {
+            console.log(this.pk_slot)
+            console.log(this.team_data.team)
+          }
         }
 
         return imposter;

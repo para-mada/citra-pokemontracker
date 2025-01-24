@@ -1,3 +1,4 @@
+<!--suppress JSVoidFunctionReturnValueUsed -->
 <template>
   <v-card type="primary" class="mt-2" border color="#CACACA">
     <v-alert :color="team === 'enemy' ? 'primary' : 'success'" class="p-0">
@@ -9,14 +10,14 @@
           </span>
     </v-alert>
     <v-row class="mt-1">
-      <v-col cols="2" v-bind="props">
+      <v-col cols="2">
         <v-row>
           <v-col cols="6">
             <v-img :src="pokemon ? pokemon.sprite_url : missingno" width="96"/>
           </v-col>
           <v-col cols="6">
             <v-row class="pa-0 ma-0">
-              <v-col cols="12" class="pa-0 ma-0">
+              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
                 <v-badge bordered
                          :color="get_pokemon_boost('attack') < 0? 'error' : get_pokemon_boost('attack') > 0 ? 'success' : 'info'"
                          :content="`Ataque: ${get_pokemon_boost('attack')}`"/>
@@ -26,7 +27,7 @@
                          :color="get_pokemon_boost('defense') < 0? 'error' : get_pokemon_boost('defense') > 0 ? 'success' : 'info'"
                          :content="`Defensa: ${get_pokemon_boost('defense')}`"/>
               </v-col>
-              <v-col cols="12" class="pa-0 ma-0">
+              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
                 <v-badge bordered
                          :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
                          :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
@@ -46,7 +47,7 @@
                          :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
                          :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
               </v-col>
-              <v-col cols="12" class="pa-0 ma-0">
+              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
                 <v-badge bordered
                          :color="get_pokemon_boost('accuracy') < 0? 'error' : get_pokemon_boost('accuracy') > 0 ? 'success' : 'info'"
                          :content="`Precisión: ${get_pokemon_boost('accuracy')}`"/>
@@ -93,7 +94,7 @@
 import SingleMovementCard from "@/components/basic-comps/SingleMovementCard";
 
 export default {
-  name: "PokemonCard",
+  name: "SinglePokemonPanel",
   emits: [],
   components: {
     SingleMovementCard
@@ -118,6 +119,9 @@ export default {
   },
   methods: {
     get_imposter_pokemon(dex_number) {
+      if (!dex_number) {
+        return null;
+      }
       return this.enemy_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
     },
     get_pokemon_boost(stat) {
@@ -127,13 +131,22 @@ export default {
       if (this.pokemon.battle_data) {
         return this.pokemon.battle_data.boosts[stat];
       }
-      return this.pokemon.boosts[stat];
+      if (this.pokemon.boosts) {
+        return this.pokemon.boosts[stat];
+      }
+      return 0;
     },
     get_imposter_pokemon_data(dex_number) {
-      return this.enemy_data.team_data.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+      if (!dex_number) {
+        return null;
+      }
+      return this.enemy_data.team_data.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0];
     },
     get_pokemon(dex_number) {
-      return this.team_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
+      if (!dex_number) {
+        return null;
+      }
+      return this.team_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0];
     },
     type_name(val) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -141,13 +154,23 @@ export default {
   },
   computed: {
     pokemon() {
-      if (!this.team_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
+      if (!this.pk_slot) {
+        return null;
+      }
+      if (!this.team_data.team.filter(pokemon => !!pokemon).map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
         // noinspection UnnecessaryLocalVariableJS
         const imposter = this.get_imposter_pokemon(this.pk_slot); // TODO: esto tambien cambiaria los stat boosts, ashuda
+        console.log(this.team_data)
+        console.log(this.pk_slot)
 
-        if (this.team === 'you') {
+        if (this.team === 'you' && imposter) {
           let data = this.get_imposter_pokemon_data(this.pk_slot);
-          imposter.moves = data.moves;
+          if (data) {
+            imposter.moves = data.moves;
+          } else {
+            console.log(this.pk_slot)
+            console.log(this.team_data.team)
+          }
         }
 
         return imposter;
