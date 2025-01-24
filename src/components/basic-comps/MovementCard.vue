@@ -38,7 +38,7 @@
       <v-row v-if="enemy_data">
         <v-col sm v-for="(enemy_dex, index) in enemy_data.selected_pokemon" :key="index" class="pr-0">
           <div v-if="category !== 'Status' && get_enemy_pokemon(enemy_dex)">
-            <v-img :src="get_enemy_pokemon(enemy_dex).sprite_url" width="64" aspect-ratio="1/1"></v-img>
+            <v-img :src="get_enemy_pokemon(enemy_dex).sprite_url" width="64" aspect-ratio="1/1" />
             <v-badge
                 bordered
                 v-if="multiplier(get_enemy_pokemon(enemy_dex)) !== null"
