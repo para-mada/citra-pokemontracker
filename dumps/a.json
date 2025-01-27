@@ -1,0 +1,744 @@
+{
+  "discovered_pokemons": [],
+  "is_enemy": true,
+  "owner": "ENEMY",
+  "selected_pokemon": [
+    20
+  ],
+  "team": [
+    {
+      "battle_slot": 12,
+      "boosts": {
+        "accuracy": 0,
+        "attack": 0,
+        "defense": 0,
+        "evasion": 0,
+        "special_attack": 0,
+        "special_defense": 0,
+        "speed": 0
+      },
+      "dex_number": 20,
+      "form": 0,
+      "level": 63,
+      "mote": "Raticate",
+      "species": "Raticate",
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+      "stats": {
+        "attack": 120,
+        "defense": 103,
+        "max_hp": 156,
+        "special_attack": 81,
+        "special_defense": 96,
+        "speed": 141
+      },
+      "status": "",
+      "types": [
+        {
+          "name": "Normal"
+        }
+      ]
+    },
+    {
+      "battle_slot": 13,
+      "boosts": {
+        "accuracy": 0,
+        "attack": 0,
+        "defense": 0,
+        "evasion": 0,
+        "special_attack": 0,
+        "special_defense": 0,
+        "speed": 0
+      },
+      "dex_number": 190,
+      "form": 0,
+      "level": 63,
+      "mote": "Aipom",
+      "species": "Aipom",
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png",
+      "stats": {
+        "attack": 107,
+        "defense": 88,
+        "max_hp": 156,
+        "special_attack": 69,
+        "special_defense": 88,
+        "speed": 125
+      },
+      "status": "",
+      "types": [
+        {
+          "name": "Normal"
+        }
+      ]
+    },
+    {
+      "battle_slot": 14,
+      "boosts": {
+        "accuracy": 0,
+        "attack": 0,
+        "defense": 0,
+        "evasion": 0,
+        "special_attack": 0,
+        "special_defense": 0,
+        "speed": 0
+      },
+      "dex_number": 718,
+      "form": 0,
+      "level": 63,
+      "mote": "Zygarde",
+      "species": "Zygarde",
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/718.png",
+      "stats": {
+        "attack": 144,
+        "defense": 171,
+        "max_hp": 222,
+        "special_attack": 132,
+        "special_defense": 124,
+        "speed": 138
+      },
+      "status": "",
+      "types": [
+        {
+          "name": "Dragon"
+        },
+        {
+          "name": "Ground"
+        }
+      ]
+    },
+    {
+      "battle_slot": 15, // 15 = 16???    # 16, 2, 258, 2
+      "boosts": {
+        "accuracy": 0,
+        "attack": 0,
+        "defense": 0,
+        "evasion": 0,
+        "special_attack": 0,
+        "special_defense": 0,
+        "speed": 0
+      },
+      "dex_number": 66,
+      "form": 0,
+      "level": 65,
+      "mote": "Machop",
+      "species": "Machop",
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+      "stats": {
+        "attack": 123,
+        "defense": 84,
+        "max_hp": 180,
+        "special_attack": 64,
+        "special_defense": 57,
+        "speed": 70
+      },
+      "status": "",
+      "types": [
+        {
+          "name": "Fighting"
+        }
+      ]
+    },
+  ],
+  "team_data": [
+    {
+      "ability_name": "Water Absorb",
+      "ability_num": 11,
+      "attack": 120,
+      "cur_hp": 156,
+      "defense": 103,
+      "dex_number": 20,
+      "evattack": 0,
+      "evdefense": 0,
+      "evhp": 0,
+      "evspatk": 0,
+      "evspdef": 0,
+      "evspeed": 0,
+      "form": 2,
+      "friendship": 255,
+      "held_item_num": 0,
+      "item_name": "None",
+      "ivattack": 22,
+      "ivdefense": 22,
+      "ivhp": 22,
+      "ivspatk": 22,
+      "ivspdef": 22,
+      "ivspeed": 22,
+      "level": 63,
+      "level_met": 63,
+      "maxhp": 156,
+      "mote": "Raticate",
+      "moves": [
+        {
+          "accuracy": -1,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [
+              "ghost",
+              "psychic"
+            ],
+            "half_damage_to": [
+              "dark"
+            ],
+            "no_damage_to": [
+              "normal"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/8.png"
+          },
+          "current_pp": 5,
+          "discovered": false,
+          "flavor_text": "Si el usuario se debilita al recibir un ataque, todos\nlos PP de este último ataque serán eliminados.",
+          "max_pp": 5,
+          "move_name": "Rabia",
+          "power": -1,
+          "slot": 0,
+          "type": "Ghost"
+        },
+        {
+          "accuracy": -1,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [
+              "fighting",
+              "dragon",
+              "dark"
+            ],
+            "half_damage_to": [
+              "poison",
+              "steel",
+              "fire"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/18.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "Concentra energía durante el primer turno, de\nforma que su Velocidad, Ataque Especial y\nDefensa Especial aumenten mucho en el segundo.",
+          "max_pp": 10,
+          "move_name": "Geocontrol",
+          "power": -1,
+          "slot": 1,
+          "type": "Fairy"
+        },
+        {
+          "accuracy": 90,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [
+              "fighting",
+              "dragon",
+              "dark"
+            ],
+            "half_damage_to": [
+              "poison",
+              "steel",
+              "fire"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/18.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "El Pokémon que lo usa le hace cucamonas al\nobjetivo y lo ataca. Puede disminuir el Ataque\ndel objetivo.",
+          "max_pp": 10,
+          "move_name": "Carantoña",
+          "power": 90,
+          "slot": 2,
+          "type": "Fairy"
+        },
+        {
+          "accuracy": 100,
+          "category": "Special",
+          "coverage_data": {
+            "double_damage_to": [],
+            "half_damage_to": [
+              "rock",
+              "steel"
+            ],
+            "no_damage_to": [
+              "ghost"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/1.png"
+          },
+          "current_pp": 5,
+          "discovered": false,
+          "flavor_text": "Ataca al objetivo con un gran láser. El tipo del\nataque lo determina el cartucho que porta el\nusuario.",
+          "max_pp": 5,
+          "move_name": "Tecno Shock",
+          "power": 120,
+          "slot": 3,
+          "type": "Normal"
+        }
+      ],
+      "nature_name": "Lax",
+      "nature_num": 9,
+      "spatk": 81,
+      "spdef": 96,
+      "species": "Raticate",
+      "speed": 141,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+      "statusbyte": 0,
+      "types": [
+        {
+          "name": "normal"
+        }
+      ]
+    },
+    {
+      "ability_name": "Minus",
+      "ability_num": 58,
+      "attack": 107,
+      "cur_hp": 156,
+      "defense": 88,
+      "dex_number": 190,
+      "evattack": 0,
+      "evdefense": 0,
+      "evhp": 0,
+      "evspatk": 0,
+      "evspdef": 0,
+      "evspeed": 0,
+      "form": 2,
+      "friendship": 255,
+      "held_item_num": 0,
+      "item_name": "None",
+      "ivattack": 22,
+      "ivdefense": 22,
+      "ivhp": 22,
+      "ivspatk": 22,
+      "ivspdef": 22,
+      "ivspeed": 22,
+      "level": 63,
+      "level_met": 63,
+      "maxhp": 156,
+      "mote": "Aipom",
+      "moves": [
+        {
+          "accuracy": 90,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [
+              "grass",
+              "fairy"
+            ],
+            "half_damage_to": [
+              "poison",
+              "ground",
+              "rock",
+              "ghost"
+            ],
+            "no_damage_to": [
+              "steel"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/4.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "Envenena gravemente al objetivo y causa un daño\nmayor en cada turno.",
+          "max_pp": 10,
+          "move_name": "Tóxico",
+          "power": -1,
+          "slot": 0,
+          "type": "Poison"
+        },
+        {
+          "accuracy": 95,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [
+              "flying",
+              "water"
+            ],
+            "half_damage_to": [
+              "grass",
+              "electric",
+              "dragon"
+            ],
+            "no_damage_to": [
+              "ground"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/13.png"
+          },
+          "current_pp": 15,
+          "discovered": false,
+          "flavor_text": "Usa colmillos electrificados para morder. Puede\nhacer que el objetivo retroceda o se paralice.",
+          "max_pp": 15,
+          "move_name": "Colmillo Rayo",
+          "power": 65,
+          "slot": 1,
+          "type": "Electric"
+        },
+        {
+          "accuracy": 100,
+          "category": "Special",
+          "coverage_data": {
+            "double_damage_to": [
+              "bug",
+              "steel",
+              "grass",
+              "ice"
+            ],
+            "half_damage_to": [
+              "rock",
+              "fire",
+              "water",
+              "dragon"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/10.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "Envuelve en llamas y daña al objetivo. Puede\naumentar el Ataque Especial de quien lo usa.",
+          "max_pp": 10,
+          "move_name": "Danza Llama",
+          "power": 80,
+          "slot": 2,
+          "type": "Fire"
+        },
+        {
+          "accuracy": 100,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [
+              "ground",
+              "rock",
+              "water"
+            ],
+            "half_damage_to": [
+              "flying",
+              "poison",
+              "bug",
+              "steel",
+              "fire",
+              "grass",
+              "dragon"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/12.png"
+          },
+          "current_pp": 30,
+          "discovered": false,
+          "flavor_text": "Dispara rápido de dos a cinco ráfagas de semillas\nde manera consecutiva.",
+          "max_pp": 30,
+          "move_name": "Semilladora",
+          "power": 25,
+          "slot": 3,
+          "type": "Grass"
+        }
+      ],
+      "nature_name": "Quirky",
+      "nature_num": 24,
+      "spatk": 69,
+      "spdef": 88,
+      "species": "Aipom",
+      "speed": 125,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png",
+      "statusbyte": 0,
+      "types": [
+        {
+          "name": "normal"
+        }
+      ]
+    },
+    {
+      "ability_name": "Guts",
+      "ability_num": 62,
+      "attack": 144,
+      "cur_hp": 222,
+      "defense": 171,
+      "dex_number": 718,
+      "evattack": 0,
+      "evdefense": 0,
+      "evhp": 0,
+      "evspatk": 0,
+      "evspdef": 0,
+      "evspeed": 0,
+      "form": 4,
+      "friendship": 255,
+      "held_item_num": 0,
+      "item_name": "None",
+      "ivattack": 22,
+      "ivdefense": 22,
+      "ivhp": 22,
+      "ivspatk": 22,
+      "ivspdef": 22,
+      "ivspeed": 22,
+      "level": 63,
+      "level_met": 63,
+      "maxhp": 222,
+      "mote": "Zygarde",
+      "moves": [
+        {
+          "accuracy": -1,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [],
+            "half_damage_to": [
+              "rock",
+              "steel"
+            ],
+            "no_damage_to": [
+              "ghost"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/1.png"
+          },
+          "current_pp": 5,
+          "discovered": false,
+          "flavor_text": "Si un Pokémon escucha este canto y no es\ncambiado por otro en tres turnos, acaba\ndebilitándose.",
+          "max_pp": 5,
+          "move_name": "Canto Mortal",
+          "power": -1,
+          "slot": 0,
+          "type": "Normal"
+        },
+        {
+          "accuracy": 100,
+          "category": "Special",
+          "coverage_data": {
+            "double_damage_to": [
+              "fighting",
+              "poison"
+            ],
+            "half_damage_to": [
+              "steel",
+              "psychic"
+            ],
+            "no_damage_to": [
+              "dark"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/14.png"
+          },
+          "current_pp": 25,
+          "discovered": false,
+          "flavor_text": "Débil ataque telequinético que puede causar\nconfusión.",
+          "max_pp": 25,
+          "move_name": "Confusión",
+          "power": 50,
+          "slot": 1,
+          "type": "Psychic"
+        },
+        {
+          "accuracy": 100,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [
+              "grass",
+              "fairy"
+            ],
+            "half_damage_to": [
+              "poison",
+              "ground",
+              "rock",
+              "ghost"
+            ],
+            "no_damage_to": [
+              "steel"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/4.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "El usuario arroja sus jugos biliares al objetivo, lo\nque anula el efecto de la habilidad en uso.",
+          "max_pp": 10,
+          "move_name": "Bilis",
+          "power": -1,
+          "slot": 2,
+          "type": "Poison"
+        },
+        {
+          "accuracy": -1,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [],
+            "half_damage_to": [
+              "rock",
+              "steel"
+            ],
+            "no_damage_to": [
+              "ghost"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/1.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "Gran bostezo que induce al sueño al objetivo en\nel siguiente turno.",
+          "max_pp": 10,
+          "move_name": "Bostezo",
+          "power": -1,
+          "slot": 3,
+          "type": "Normal"
+        }
+      ],
+      "nature_name": "Rash",
+      "nature_num": 19,
+      "spatk": 132,
+      "spdef": 124,
+      "species": "Zygarde",
+      "speed": 138,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/718.png",
+      "statusbyte": 0,
+      "types": [
+        {
+          "name": "dragon"
+        },
+        {
+          "name": "ground"
+        }
+      ]
+    },
+    {
+      "ability_name": "Serene Grace",
+      "ability_num": 32,
+      "attack": 123,
+      "cur_hp": 180,
+      "defense": 84,
+      "dex_number": 66,
+      "evattack": 0,
+      "evdefense": 0,
+      "evhp": 0,
+      "evspatk": 0,
+      "evspdef": 0,
+      "evspeed": 0,
+      "form": 0,
+      "friendship": 255,
+      "held_item_num": 0,
+      "item_name": "None",
+      "ivattack": 22,
+      "ivdefense": 22,
+      "ivhp": 22,
+      "ivspatk": 22,
+      "ivspdef": 22,
+      "ivspeed": 22,
+      "level": 65,
+      "level_met": 65,
+      "maxhp": 180,
+      "mote": "Machop",
+      "moves": [
+        {
+          "accuracy": 100,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [
+              "ground",
+              "rock",
+              "water"
+            ],
+            "half_damage_to": [
+              "flying",
+              "poison",
+              "bug",
+              "steel",
+              "fire",
+              "grass",
+              "dragon"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/12.png"
+          },
+          "current_pp": 25,
+          "discovered": false,
+          "flavor_text": "Azota al objetivo con ramas finas.",
+          "max_pp": 25,
+          "move_name": "Látigo Cepa",
+          "power": 45,
+          "slot": 0,
+          "type": "Grass"
+        },
+        {
+          "accuracy": 100,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [
+              "bug",
+              "steel",
+              "grass",
+              "ice"
+            ],
+            "half_damage_to": [
+              "rock",
+              "fire",
+              "water",
+              "dragon"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/10.png"
+          },
+          "current_pp": 15,
+          "discovered": false,
+          "flavor_text": "El Pokémon se cubre de llamas y carga contra el\nobjetivo, aunque él también recibe daños. Puede\nquemar.",
+          "max_pp": 15,
+          "move_name": "Envite Ígneo",
+          "power": 120,
+          "slot": 1,
+          "type": "Fire"
+        },
+        {
+          "accuracy": 90,
+          "category": "Physical",
+          "coverage_data": {
+            "double_damage_to": [],
+            "half_damage_to": [
+              "rock",
+              "steel"
+            ],
+            "no_damage_to": [
+              "ghost"
+            ],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/1.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "Golpea al objetivo dos veces seguidas con la cola\nu otras partes de su cuerpo.",
+          "max_pp": 10,
+          "move_name": "Doble Golpe",
+          "power": 35,
+          "slot": 2,
+          "type": "Normal"
+        },
+        {
+          "accuracy": -1,
+          "category": "Non-Damaging",
+          "coverage_data": {
+            "double_damage_to": [
+              "grass",
+              "psychic",
+              "dark"
+            ],
+            "half_damage_to": [
+              "fighting",
+              "flying",
+              "poison",
+              "ghost",
+              "steel",
+              "fire",
+              "fairy"
+            ],
+            "no_damage_to": [],
+            "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-vi/x-y/7.png"
+          },
+          "current_pp": 10,
+          "discovered": false,
+          "flavor_text": "El usuario llama a sus súbditos para que lo curen.\nRecupera hasta la mitad de los PS máximos.",
+          "max_pp": 10,
+          "move_name": "Auxilio",
+          "power": -1,
+          "slot": 3,
+          "type": "Bug"
+        }
+      ],
+      "nature_name": "Naive",
+      "nature_num": 14,
+      "spatk": 64,
+      "spdef": 57,
+      "species": "Machop",
+      "speed": 70,
+      "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png",
+      "statusbyte": 0,
+      "types": [
+        {
+          "name": "fighting"
+        }
+      ]
+    },
+    null,
+    null
+  ]
+}

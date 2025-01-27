@@ -4,6 +4,7 @@ import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import {getSaveName, watchSave} from "@/api/saveReader";
 import {logger} from "@/api/logging";
+import {MON_DATA} from '@/data/mon_data'
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 232;
@@ -72,6 +73,7 @@ class GameData {
                 this.ally_data.team = this.combat_info.ally_npc_battle_data;
 
                 if (pokemon_game.alreadySent !== JSON.stringify(this)) {
+                    logger.info(this.enemy_data)
                     ipc.reply('updated_game_data', this);
                     pokemon_game.alreadySent = JSON.stringify(this);
                 }
@@ -104,8 +106,13 @@ class TeamData {
             return;
         }
 
-        for (const dex_number of selected_pokemon_dex) {
-            this.selected_pokemon.push(parseInt(dex_number || 0))
+        if (game_data.combat_info.next_pokemon && this.owner === TeamOwner.ENEMY) {
+            const filtered = this.team_data.filter(pokemon => pokemon && pokemon.species.toLowerCase() === game_data.combat_info.next_pokemon);
+            this.selected_pokemon.push(filtered[0].dex_number)
+        } else {
+            for (const dex_number of selected_pokemon_dex) {
+                this.selected_pokemon.push(parseInt(dex_number || 0))
+            }
         }
     }
 
@@ -166,6 +173,8 @@ class CombatData {
         this.your_battle_data = [];
         this.enemy_battle_data = [];
         this.ally_npc_battle_data = [];
+        this.combat_log_messages = [];
+        this.next_pokemon = null;
     }
 
     async getAddresses(rom, citra) {
@@ -280,6 +289,20 @@ class CombatData {
     async startComms(rom, game_data, citra) {
         this.addresses = await this.getAddresses(rom, citra)
         if (this.in_combat) {
+            const combatLogMessageBytes = await citra.readMemory(0x8523114, 152);
+            const combat_log_message = combatLogMessageBytes.toString('utf16le').replace('\n', ' ');
+            if (!this.combat_log_messages.includes(combat_log_message)) {
+                this.combat_log_messages.push(combat_log_message);
+            }
+
+            if (combat_log_message.includes('va a sacar a ')) {
+                const removed_trainer_thrash = combat_log_message.split('va a sacar a ')[1];
+                const next_pokemon = removed_trainer_thrash.split('!')[0]
+                this.next_pokemon = next_pokemon.toLowerCase();
+            } else {
+                this.next_pokemon = null;
+            }
+
             let [combatType, allySelected, enemySelected] = await this.getCombatData(citra);
             this.combat_type = combatType;
             this.enemy_selected = enemySelected.filter(item => !!item).map(item => item.toString());
@@ -321,6 +344,8 @@ class CombatData {
             this.combat_type = CombatType.OFF;
             this.enemy_selected = [];
             this.ally_selected = [];
+            this.combat_log_messages = [];
+            this.next_pokemon = null;
 
             this.your_battle_data = [];
             this.enemy_battle_data = [];
