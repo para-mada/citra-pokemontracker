@@ -8,6 +8,19 @@
         <SingleCombatPanel team="enemy" :team_data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
       </v-row>
       <v-row>
+        <v-col cols="4">
+          <v-card>
+            <template v-slot:text>
+              <v-row>
+                <v-col>
+                  <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
+                </v-col>
+              </v-row>
+            </template>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row>
         <SingleCombatPanel team="you" :team_data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
       </v-row>
     </v-col>
@@ -21,7 +34,17 @@
         <v-col cols="4">
           <PokemonTeamList team="enemy" :data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
         </v-col>
-        <v-spacer/>
+        <v-col cols="4">
+          <v-card>
+            <template v-slot:text>
+              <v-row>
+                <v-col>
+                  <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
+                </v-col>
+              </v-row>
+            </template>
+          </v-card>
+        </v-col>
         <v-col cols="4">
           <PokemonTeamList team="you" :data="game_data.your_data" :enemy_data="game_data.enemy_data"/>
         </v-col>
@@ -35,6 +58,19 @@
     <v-row class="ml-2 mr-2">
       <v-col cols="12">
         <HordeCombatPanel team="enemy" :data="game_data.enemy_data" :enemy_data="game_data.your_data"/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="4">
+        <v-card>
+          <template v-slot:text>
+            <v-row>
+              <v-col>
+                <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
+              </v-col>
+            </v-row>
+          </template>
+        </v-card>
       </v-col>
     </v-row>
     <v-row class="ml-2 mr-2">
@@ -51,6 +87,9 @@
       <v-alert color="error">WIP</v-alert>
     </v-col>
   </v-row>
+  <v-dialog v-model="coverage_table_display">
+    <CoverageTableDisplay :combat_data="this.game_data" @close_display="this.coverage_table_display = false;"/>
+  </v-dialog>
 </template>
 
 <script>
@@ -59,7 +98,8 @@ import HordeCombatPanel from "@/components/live-combat/horde-combat/HordeCombatP
 import HordeAllyCombatPanel from "@/components/live-combat/horde-combat/HordeAllyCombatPanel";
 import DoubleCombatPanel from "@/components/live-combat/dual-combat/DoubleCombatPanel";
 import LivePokemonTeamPanel from '@/components/live-combat/LivePokemonTeamPanel';
-import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
+import PokemonTeamList from '@/components/basic-comps/DetailPokemonTeamList';
+import CoverageTableDisplay from "@/components/basic-comps/CoverageTableDisplay";
 import {useGameStore} from "@/stores/app";
 
 export default {
@@ -70,7 +110,8 @@ export default {
     HordeCombatPanel,
     DoubleCombatPanel,
     LivePokemonTeamPanel,
-    PokemonTeamList
+    PokemonTeamList,
+    CoverageTableDisplay,
   },
   computed: {
     store () {
@@ -80,7 +121,10 @@ export default {
       return this.store.game_data;
     },
   },
-  mounted() {
+  data() {
+    return {
+      coverage_table_display: false
+    }
   }
 }
 </script>

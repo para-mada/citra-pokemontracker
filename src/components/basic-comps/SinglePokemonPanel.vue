@@ -15,9 +15,9 @@
           <v-col cols="6">
             <v-img :src="pokemon ? pokemon.sprite_url : missingno" width="96"/>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="6" v-if="team !== 'you'">
             <v-row class="pa-0 ma-0">
-              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
+              <v-col cols="12" class="pa-0 ma-0">
                 <v-badge bordered
                          :color="get_pokemon_boost('attack') < 0? 'error' : get_pokemon_boost('attack') > 0 ? 'success' : 'info'"
                          :content="`Ataque: ${get_pokemon_boost('attack')}`"/>
@@ -27,7 +27,7 @@
                          :color="get_pokemon_boost('defense') < 0? 'error' : get_pokemon_boost('defense') > 0 ? 'success' : 'info'"
                          :content="`Defensa: ${get_pokemon_boost('defense')}`"/>
               </v-col>
-              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
+              <v-col cols="12" class="pa-0 ma-0">
                 <v-badge bordered
                          :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
                          :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
@@ -47,7 +47,7 @@
                          :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
                          :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
               </v-col>
-              <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
+              <v-col cols="12" class="pa-0 ma-0">
                 <v-badge bordered
                          :color="get_pokemon_boost('accuracy') < 0? 'error' : get_pokemon_boost('accuracy') > 0 ? 'success' : 'info'"
                          :content="`Precisión: ${get_pokemon_boost('accuracy')}`"/>
@@ -77,6 +77,52 @@
         </v-row>
         <p class="text-center font-weight-bold">{{ pokemon ? pokemon.species : '???' }}</p>
         <p class="text-center">{{ pokemon ? pokemon_types.map((v) => v.name).join("/") : '???' }}</p>
+        <v-row v-if="team === 'you'" class="w-100" justify="center">
+          <v-col cols="12" class="pa-0 ma-0">
+            <v-row>
+              <v-spacer/>
+              <v-col>
+                <v-badge bordered
+                     :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
+                     :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
+              </v-col>
+              <v-spacer/>
+            </v-row>
+          </v-col>
+          <v-col cols="12" class="pa-0 ma-0">
+            <v-row>
+              <v-spacer/>
+              <v-col>
+                <v-badge bordered
+                     :color="get_pokemon_boost('special_defense') < 0? 'error' : get_pokemon_boost('special_defense') > 0 ? 'success' : 'info'"
+                     :content="`Defensa Especial: ${get_pokemon_boost('special_defense')}`"/>
+              </v-col>
+              <v-spacer/>
+            </v-row>
+          </v-col>
+          <v-col cols="12" class="pa-0 ma-0">
+            <v-row>
+              <v-spacer/>
+              <v-col>
+                <v-badge bordered
+                     :color="get_pokemon_boost('speed') < 0? 'error' : get_pokemon_boost('speed') > 0 ? 'success' : 'info'"
+                     :content="`Velocidad: ${get_pokemon_boost('speed')}`"/>
+              </v-col>
+              <v-spacer/>
+            </v-row>
+          </v-col>
+          <v-col cols="12" class="pa-0 ma-0">
+            <v-row>
+              <v-spacer/>
+              <v-col>
+                <v-badge bordered
+                     :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
+                     :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
+              </v-col>
+              <v-spacer/>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="8" v-if="team === 'you'">
         <v-row v-if="pokemon">

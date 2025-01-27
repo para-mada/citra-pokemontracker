@@ -78,7 +78,7 @@ export default {
     },
     get_stat_offensive_multiplier(stat) {
       let simplifier = 2;
-      let base = simplifier + (1 * stat)
+      let base = simplifier + Math.abs(stat)
       if (stat < 1) {
         return simplifier / base;
       }
@@ -86,7 +86,7 @@ export default {
     },
     get_stat_strategical_multiplier(stat) {
       let simplifier = 3;
-      let base = simplifier + (1 * stat)
+      let base = simplifier + Math.abs(stat)
       if (stat < 1) {
         return simplifier / base;
       }
@@ -168,7 +168,8 @@ export default {
       }
     },
     accuracy_multiplier() {
-      return this.get_stat_strategical_multiplier('accuracy')
+      let accuracy = this.get_pokemon_boost('accuracy');
+      return this.get_stat_strategical_multiplier(accuracy);
     },
   }
 }

@@ -9,7 +9,7 @@
 
 <script>
 import SinglePokemonPanel from '@/components/basic-comps/SinglePokemonPanel';
-import PokemonTeamList from '@/components/basic-comps/PokemonTeamList';
+import PokemonTeamList from '@/components/basic-comps/DetailPokemonTeamList';
 
 export default {
   name: "SingleCombatPanel",
