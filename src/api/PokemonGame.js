@@ -297,7 +297,9 @@ class CombatData {
                 move_log_address = rom.log_addresses.move_log.multi;
             }
             const combatLogMessageBytes = await citra.readMemory(0x8523114, 152);
-            const combat_log_message = combatLogMessageBytes.toString('utf16le').replace('\n', ' ').replace('\u0010\u0001븀', ' ').split('\u0000')[0];
+            const combat_log_message = combatLogMessageBytes.toString('utf16le').replace('\n', ' ')
+                .replace('\u0010\u0001븀', ' ')
+                .split('\u0000')[0];
             const move_log_message = (await citra.readMemory(move_log_address, 152)).toString('utf16le')
                 .replace('\n', ' ')
                 .replace('\u0010', '')
@@ -305,6 +307,8 @@ class CombatData {
                 .replace('\xC8', '')
                 .replace('\x82', '')
                 .replace('Ȃ', '')
+                .replace('+ ȁ♣', '')
+                .replace('♣', '')
                 .replace('\u0010', '')
                 .replace('\u0001', '')
                 .replace('븀', '')
