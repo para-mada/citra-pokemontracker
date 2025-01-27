@@ -15,6 +15,9 @@
                 <v-col>
                   <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
                 </v-col>
+                <v-col>
+                  <v-btn text="Log de combate" color="teal" @click="this.combat_log_display = true;"/>
+                </v-col>
               </v-row>
             </template>
           </v-card>
@@ -40,6 +43,9 @@
               <v-row>
                 <v-col>
                   <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
+                </v-col>
+                <v-col>
+                  <v-btn text="Log de combate" color="teal" @click="this.combat_log_display = true;"/>
                 </v-col>
               </v-row>
             </template>
@@ -68,6 +74,9 @@
               <v-col>
                 <v-btn text="Tabla de Tipos" color="teal" @click="this.coverage_table_display = true;"/>
               </v-col>
+              <v-col>
+                <v-btn text="Log de combate" color="teal" @click="this.combat_log_display = true;"/>
+              </v-col>
             </v-row>
           </template>
         </v-card>
@@ -89,6 +98,22 @@
   </v-row>
   <v-dialog v-model="coverage_table_display">
     <CoverageTableDisplay :combat_data="this.game_data" @close_display="this.coverage_table_display = false;"/>
+  </v-dialog>
+  <v-dialog v-model="combat_log_display">
+    <v-row>
+      <v-spacer @click="combat_log_display = false;"/>
+      <v-col>
+        <v-card max-height="75vh">
+          <v-data-table-virtual
+              hide-default-footer
+              height="55vh"
+              density="comfortable"
+              :items="[...game_data.combat_info.combat_move_log_messages].reverse()"
+              item-value="message"/>
+        </v-card>
+      </v-col>
+      <v-spacer @click="combat_log_display = false;"/>
+    </v-row>
   </v-dialog>
 </template>
 
@@ -118,13 +143,17 @@ export default {
       return useGameStore();
     },
     game_data () {
+      console.log(this.store.game_data.combat_info)
       return this.store.game_data;
     },
   },
   data() {
     return {
+      combat_log_display: false,
       coverage_table_display: false
     }
+  },
+  mounted() {
   }
 }
 </script>

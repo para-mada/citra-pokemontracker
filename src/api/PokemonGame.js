@@ -146,13 +146,13 @@ class TeamData {
                     if (JSON.stringify(this.team[slot]) === JSON.stringify(pokemon)) return;
                     if (this.owner === TeamOwner.YOU) {
                         this.team[slot] = pokemon;
-                    } else if(this.owner === TeamOwner.ENEMY){
+                    } else if (this.owner === TeamOwner.ENEMY) {
                         this.team_data[slot] = pokemon;
                     }
                 } else {
                     if (this.owner === TeamOwner.YOU) {
                         this.team[slot] = null;
-                    } else if(this.owner === TeamOwner.ENEMY){
+                    } else if (this.owner === TeamOwner.ENEMY) {
                         this.team_data[slot] = null;
                     }
                 }
@@ -174,6 +174,7 @@ class CombatData {
         this.enemy_battle_data = [];
         this.ally_npc_battle_data = [];
         this.combat_log_messages = [];
+        this.combat_move_log_messages = [];
         this.next_pokemon = null;
     }
 
@@ -289,10 +290,43 @@ class CombatData {
     async startComms(rom, game_data, citra) {
         this.addresses = await this.getAddresses(rom, citra)
         if (this.in_combat) {
+            let move_log_address;
+            if (this.combat_type === CombatType.NORMAL) {
+                move_log_address = rom.log_addresses.move_log.single;
+            } else if (this.combat_type === CombatType.DOUBLE) {
+                move_log_address = rom.log_addresses.move_log.multi;
+            }
             const combatLogMessageBytes = await citra.readMemory(0x8523114, 152);
-            const combat_log_message = combatLogMessageBytes.toString('utf16le').replace('\n', ' ');
+            const combat_log_message = combatLogMessageBytes.toString('utf16le').replace('\n', ' ').replace('\u0010\u0001븀', ' ').split('\u0000')[0];
+            const move_log_message = (await citra.readMemory(move_log_address, 152)).toString('utf16le')
+                .replace('\n', ' ')
+                .replace('\u0010', '')
+                .replace('\u0002', '')
+                .replace('\xC8', '')
+                .replace('\x82', '')
+                .replace('Ȃ', '')
+                .replace('\u0010', '')
+                .replace('\u0001', '')
+                .replace('븀', '')
+                .split('\u0000')[0];
+
             if (!this.combat_log_messages.includes(combat_log_message)) {
                 this.combat_log_messages.push(combat_log_message);
+            }
+            if (move_log_message) {
+                const ssidByteArray = Buffer.from(move_log_message);
+                console.log(move_log_message)
+                console.log(ssidByteArray)
+                const last_move = this.combat_move_log_messages[this.combat_move_log_messages.length - 1];
+                if (last_move && last_move.message !== move_log_message) {
+                    this.combat_move_log_messages.push({
+                        message: move_log_message
+                    });
+                } else if (!last_move) {
+                    this.combat_move_log_messages.push({
+                        message: move_log_message
+                    });
+                }
             }
 
             if (combat_log_message.includes('va a sacar a ')) {
@@ -350,6 +384,7 @@ class CombatData {
             this.your_battle_data = [];
             this.enemy_battle_data = [];
             this.ally_npc_battle_data = [];
+            this.combat_move_log_messages = [];
         }
     }
 }
@@ -390,7 +425,7 @@ export class PokemonGame {
         this.alreadySent = null;
         if (!this.data.is_communicating) {
             this.data.is_communicating = true;
-            this.data.startComms(this.rom, ipc, this, save_file_path, win).catch(()=>{
+            this.data.startComms(this.rom, ipc, this, save_file_path, win).catch(() => {
             });
         }
     }

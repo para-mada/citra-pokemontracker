@@ -8,7 +8,7 @@ let STAT_DATA_OFFSET = 112
 let STAT_DATA_SIZE = 22
 
 export class RomData {
-    constructor(name, partyaddress, battlewildpartyadd, battlewildoppadd, battletrainerpartyadd, battletraineroppadd, curoppadd, wildppadd, trainerppadd, multippadd, mongap, badgeaddress, multi_combat_mongap, slot_data_size, battle_data, pokemon_battle_data_addresses, pokemon_team_data_addresses) {
+    constructor(name, partyaddress, battlewildpartyadd, battlewildoppadd, battletrainerpartyadd, battletraineroppadd, curoppadd, wildppadd, trainerppadd, multippadd, mongap, badgeaddress, multi_combat_mongap, slot_data_size, battle_data, pokemon_battle_data_addresses, pokemon_team_data_addresses, log_data) {
         this.name = name;
         this.partyAddress = partyaddress;
         this.battleWildPartyAddress = battlewildpartyadd;
@@ -26,6 +26,7 @@ export class RomData {
         this.battle_data = battle_data;
         this.battle_data_addresses = pokemon_battle_data_addresses;
         this.pokemon_team_data_addresses = pokemon_team_data_addresses;
+        this.log_addresses = log_data;
     }
 
     getBattleDataAddress(combat_env) {
@@ -90,6 +91,12 @@ export const XY = new RomData(
         types: 0xF8
     },
     {
+    },
+    {
+        move_log: {
+            multi: 0x84CF064,
+            single: 0x845C004
+        }
     }
 );
 export const ROZA = new RomData(
