@@ -1,9 +1,9 @@
 <template>
   <v-col md="6" sm="12">
-    <DualPokemonPanel :pk_slot="this.first_slot" :team="first_slot_team" :team_data="this.team_data" :enemy_data="enemy_data"/>
+    <DualPokemonPanel :pk_dex="this.first_slot" :team="first_slot_team" :team_data="this.team_data" :enemy_data="enemy_data"/>
   </v-col>
   <v-col md="6" sm="12">
-    <DualPokemonPanel :pk_slot="this.second_slot" :team="second_slot_team" :team_data="this.team_data" :enemy_data="enemy_data" :ally_data="this.ally_data"/>
+    <DualPokemonPanel :pk_dex="this.second_slot" :team="second_slot_team" :team_data="this.team_data" :enemy_data="enemy_data" :ally_data="this.ally_data"/>
   </v-col>
 </template>
 
@@ -60,7 +60,8 @@ export default {
       if (this.team === 'enemy') {
         return 'enemy';
       }
-      if (this.team_data.selected_pokemon[1] === undefined) {
+      const selected_dex = this.team_data.selected_pokemon[1];
+      if (this.ally_data && this.ally_data.team.filter(pokemon => pokemon.dex_number === selected_dex).length > 0) {
         return 'ally';
       }
       return 'you';

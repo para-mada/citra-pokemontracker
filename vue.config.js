@@ -16,7 +16,7 @@ module.exports = defineConfig({
       preload: 'src/preload.js',
       builderOptions: {
         appId: 'com.paramada.poke-mada',
-        productName: 'PokeMada',
+        productName: 'PokeBLOG',
         win: {
           target: 'nsis',
         },

@@ -2,7 +2,7 @@
   <v-app-bar :scroll-behavior="scrollBehavior" :color="this.inlive ? 'teal-darken-4' : 'purple-darken-4'" elevation="4">
     <v-app-bar-title @click="this.$router.push('/')" class="cursor-pointer">
       <span v-if="!inlive && logged_in">COACH VIEW</span>
-      <span v-if="!inlive && !logged_in">PokeMada</span>
+      <span v-if="!inlive && !logged_in">PokeBlog</span>
       <span v-if="inlive">{{ trainer_name }}</span>
     </v-app-bar-title>
     <v-btn

@@ -54,7 +54,7 @@ async function createWindow() {
         width: 1200,
         height: 873,
         icon: './public/icons/icon.png',
-        title: `Poke Mada v${autoUpdater.currentVersion}`,
+        title: `Poke Blog v${autoUpdater.currentVersion} (realmente es PokeMada pero sino mary se enoja)`,
         autoHideMenuBar: true,
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone

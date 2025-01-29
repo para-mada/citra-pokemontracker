@@ -106,10 +106,11 @@
         <v-card max-height="75vh">
           <v-data-table-virtual
               hide-default-footer
+              disable-sort
               height="55vh"
               density="comfortable"
-              :items="[...game_data.combat_info.combat_move_log_messages].reverse()"
-              item-value="message"/>
+              :headers="headers"
+              :items="move_log"/>
         </v-card>
       </v-col>
       <v-spacer @click="combat_log_display = false;"/>
@@ -143,12 +144,17 @@ export default {
       return useGameStore();
     },
     game_data () {
-      console.log(this.store.game_data.combat_info)
       return this.store.game_data;
     },
+    move_log() {
+      return [...this.game_data.combat_info.combat_move_log_messages].reverse();
+    }
   },
   data() {
     return {
+      headers: [
+        { title: 'Movement', align: 'start', key: 'key', value: 'message' },
+      ],
       combat_log_display: false,
       coverage_table_display: false
     }

@@ -19,24 +19,14 @@
         <v-col cols="2">
           <v-row>
             <v-col cols="6">
-              <v-img :src="pokemon ? pokemon.sprite_url : missingno" width="96"/>
+              <v-img :src="pokemon ? pokemon.sprite_url : missingno" width="128"/>
             </v-col>
             <v-col cols="6">
-              <v-row class="pa-0 ma-0">
-                <v-col cols="12" class="pa-0 ma-0">
-                  <v-badge bordered v-if="this.team !== 'you'"
-                           :color="get_pokemon_boost('attack') < 0? 'error' : get_pokemon_boost('attack') > 0 ? 'success' : 'info'"
-                           :content="`Ataque: ${get_pokemon_boost('attack')}`"/>
-                </v-col>
+              <v-row v-if="team === 'you'">
                 <v-col cols="12" class="pa-0 ma-0">
                   <v-badge bordered
                            :color="get_pokemon_boost('defense') < 0? 'error' : get_pokemon_boost('defense') > 0 ? 'success' : 'info'"
                            :content="`Defensa: ${get_pokemon_boost('defense')}`"/>
-                </v-col>
-                <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
-                  <v-badge bordered v-if="this.team !== 'you'"
-                           :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
-                           :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
                 </v-col>
                 <v-col cols="12" class="pa-0 ma-0">
                   <v-badge bordered
@@ -52,11 +42,6 @@
                   <v-badge bordered
                            :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
                            :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
-                </v-col>
-                <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
-                  <v-badge bordered
-                           :color="get_pokemon_boost('accuracy') < 0? 'error' : get_pokemon_boost('accuracy') > 0 ? 'success' : 'info'"
-                           :content="`Precisión: ${get_pokemon_boost('accuracy')}`"/>
                 </v-col>
               </v-row>
             </v-col>
@@ -84,10 +69,47 @@
           <p class="text-center font-weight-bold">{{ pokemon ? pokemon.species : '???' }}</p>
           <p class="text-center">{{ pokemon ? pokemon_types.map((v) => v.name).join("/") : '???' }}</p>
         </v-col>
-        <v-col cols="8" v-if="team === 'you'">
-          <v-row v-if="pokemon">
+        <v-col cols="8">
+          <v-row v-if="pokemon && team === 'you'">
             <v-col cols="6" v-for="(move, index) in pokemon.moves" :key="index">
               <MovementCard :pokemon="pokemon" :enemy_data="enemy_data" :movement="move" v-if="move"/>
+            </v-col>
+          </v-row>
+          <v-row class="pa-0 ma-0" v-if="team !== 'you'">
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('attack') < 0? 'error' : get_pokemon_boost('attack') > 0 ? 'success' : 'info'"
+                       :content="`Ataque: ${get_pokemon_boost('attack')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('defense') < 0? 'error' : get_pokemon_boost('defense') > 0 ? 'success' : 'info'"
+                       :content="`Defensa: ${get_pokemon_boost('defense')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0" v-if="team !== 'you'">
+              <v-badge bordered
+                       :color="get_pokemon_boost('special_attack') < 0? 'error' : get_pokemon_boost('special_attack') > 0 ? 'success' : 'info'"
+                       :content="`Ataque Especial: ${get_pokemon_boost('special_attack')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('special_defense') < 0? 'error' : get_pokemon_boost('special_defense') > 0 ? 'success' : 'info'"
+                       :content="`Defensa Especial: ${get_pokemon_boost('special_defense')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('speed') < 0? 'error' : get_pokemon_boost('speed') > 0 ? 'success' : 'info'"
+                       :content="`Velocidad: ${get_pokemon_boost('speed')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('evasion') < 0? 'error' : get_pokemon_boost('evasion') > 0 ? 'success' : 'info'"
+                       :content="`Evasión: ${get_pokemon_boost('evasion')}`"/>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
+              <v-badge bordered
+                       :color="get_pokemon_boost('accuracy') < 0? 'error' : get_pokemon_boost('accuracy') > 0 ? 'success' : 'info'"
+                       :content="`Precisión: ${get_pokemon_boost('accuracy')}`"/>
             </v-col>
           </v-row>
         </v-col>
@@ -111,7 +133,7 @@ export default {
       type: String,
       required: true
     },
-    pk_slot: {
+    pk_dex: {
       type: Number,
       required: false
     },
@@ -155,7 +177,7 @@ export default {
     },
     get_pokemon(dex_number) {
       if (this.team === 'ally') {
-        this.get_ally_pokemon(dex_number);
+        return this.get_ally_pokemon(dex_number);
       }
       return this.team_data.team.filter(pokemon => pokemon && pokemon.dex_number.toString() === dex_number.toString())[0]
     },
@@ -163,35 +185,34 @@ export default {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
     },
     get_ally_pokemon(dex_number) {
-      return this.ally_data.team.filter(ally => ally && ally.dex_number.toString() === dex_number.toString())[0]
+      console.log(dex_number, this.ally_data.team)
+      return this.ally_data.team.filter(ally => ally && ally.dex_number === dex_number)[0]
     }
   },
   computed: {
     pokemon() {
-      if (!this.pk_slot) {
+      if (!this.pk_dex) {
         return null;
       }
-      if (!this.team_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
 
-        if (this.ally_data && this.ally_data.team && this.ally_data.team.map(pokemon => pokemon.dex_number).includes(this.pk_slot)) {
-          return this.get_pokemon(this.pk_slot)
-        }
+      if (this.team === 'ally') {
+        return this.get_ally_pokemon(this.pk_dex);
+      }
+
+      if (!this.team_data.team.map(pokemon => pokemon && pokemon.dex_number).includes(this.pk_dex)) {
         // noinspection UnnecessaryLocalVariableJS
-        const imposter = this.get_imposter_pokemon(this.pk_slot); // TODO: esto tambien cambiaria los stat boosts, ashuda
+        const imposter = this.get_imposter_pokemon(this.pk_dex); // TODO: esto tambien cambiaria los stat boosts, ashuda
 
         if (this.team === 'you') {
-          let data = this.get_imposter_pokemon_data(this.pk_slot);
-          if (data) {
+          let data = this.get_imposter_pokemon_data(this.pk_dex);
+          if (data && imposter) {
             imposter.moves = data.moves;
-          } else {
-            console.log(this.pk_slot)
-            console.log(this.team_data.team)
           }
         }
 
         return imposter;
       }
-      return this.get_pokemon(this.pk_slot);
+      return this.get_pokemon(this.pk_dex);
     },
     pokemon_types() {
       if (this.pokemon.battle_data) {

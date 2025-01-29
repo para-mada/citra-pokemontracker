@@ -3,7 +3,7 @@ import {InBattlePokemonData} from "@/api/InBattlePokemonData";
 import {CitraClient} from '@/api/CitraClient'
 import {decryptData} from "@/api/PokemonCrypt";
 import {getSaveName, watchSave} from "@/api/saveReader";
-import {logger} from "@/api/logging";
+import {logger, save_combat_log} from "@/api/logging";
 import {MON_DATA} from '@/data/mon_data'
 
 let SLOT_OFFSET = 484;
@@ -312,22 +312,21 @@ class CombatData {
                 .replace('\u0010', '')
                 .replace('\u0001', '')
                 .replace('븀', '')
-                .split('\u0000')[0];
+                .split('\u0000')[0].trim();
 
             if (!this.combat_log_messages.includes(combat_log_message)) {
                 this.combat_log_messages.push(combat_log_message);
             }
             if (move_log_message) {
-                const ssidByteArray = Buffer.from(move_log_message);
-                console.log(move_log_message)
-                console.log(ssidByteArray)
                 const last_move = this.combat_move_log_messages[this.combat_move_log_messages.length - 1];
                 if (last_move && last_move.message !== move_log_message) {
                     this.combat_move_log_messages.push({
+                        key: this.combat_move_log_messages.length,
                         message: move_log_message
                     });
                 } else if (!last_move) {
                     this.combat_move_log_messages.push({
+                        key: this.combat_move_log_messages.length,
                         message: move_log_message
                     });
                 }
@@ -388,7 +387,10 @@ class CombatData {
             this.your_battle_data = [];
             this.enemy_battle_data = [];
             this.ally_npc_battle_data = [];
-            this.combat_move_log_messages = [];
+            if (this.combat_move_log_messages.length > 0) {
+                save_combat_log('', this.combat_move_log_messages)
+                this.combat_move_log_messages = [];
+            }
         }
     }
 }
