@@ -1,30 +1,14 @@
-import {PokemonTeamData, validatePokemon} from '@/api/PokemonTeamData'
-import {InBattlePokemonData} from "@/api/InBattlePokemonData";
-import {CitraClient} from '@/api/CitraClient'
-import {decryptData} from "@/api/PokemonCrypt";
-import {getSaveName, watchSave} from "@/api/saveReader";
-import {logger, save_combat_log} from "@/api/logging";
-import {MON_DATA} from '@/data/mon_data'
+import {CitraClient, InBattlePokemonData, PokemonTeamData} from '@/api/ram_editor'
+import {CombatEnv, CombatType} from "@/api/ram_editor/RamAccesor";
+import {decryptPokemonData as decryptData} from "@/api/lib/PokemonCrypt";
+import {getSaveName, watchSave} from "@/api/save_editor";
+import {logger, save_combat_log} from "@/api/handlers/logging";
+import {validatePokemon} from "@/api/lib/validators";
+import {RAM_ROM} from "@/stores/back_constants";
 
 let SLOT_OFFSET = 484;
 let SLOT_DATA_SIZE = 232;
 let STAT_DATA_SIZE = 22;
-
-const CombatType = Object.freeze({
-    OFF: "OFF",
-    HORDE: "HORDE",
-    NORMAL: "NORMAL",
-    DOUBLE: "DOUBLE",
-    TRIPLE: "TRIPLE"
-});
-
-const CombatEnv = Object.freeze({
-    OFF: "OFF",
-    WILD: "WILD",
-    TRAINER: "TRAINER",
-    SPECIAL: "SPECIAL",
-    MULTI: "MULTI"
-});
 
 const TeamOwner = Object.freeze({
     YOU: 'YOU',
@@ -361,7 +345,7 @@ class CombatData {
             for (let slot = 0; slot < total_combat_data_slots; slot++) {
                 let slot_address = combat_data_address + (slot * rom.mongap);
                 let mon_data = await citra.readMemory(slot_address, rom.slot_data_size);
-                let pokemon = new InBattlePokemonData(rom, mon_data);
+                let pokemon = new InBattlePokemonData(mon_data);
                 if (pokemon && !validatePokemon(pokemon.dex_number)) {
                     continue
                 }
@@ -396,9 +380,9 @@ class CombatData {
 }
 
 export class PokemonGame {
-    constructor(rom) {
+    constructor() {
         this.alreadySent = null;
-        this.rom = rom;
+        this.rom = RAM_ROM;
         this.data = new GameData({
             your_data: {
                 team: [],

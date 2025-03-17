@@ -106,7 +106,7 @@
       ]
     },
     {
-      "battle_slot": 15, // 15 = 16???    # 16, 2, 258, 2
+      "battle_slot": 15,
       "boosts": {
         "accuracy": 0,
         "attack": 0,
@@ -136,7 +136,7 @@
           "name": "Fighting"
         }
       ]
-    },
+    }
   ],
   "team_data": [
     {

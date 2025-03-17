@@ -1,24 +1,16 @@
 /* eslint-disable no-undef */
 // noinspection JSUnresolvedVariable
 
-import {readFileSync} from 'fs'
-import path from "path";
-import {FORCE_TYPE_ABILITIES} from '@/data/force_type_data'
+import {COVERAGE_DATA} from '@/data/type_data';
+import {MOVE_DATA} from '@/data/move_data';
+import {FORCE_TYPE_ABILITIES, SPECIAL_MOVES} from '@/data/force_type_data';
 
 function Movement(item_held, ability, slot, move_id, pp, move_byte_data) {
     if (move_id === 0) return;
 
     let move_current_pp = move_byte_data.slice(14 * slot).readUInt8();
 
-    let move_data_file = readFileSync(path.join(__static, 'data', 'move_data.json'));
-    let type_data_file = readFileSync(path.join(__static, 'data', 'type_data.json'));
-    let special_move_data_file = readFileSync(path.join(__static, 'data', 'special_move_data.json'));
-
-    let move_data = JSON.parse(move_data_file);
-    let type_data = JSON.parse(type_data_file);
-    let special_move_data = JSON.parse(special_move_data_file);
-
-    let move = move_data[move_id];
+    let move = MOVE_DATA[move_id];
     if (!move) {
         return {
             discovered: false,
@@ -41,8 +33,8 @@ function Movement(item_held, ability, slot, move_id, pp, move_byte_data) {
 
     let move_type = move.typename;
 
-    if (move_id in special_move_data) {
-        let special_move = special_move_data[move_id];
+    if (move_id in SPECIAL_MOVES) {
+        let special_move = SPECIAL_MOVES[move_id];
         if (item_held in special_move) {
             move_type = special_move[item_held];
         }
@@ -59,7 +51,7 @@ function Movement(item_held, ability, slot, move_id, pp, move_byte_data) {
     }
 
 
-    let coverage_data = type_data[move_type.toLowerCase()];
+    let coverage_data = COVERAGE_DATA[move_type.toLowerCase()];
     return {
         discovered: move_current_pp < move.movepp,
         slot: slot,

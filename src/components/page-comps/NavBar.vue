@@ -9,10 +9,36 @@
         v-if="inlive"
         to="/"
         text="Combates"/>
-    <v-btn
-        v-if="logged_in"
-        to="/showdown"
-        text="Showdown"/>
+    <v-menu>
+      <template v-slot:activator="{props}">
+        <v-btn
+            v-if="inlive"
+            v-bind="props"
+            text="DEBUG"/>
+      </template>
+      <template v-slot:default>
+        <v-list>
+          <v-list-item>
+            <v-btn
+                v-if="inlive"
+                v-on:click="empty_slot"
+                text="EMPTY SLOT"/>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                v-if="inlive"
+                v-on:click="add_pkmn_save"
+                text="add pkmn save"/>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                v-if="inlive"
+                v-on:click="edit_pkmn"
+                text="edit pkmn live"/>
+          </v-list-item>
+        </v-list>
+      </template>
+    </v-menu>
     <v-btn
         v-if="logged_in"
         variant="text"
@@ -76,6 +102,26 @@ export default {
     }
   },
   methods: {
+    add_pkmn_save() {
+      window.electron.sendMessage('pkm', {
+        level: 'save',
+        reward: 1
+      });
+    },
+    empty_slot() {
+      window.electron.sendMessage('pkm', {
+        level: 'ram',
+        effect: 'clean',
+        slot: 3
+      });
+    },
+    edit_pkmn() {
+      window.electron.sendMessage('pkm', {
+        effect: 'edit',
+        slot: 0,
+        new_data: null
+      });
+    },
     download_save() {
       session.get(`/api/trainers/last_save/`, {
         responseType: 'arraybuffer'

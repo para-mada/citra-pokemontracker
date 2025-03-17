@@ -87,10 +87,9 @@ export default {
           localStorage.setItem('trainer_id', trainer_response.data.id)
           this.$router.push('/');
         }
-
       }).catch((error_response) => {
         console.log(error_response)
-        this.request = error_response.response.data
+        this.request = error_response.response
       })
     }
   }

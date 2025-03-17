@@ -108,6 +108,9 @@ export default {
   },
   methods: {
     refresh_economy() {
+      if (!localStorage.getItem('api_token')) {
+        return;
+      }
       session.get(`api/trainers/get_economy/`).then((response) => {
         if (this.economy !== response.data) {
           localStorage.setItem('coins', response.data);
@@ -128,6 +131,7 @@ export default {
   },
   mounted() {
     window.electron.onDataReceived('updated_game_data', async (event, data) => {
+      console.log(data)
       this.store.activate(data);
     });
 

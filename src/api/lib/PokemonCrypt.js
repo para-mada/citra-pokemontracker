@@ -50,7 +50,7 @@ const shuffleArray = (data, sv, blockSize) => {
     return result;
 };
 
-const decryptData = (encryptedData) => {
+const decryptPokemonData = (encryptedData) => {
     const seed = encryptedData.readUInt32LE(0);
     const sv = ((seed >> 13) & 31) % 24;
 
@@ -68,9 +68,62 @@ const decryptData = (encryptedData) => {
     return Buffer.concat([header, shuffleArray(blocks, sv, BLOCK_SIZE), stats]);
 };
 
+const encryptData = (decryptedData) => {
+    const seed = decryptedData.readUInt32LE(0);
+    const sv = ((seed >> 13) & 31) % 24;
 
-export {decryptData};
+    const start = 8;
+    const end = (4 * BLOCK_SIZE) + start;
+
+    const header = decryptedData.slice(0, 8);
+
+    // Reordenar los bloques encriptados a su posición original
+    const shuffledBlocks = shuffleArray(decryptedData.slice(start, end), sv, BLOCK_SIZE);
+
+    // Encriptar los bloques
+    const encryptedBlocks = cryptArray(shuffledBlocks, seed, 0, shuffledBlocks.length);
+
+    // Encriptar las estadísticas
+    const encryptedStats = cryptArray(decryptedData, seed, end, decryptedData.length);
+
+    return Buffer.concat([header, encryptedBlocks, encryptedStats]);
+};
+
+export {decryptPokemonData, encryptData};
 
 export default {
-    decryptData: decryptData
+    decryptData: decryptPokemonData
+}
+
+function normalize_gender_symbol(value) {
+    switch (value) {
+        case '\uE08E':
+            return '\u2642';
+        case '\uE08F':
+            return '\u2640';
+    }
+    return value;
+}
+
+function load_string(data, result) {
+    let ctr = 0
+    let i = 0
+
+    while (i < data.length) {
+        let value = data.slice(i).readUInt16LE()
+        if (value === 0) {
+            break
+        }
+        result.push(normalize_gender_symbol(String.fromCharCode(value)))
+        i += 2;
+        ctr++;
+    }
+    return ctr
+}
+
+export function get_string(data) {
+    let result = []
+
+    let length = load_string(data, result)
+    return result.slice(0, length).join('')  // Crear una cadena con los caracteres procesados
 }
